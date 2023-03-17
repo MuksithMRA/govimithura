@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/image_util.dart';
 import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../utils/screen_size.dart';
@@ -17,6 +18,7 @@ class CropsScreen extends StatefulWidget {
 class _CropsScreenState extends State<CropsScreen> {
   final ImagePicker _picker = ImagePicker();
   ImageProvider? _image;
+  XFile? pickedFile;
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -67,13 +69,13 @@ class _CropsScreenState extends State<CropsScreen> {
                           .floatingActionButtonTheme
                           .backgroundColor,
                       onPressed: () async {
-                        final XFile? pickedFile = await _picker.pickImage(
+                        pickedFile = await _picker.pickImage(
                           source: ImageSource.gallery,
                           maxHeight: ScreenSize.height * 0.45,
                           maxWidth: ScreenSize.width,
                         );
                         if (pickedFile != null) {
-                          await xFileToImage(pickedFile).then((value) {
+                          await xFileToImage(pickedFile!).then((value) {
                             setState(() {
                               _image = value;
                             });
@@ -89,13 +91,13 @@ class _CropsScreenState extends State<CropsScreen> {
                           .floatingActionButtonTheme
                           .backgroundColor,
                       onPressed: () async {
-                        final XFile? pickedFile = await _picker.pickImage(
+                        pickedFile = await _picker.pickImage(
                           source: ImageSource.camera,
                           maxHeight: ScreenSize.height * 0.45,
                           maxWidth: ScreenSize.width,
                         );
                         if (pickedFile != null) {
-                          await xFileToImage(pickedFile).then((value) {
+                          await xFileToImage(pickedFile!).then((value) {
                             setState(() {
                               _image = value;
                             });
@@ -111,7 +113,46 @@ class _CropsScreenState extends State<CropsScreen> {
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
-                      onPressed: () {},
+                      onPressed: () async {
+                        if (pickedFile == null) {
+                          return;
+                        }
+                        CroppedFile? croppedFile =
+                            await ImageCropper().cropImage(
+                          sourcePath: pickedFile!.path,
+                          aspectRatioPresets: [
+                            CropAspectRatioPreset.square,
+                            CropAspectRatioPreset.ratio3x2,
+                            CropAspectRatioPreset.original,
+                            CropAspectRatioPreset.ratio4x3,
+                            CropAspectRatioPreset.ratio16x9
+                          ],
+                          uiSettings: [
+                            AndroidUiSettings(
+                                toolbarTitle: 'Cropper Your Image',
+                                toolbarColor: Theme.of(context).primaryColor,
+                                toolbarWidgetColor: Colors.white,
+                                activeControlsWidgetColor:
+                                    Theme.of(context).primaryColor,
+                                initAspectRatio: CropAspectRatioPreset.original,
+                                lockAspectRatio: false),
+                            IOSUiSettings(
+                              title: 'Cropper Your Image',
+                            ),
+                            WebUiSettings(
+                              context: context,
+                            ),
+                          ],
+                        );
+
+                        if (croppedFile != null) {
+                          await croppedFileToImage(croppedFile).then((value) {
+                            setState(() {
+                              _image = value;
+                            });
+                          });
+                        }
+                      },
                       child: const Icon(
                         Icons.crop,
                       ),
@@ -129,5 +170,11 @@ class _CropsScreenState extends State<CropsScreen> {
 
 Future<ImageProvider<Object>> xFileToImage(XFile xFile) async {
   final Uint8List bytes = await xFile.readAsBytes();
+  return Image.memory(bytes).image;
+}
+
+Future<ImageProvider<Object>> croppedFileToImage(
+    CroppedFile croppedFile) async {
+  final Uint8List bytes = await croppedFile.readAsBytes();
   return Image.memory(bytes).image;
 }
