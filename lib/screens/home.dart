@@ -50,17 +50,22 @@ class _HomeState extends State<Home> {
         label: 'Chat Bot',
       ),
     ];
-    List<Widget> screens = [
-      const HomeScreen(),
-      const CropsScreen(),
-      const DiseaseScreen(),
-      const InsectsScreen(),
-      const ChatBotScreen(),
+    List<HomeScreenItem> screens = [
+      HomeScreenItem(
+          title: "Welcome to Govi Mithura", screen: const HomeScreen()),
+      HomeScreenItem(title: "Crops Detection", screen: const CropsScreen()),
+      HomeScreenItem(
+          title: "Diseases Detection", screen: const DiseasesScreen()),
+      HomeScreenItem(title: "Insects Detection", screen: const InsectsScreen()),
+      HomeScreenItem(title: "Chat Bot", screen: const ChatBotScreen()),
     ];
     return Scaffold(
       extendBody: true,
       drawer: const DrawerWidget(),
       appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+            screens[context.watch<HomeProvider>().selectedScreenIndex].title),
         backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -70,7 +75,14 @@ class _HomeState extends State<Home> {
         items: menuItems,
         onTap: (index) => pHome.onNavigationChange(index),
       ),
-      body: screens[context.watch<HomeProvider>().selectedScreenIndex],
+      body: screens[context.watch<HomeProvider>().selectedScreenIndex].screen,
     );
   }
+}
+
+class HomeScreenItem {
+  final String title;
+  final Widget screen;
+
+  HomeScreenItem({required this.title, required this.screen});
 }

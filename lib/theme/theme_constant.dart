@@ -26,6 +26,10 @@ ThemeData lightTheme = ThemeData(
       ),
     ),
   ),
+  floatingActionButtonTheme: const FloatingActionButtonThemeData(
+    backgroundColor: primaryColor,
+    foregroundColor: Colors.white,
+  ),
   primaryColor: primaryColor,
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: Colors.white,

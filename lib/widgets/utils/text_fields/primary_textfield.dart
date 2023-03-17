@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 class PrimaryTextField extends StatefulWidget {
   final Function(String)? onChanged;
   final String label;
-  const PrimaryTextField({super.key, this.onChanged, required this.label});
+  final Widget? prefixIcon;
+  const PrimaryTextField(
+      {super.key, this.onChanged, required this.label, this.prefixIcon});
 
   @override
   State<PrimaryTextField> createState() => _PrimaryTextFieldState();
@@ -19,6 +21,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
       decoration: InputDecoration(
         border: inputDecorationTheme.border,
         hintText: widget.label,
+        prefixIcon: widget.prefixIcon,
       ),
     );
   }
