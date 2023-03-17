@@ -16,6 +16,16 @@ ThemeData lightTheme = ThemeData(
       fontSize: 20,
     ),
   ),
+  drawerTheme: const DrawerThemeData(
+    elevation: 0,
+    backgroundColor: Colors.white,
+    endShape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.only(
+        topLeft: Radius.circular(20),
+        bottomRight: Radius.circular(20),
+      ),
+    ),
+  ),
   primaryColor: primaryColor,
   bottomNavigationBarTheme: const BottomNavigationBarThemeData(
     backgroundColor: Colors.white,

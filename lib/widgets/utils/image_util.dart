@@ -9,7 +9,7 @@ class CustomAssetImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Image.asset(
-      assetName,
+      "assets/images/$assetName",
       fit: fit,
     );
   }

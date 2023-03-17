@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/home_provider.dart';
 import 'package:provider/provider.dart';
+import '../widgets/drawer_widget.dart';
 import 'menu_screens/Insects_screen.dart';
 import 'menu_screens/chat_bot_screen.dart';
 import 'menu_screens/crops_screen.dart';
@@ -56,22 +57,20 @@ class _HomeState extends State<Home> {
       const InsectsScreen(),
       const ChatBotScreen(),
     ];
-    return SafeArea(
-      child: Scaffold(
-        extendBody: true,
-        drawer: const Drawer(),
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: context.watch<HomeProvider>().selectedScreenIndex,
-          selectedIconTheme: theme.selectedIconTheme,
-          unselectedIconTheme: theme.unselectedIconTheme,
-          items: menuItems,
-          onTap: (index) => pHome.onNavigationChange(index),
-        ),
-        body: screens[context.watch<HomeProvider>().selectedScreenIndex],
+    return Scaffold(
+      extendBody: true,
+      drawer: const DrawerWidget(),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: context.watch<HomeProvider>().selectedScreenIndex,
+        selectedIconTheme: theme.selectedIconTheme,
+        unselectedIconTheme: theme.unselectedIconTheme,
+        items: menuItems,
+        onTap: (index) => pHome.onNavigationChange(index),
+      ),
+      body: screens[context.watch<HomeProvider>().selectedScreenIndex],
     );
   }
 }
