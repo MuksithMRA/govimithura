@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:govimithura/screens/login.dart';
 
 import '../utils/screen_size.dart';
 import '../widgets/utils/buttons/custom_elevated_button.dart';
@@ -64,10 +65,10 @@ class RegisterScreen extends StatelessWidget {
                                   ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              Navigator.push(
+                              Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const RegisterScreen(),
+                                  builder: (context) => const LoginScreen(),
                                 ),
                               );
                             },
