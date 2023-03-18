@@ -4,6 +4,9 @@ const Color primaryColor = Colors.green;
 ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   primaryTextTheme: const TextTheme(),
+  colorScheme: const ColorScheme.light(
+    primary: primaryColor,
+  ),
   appBarTheme: const AppBarTheme(
     backgroundColor: primaryColor,
     elevation: 0,
@@ -68,6 +71,7 @@ ThemeData lightTheme = ThemeData(
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
     ),
+    focusColor: primaryColor,
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(10),
       borderSide: const BorderSide(color: primaryColor),

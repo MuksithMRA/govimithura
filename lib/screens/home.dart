@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/home_provider.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
+import 'package:govimithura/utils/screen_size.dart';
 import 'package:provider/provider.dart';
 import '../widgets/drawer_widget.dart';
 import 'menu_screens/Insects_screen.dart';
@@ -62,15 +63,18 @@ class _HomeState extends State<Home> {
       HomeScreenItem(title: "Insects Detection", screen: const InsectsScreen()),
       HomeScreenItem(title: "Chat Bot", screen: const ChatBotScreen()),
     ];
+    AppBar appBar = AppBar(
+      centerTitle: true,
+      title: Text(
+          screens[context.watch<HomeProvider>().selectedScreenIndex].title),
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+    );
+
+    ScreenSize.initAppBarHeight(appBar);
     return Scaffold(
       extendBody: true,
       drawer: const DrawerWidget(),
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-            screens[context.watch<HomeProvider>().selectedScreenIndex].title),
-        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      ),
+      appBar: appBar,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: context.watch<HomeProvider>().selectedScreenIndex,
         selectedIconTheme: theme.selectedIconTheme,
