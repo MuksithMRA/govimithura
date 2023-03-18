@@ -77,7 +77,7 @@ class _HomeState extends State<Home> {
               context: context,
               builder: (_) => confirmationDialog(
                 context,
-                title: "Logout from Govi Mithura Application",
+                title: "Logout from Govi Mithura",
                 yesFunction: () {
                   pHome.onNavigationChange(0);
                   Navigator.pushReplacement(
