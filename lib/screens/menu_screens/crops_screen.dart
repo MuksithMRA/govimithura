@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/image_util.dart';
 import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
+import 'package:provider/provider.dart';
 import '../../utils/screen_size.dart';
+import '../../utils/utils.dart';
 
 class CropsScreen extends StatefulWidget {
   const CropsScreen({super.key});
@@ -16,11 +16,9 @@ class CropsScreen extends StatefulWidget {
 }
 
 class _CropsScreenState extends State<CropsScreen> {
-  final ImagePicker _picker = ImagePicker();
-  ImageProvider? _image;
-  XFile? pickedFile;
   @override
   Widget build(BuildContext context) {
+    Size imageSize = Size(ScreenSize.width, ScreenSize.height * 0.45);
     return Stack(
       children: [
         Container(
@@ -52,11 +50,11 @@ class _CropsScreenState extends State<CropsScreen> {
                     label: "Where do you live?"),
                 spacingWidget(20, SpaceDirection.vertical),
                 Container(
-                  height: ScreenSize.height * 0.45,
-                  width: ScreenSize.width,
+                  height: imageSize.height,
+                  width: imageSize.width,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                        image: _image ??
+                        image: Provider.of<ImageUtilProvider>(context).image ??
                             const AssetImage("assets/images/crops_home.png"),
                         fit: BoxFit.cover),
                   ),
@@ -69,18 +67,8 @@ class _CropsScreenState extends State<CropsScreen> {
                           .floatingActionButtonTheme
                           .backgroundColor,
                       onPressed: () async {
-                        pickedFile = await _picker.pickImage(
-                          source: ImageSource.gallery,
-                          maxHeight: ScreenSize.height * 0.45,
-                          maxWidth: ScreenSize.width,
-                        );
-                        if (pickedFile != null) {
-                          await xFileToImage(pickedFile!).then((value) {
-                            setState(() {
-                              _image = value;
-                            });
-                          });
-                        }
+                        await Utils.pickImage(
+                            ImageSource.gallery, imageSize, context);
                       },
                       child: const Icon(
                         Icons.image_rounded,
@@ -91,18 +79,8 @@ class _CropsScreenState extends State<CropsScreen> {
                           .floatingActionButtonTheme
                           .backgroundColor,
                       onPressed: () async {
-                        pickedFile = await _picker.pickImage(
-                          source: ImageSource.camera,
-                          maxHeight: ScreenSize.height * 0.45,
-                          maxWidth: ScreenSize.width,
-                        );
-                        if (pickedFile != null) {
-                          await xFileToImage(pickedFile!).then((value) {
-                            setState(() {
-                              _image = value;
-                            });
-                          });
-                        }
+                        await Utils.pickImage(
+                            ImageSource.camera, imageSize, context);
                       },
                       child: const Icon(
                         Icons.photo_camera_rounded,
@@ -114,44 +92,7 @@ class _CropsScreenState extends State<CropsScreen> {
                           .floatingActionButtonTheme
                           .backgroundColor,
                       onPressed: () async {
-                        if (pickedFile == null) {
-                          return;
-                        }
-                        CroppedFile? croppedFile =
-                            await ImageCropper().cropImage(
-                          sourcePath: pickedFile!.path,
-                          aspectRatioPresets: [
-                            CropAspectRatioPreset.square,
-                            CropAspectRatioPreset.ratio3x2,
-                            CropAspectRatioPreset.original,
-                            CropAspectRatioPreset.ratio4x3,
-                            CropAspectRatioPreset.ratio16x9
-                          ],
-                          uiSettings: [
-                            AndroidUiSettings(
-                                toolbarTitle: 'Cropper Your Image',
-                                toolbarColor: Theme.of(context).primaryColor,
-                                toolbarWidgetColor: Colors.white,
-                                activeControlsWidgetColor:
-                                    Theme.of(context).primaryColor,
-                                initAspectRatio: CropAspectRatioPreset.original,
-                                lockAspectRatio: false),
-                            IOSUiSettings(
-                              title: 'Cropper Your Image',
-                            ),
-                            WebUiSettings(
-                              context: context,
-                            ),
-                          ],
-                        );
-
-                        if (croppedFile != null) {
-                          await croppedFileToImage(croppedFile).then((value) {
-                            setState(() {
-                              _image = value;
-                            });
-                          });
-                        }
+                        await Utils.cropImage(context, imageSize);
                       },
                       child: const Icon(
                         Icons.crop,
@@ -166,15 +107,4 @@ class _CropsScreenState extends State<CropsScreen> {
       ],
     );
   }
-}
-
-Future<ImageProvider<Object>> xFileToImage(XFile xFile) async {
-  final Uint8List bytes = await xFile.readAsBytes();
-  return Image.memory(bytes).image;
-}
-
-Future<ImageProvider<Object>> croppedFileToImage(
-    CroppedFile croppedFile) async {
-  final Uint8List bytes = await croppedFile.readAsBytes();
-  return Image.memory(bytes).image;
 }

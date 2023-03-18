@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/home_provider.dart';
+import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:provider/provider.dart';
 import '../widgets/drawer_widget.dart';
 import 'menu_screens/Insects_screen.dart';
@@ -17,11 +18,13 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late HomeProvider pHome;
+  late ImageUtilProvider pImageUtil;
 
   @override
   void initState() {
     super.initState();
     pHome = Provider.of<HomeProvider>(context, listen: false);
+    pImageUtil = Provider.of<ImageUtilProvider>(context, listen: false);
   }
 
   @override
@@ -73,7 +76,10 @@ class _HomeState extends State<Home> {
         selectedIconTheme: theme.selectedIconTheme,
         unselectedIconTheme: theme.unselectedIconTheme,
         items: menuItems,
-        onTap: (index) => pHome.onNavigationChange(index),
+        onTap: (index) {
+          pHome.onNavigationChange(index);
+          pImageUtil.clearImage();
+        },
       ),
       body: screens[context.watch<HomeProvider>().selectedScreenIndex].screen,
     );
