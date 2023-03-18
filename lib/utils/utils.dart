@@ -20,21 +20,25 @@ class Utils {
 
   static Future pickImage(
       ImageSource source, Size size, BuildContext context) async {
-    ImageUtilProvider imageUtilProvider = context.read<ImageUtilProvider>();
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: source,
-      maxHeight: size.height,
-      maxWidth: size.width,
-    );
-
-    if (pickedFile != null) {
-      await Utils.xFileToImage(pickedFile).then(
-        (value) => {
-          imageUtilProvider.image = value,
-          imageUtilProvider.imagePath = pickedFile.path,
-        },
+    try {
+      ImageUtilProvider imageUtilProvider = context.read<ImageUtilProvider>();
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
+        source: source,
+        maxHeight: size.height,
+        maxWidth: size.width,
       );
+
+      if (pickedFile != null) {
+        await Utils.xFileToImage(pickedFile).then(
+          (value) => {
+            imageUtilProvider.image = value,
+            imageUtilProvider.imagePath = pickedFile.path,
+          },
+        );
+      }
+    } on Exception catch (e) {
+      Utils.showSnackBar(context, "Error: $e");
     }
   }
 
@@ -76,5 +80,14 @@ class Utils {
         });
       }
     }
+  }
+
+  static void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 }
