@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/home_provider.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
+import 'package:govimithura/screens/login.dart';
 import 'package:govimithura/utils/screen_size.dart';
+import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
 import '../widgets/drawer_widget.dart';
 import 'menu_screens/Insects_screen.dart';
@@ -68,6 +70,27 @@ class _HomeState extends State<Home> {
       title: Text(
           screens[context.watch<HomeProvider>().selectedScreenIndex].title),
       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      actions: [
+        IconButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => confirmationDialog(
+                context,
+                title: "Logout from Govi Mithura Application",
+                yesFunction: () {
+                  pHome.onNavigationChange(0);
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  );
+                },
+              ),
+            );
+          },
+          icon: const Icon(Icons.logout),
+        )
+      ],
     );
 
     ScreenSize.initAppBarHeight(appBar);

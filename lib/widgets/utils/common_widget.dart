@@ -73,3 +73,23 @@ Widget spacingWidget(double size, SpaceDirection direction) {
       ? SizedBox(width: size)
       : SizedBox(height: size);
 }
+
+Widget confirmationDialog(BuildContext context,
+    {required String title, void Function()? yesFunction}) {
+  return AlertDialog(
+    title: Text(title),
+    content: const Text("Are you sure "),
+    actions: [
+      TextButton(
+        onPressed: yesFunction,
+        child: const Text("Yes"),
+      ),
+      TextButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: const Text("No"),
+      ),
+    ],
+  );
+}
