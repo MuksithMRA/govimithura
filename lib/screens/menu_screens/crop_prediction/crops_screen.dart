@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
+import 'package:govimithura/screens/menu_screens/crop_prediction/crops_details_screen.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/image_util.dart';
 import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../utils/screen_size.dart';
-import '../../utils/utils.dart';
-import '../../widgets/utils/buttons/custom_elevated_button.dart';
+import '../../../utils/screen_size.dart';
+import '../../../utils/utils.dart';
+import '../../../widgets/utils/buttons/custom_elevated_button.dart';
 
 class CropsScreen extends StatefulWidget {
   const CropsScreen({super.key});
@@ -54,7 +55,15 @@ class _CropsScreenState extends State<CropsScreen> {
                           label: "Where do you live?"),
                     ),
                     spacingWidget(10, SpaceDirection.horizontal),
-                    CustomElevatedButton(text: "Predict", onPressed: () {}),
+                    CustomElevatedButton(
+                        text: "Predict",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (_) => const CropDetailsScreen()),
+                          );
+                        }),
                   ],
                 ),
                 spacingWidget(20, SpaceDirection.vertical),
@@ -72,6 +81,7 @@ class _CropsScreenState extends State<CropsScreen> {
                   alignment: MainAxisAlignment.spaceAround,
                   children: [
                     FloatingActionButton(
+                      heroTag: "gallery",
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
@@ -84,6 +94,7 @@ class _CropsScreenState extends State<CropsScreen> {
                       ),
                     ),
                     FloatingActionButton.large(
+                      heroTag: "camera",
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
@@ -97,6 +108,7 @@ class _CropsScreenState extends State<CropsScreen> {
                       ),
                     ),
                     FloatingActionButton(
+                      heroTag: "cropImage",
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,

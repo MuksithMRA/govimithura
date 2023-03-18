@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 import '../widgets/drawer_widget.dart';
 import 'menu_screens/Insects_screen.dart';
 import 'menu_screens/chat_bot_screen.dart';
-import 'menu_screens/crops_screen.dart';
-import 'menu_screens/diseases_screen.dart';
+import 'menu_screens/crop_prediction/crops_screen.dart';
+import 'menu_screens/crop_diseases/diseases_screen.dart';
 import 'menu_screens/home_screen.dart';
 
 class Home extends StatefulWidget {
@@ -34,15 +34,15 @@ class _HomeState extends State<Home> {
         Theme.of(context).bottomNavigationBarTheme;
     List<BottomNavigationBarItem> menuItems = [
       const BottomNavigationBarItem(
-        icon: Icon(Icons.home),
+        icon: Icon(Icons.home_rounded),
         label: 'Home',
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.crop),
+        icon: Icon(Icons.forest_rounded),
         label: 'Crops',
       ),
       const BottomNavigationBarItem(
-        icon: Icon(Icons.energy_savings_leaf),
+        icon: Icon(Icons.eco_rounded),
         label: 'Diseases',
       ),
       const BottomNavigationBarItem(

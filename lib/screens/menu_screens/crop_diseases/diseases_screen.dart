@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/screens/menu_screens/crop_diseases/disease_details_screen.dart';
 import 'package:govimithura/widgets/utils/buttons/custom_elevated_button.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../providers/img_util_provider.dart';
-import '../../utils/screen_size.dart';
-import '../../utils/utils.dart';
-import '../../widgets/utils/common_widget.dart';
-import '../../widgets/utils/image_util.dart';
+import '../../../providers/img_util_provider.dart';
+import '../../../utils/screen_size.dart';
+import '../../../utils/utils.dart';
+import '../../../widgets/utils/common_widget.dart';
+import '../../../widgets/utils/image_util.dart';
 
 class DiseasesScreen extends StatelessWidget {
   const DiseasesScreen({super.key});
@@ -42,7 +43,17 @@ class DiseasesScreen extends StatelessWidget {
               children: [
                 ButtonBar(
                   children: [
-                    CustomElevatedButton(text: "Predict", onPressed: () {}),
+                    CustomElevatedButton(
+                        text: "Predict",
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  const DiseaseDetailsScreen(),
+                            ),
+                          );
+                        }),
                   ],
                 ),
                 spacingWidget(10, SpaceDirection.vertical),
@@ -60,6 +71,7 @@ class DiseasesScreen extends StatelessWidget {
                   alignment: MainAxisAlignment.spaceAround,
                   children: [
                     FloatingActionButton(
+                      heroTag: 'gallery',
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
@@ -72,6 +84,7 @@ class DiseasesScreen extends StatelessWidget {
                       ),
                     ),
                     FloatingActionButton.large(
+                      heroTag: 'camera',
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
@@ -85,6 +98,7 @@ class DiseasesScreen extends StatelessWidget {
                       ),
                     ),
                     FloatingActionButton(
+                      heroTag: 'crop',
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
