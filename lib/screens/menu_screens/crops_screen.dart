@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../utils/screen_size.dart';
 import '../../utils/utils.dart';
+import '../../widgets/utils/buttons/custom_elevated_button.dart';
 
 class CropsScreen extends StatefulWidget {
   const CropsScreen({super.key});
@@ -45,9 +46,17 @@ class _CropsScreenState extends State<CropsScreen> {
             ),
             child: Column(
               children: [
-                const PrimaryTextField(
-                    prefixIcon: Icon(Icons.location_on),
-                    label: "Where do you live?"),
+                Row(
+                  children: [
+                    const Flexible(
+                      child: PrimaryTextField(
+                          prefixIcon: Icon(Icons.location_on),
+                          label: "Where do you live?"),
+                    ),
+                    spacingWidget(10, SpaceDirection.horizontal),
+                    CustomElevatedButton(text: "Predict", onPressed: () {}),
+                  ],
+                ),
                 spacingWidget(20, SpaceDirection.vertical),
                 Container(
                   height: imageSize.height,

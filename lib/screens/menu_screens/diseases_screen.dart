@@ -40,8 +40,12 @@ class DiseasesScreen extends StatelessWidget {
             ),
             child: Column(
               children: [
-                CustomElevatedButton(text: "Predict", onPressed: () {}),
-                spacingWidget(26, SpaceDirection.vertical),
+                ButtonBar(
+                  children: [
+                    CustomElevatedButton(text: "Predict", onPressed: () {}),
+                  ],
+                ),
+                spacingWidget(10, SpaceDirection.vertical),
                 Container(
                   height: imageSize.height,
                   width: imageSize.width,
