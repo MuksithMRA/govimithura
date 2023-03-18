@@ -78,7 +78,10 @@ Widget confirmationDialog(BuildContext context,
     {required String title, void Function()? yesFunction}) {
   return AlertDialog(
     title: Text(title),
-    content: const Text("Are you sure "),
+    content: const Text(
+      "Are you sure ",
+      style: TextStyle(fontSize: 18),
+    ),
     actions: [
       TextButton(
         onPressed: yesFunction,
