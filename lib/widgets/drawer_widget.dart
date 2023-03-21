@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/screens/home.dart';
+import 'package:govimithura/screens/my_post.dart';
 
 import '../screens/saved_posts.dart';
 
@@ -40,7 +41,10 @@ class DrawerWidget extends StatelessWidget {
             title: const Text('About'),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => const MyPosts()));
+            },
             leading: const Icon(Icons.post_add_rounded),
             title: const Text('My Posts'),
           ),

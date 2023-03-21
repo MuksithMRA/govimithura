@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/drawer_widget.dart';
+import '../widgets/expandable_post.dart';
 
 class SavedPosts extends StatelessWidget {
   const SavedPosts({super.key});
@@ -12,8 +13,15 @@ class SavedPosts extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Saved Posts'),
       ),
-      body: const Center(
-        child: Text('Saved Posts'),
+      body: SingleChildScrollView(
+        child: Column(
+          children: List.generate(
+            10,
+            (index) {
+              return ExpandablePost(index: index);
+            },
+          ),
+        ),
       ),
     );
   }
