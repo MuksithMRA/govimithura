@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/screens/home.dart';
+
+import '../screens/saved_posts.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key});
@@ -24,13 +27,34 @@ class DrawerWidget extends StatelessWidget {
             accountEmail: const Text('john@doe.com'),
           ),
           ListTile(
+            onTap: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => const Home()));
+            },
+            leading: const Icon(Icons.home_rounded),
+            title: const Text('Home'),
+          ),
+          ListTile(
             onTap: () {},
-            leading: const Icon(Icons.person),
+            leading: const Icon(Icons.person_rounded),
             title: const Text('About'),
           ),
           ListTile(
             onTap: () {},
-            leading: const Icon(Icons.contact_phone),
+            leading: const Icon(Icons.post_add_rounded),
+            title: const Text('My Posts'),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const SavedPosts()));
+            },
+            leading: const Icon(Icons.bookmark_rounded),
+            title: const Text('Saved'),
+          ),
+          ListTile(
+            onTap: () {},
+            leading: const Icon(Icons.contact_phone_rounded),
             title: const Text('Contact Us'),
           ),
         ],

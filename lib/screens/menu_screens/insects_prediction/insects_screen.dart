@@ -1,13 +1,14 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:govimithura/screens/menu_screens/insects_prediction/insects_details_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import '../../providers/img_util_provider.dart';
-import '../../utils/screen_size.dart';
-import '../../utils/utils.dart';
-import '../../widgets/utils/buttons/custom_elevated_button.dart';
-import '../../widgets/utils/common_widget.dart';
-import '../../widgets/utils/image_util.dart';
+import '../../../providers/img_util_provider.dart';
+import '../../../utils/screen_size.dart';
+import '../../../utils/utils.dart';
+import '../../../widgets/utils/buttons/custom_elevated_button.dart';
+import '../../../widgets/utils/common_widget.dart';
+import '../../../widgets/utils/image_util.dart';
 
 class InsectsScreen extends StatelessWidget {
   const InsectsScreen({super.key});
@@ -44,7 +45,16 @@ class InsectsScreen extends StatelessWidget {
                 ButtonBar(
                   children: [
                     CustomElevatedButton(text: "FeedBack", onPressed: () {}),
-                    CustomElevatedButton(text: "Predict", onPressed: () {}),
+                    CustomElevatedButton(
+                      text: "Predict",
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const InsectsDetailsScreen()),
+                        );
+                      },
+                    ),
                   ],
                 ),
                 spacingWidget(10, SpaceDirection.vertical),
@@ -62,6 +72,7 @@ class InsectsScreen extends StatelessWidget {
                   alignment: MainAxisAlignment.spaceAround,
                   children: [
                     FloatingActionButton(
+                      heroTag: 'gallery',
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
@@ -74,6 +85,7 @@ class InsectsScreen extends StatelessWidget {
                       ),
                     ),
                     FloatingActionButton.large(
+                      heroTag: 'camera',
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,
@@ -87,6 +99,7 @@ class InsectsScreen extends StatelessWidget {
                       ),
                     ),
                     FloatingActionButton(
+                      heroTag: 'crop',
                       backgroundColor: Theme.of(context)
                           .floatingActionButtonTheme
                           .backgroundColor,

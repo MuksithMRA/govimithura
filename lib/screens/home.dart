@@ -6,7 +6,7 @@ import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
 import '../widgets/drawer_widget.dart';
-import 'menu_screens/Insects_screen.dart';
+import 'menu_screens/insects_prediction/Insects_screen.dart';
 import 'menu_screens/chat_bot_screen.dart';
 import 'menu_screens/crop_prediction/crops_screen.dart';
 import 'menu_screens/crop_diseases/diseases_screen.dart';
