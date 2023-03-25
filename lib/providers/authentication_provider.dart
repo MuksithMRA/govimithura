@@ -8,22 +8,31 @@ class AuthenticationProvider extends ChangeNotifier {
   AuthService authService = AuthService();
   UserModel userModel = UserModel();
   AuthModel authModel = AuthModel();
-  Future<void> login(AuthModel authModel) async {
-    authService.login(authModel);
+  Future<bool> login() async {
+    return authService.login(authModel).then((value) => value);
   }
 
-  Future register() async {
+  Future<bool> register() async {
     userModel.authModel = authModel;
-    await authService.register(userModel.authModel!).then(
-          (value) => {
-            if (value != null)
-              {
-                userModel.authModel = value,
-                UserService.addUser(userModel),
-              }
-          },
-        );
-    notifyListeners();
+    return await authService.register(userModel.authModel!).then(
+      (value) {
+        if (value != null) {
+          userModel.authModel = value;
+          UserService.addUser(userModel);
+          return true;
+        } else {
+          return false;
+        }
+      },
+    );
+  }
+
+  Future<void> signOut() async {
+    await authService.signOut();
+  }
+
+  bool isLoggedIn() {
+    return authService.isLoggedIn();
   }
 
   setFirstName(String firstName) {

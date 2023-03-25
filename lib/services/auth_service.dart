@@ -38,4 +38,19 @@ class AuthService {
     }
     return null;
   }
+
+  bool isLoggedIn() {
+    _auth.userChanges().listen((User? user) {
+      if (user == null) {
+        debugPrint('User is currently signed out!');
+      } else {
+        debugPrint('User is signed in!');
+      }
+    });
+    return _auth.currentUser != null;
+  }
+
+  Future<void> signOut() async {
+    await _auth.signOut();
+  }
 }

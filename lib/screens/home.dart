@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/home_provider.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/screens/login.dart';
@@ -22,12 +23,15 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   late HomeProvider pHome;
   late ImageUtilProvider pImageUtil;
+  late AuthenticationProvider pAuthentication;
 
   @override
   void initState() {
     super.initState();
     pHome = Provider.of<HomeProvider>(context, listen: false);
     pImageUtil = Provider.of<ImageUtilProvider>(context, listen: false);
+    pAuthentication =
+        Provider.of<AuthenticationProvider>(context, listen: false);
   }
 
   @override
@@ -78,12 +82,15 @@ class _HomeState extends State<Home> {
               builder: (_) => confirmationDialog(
                 context,
                 title: "Logout from Govi Mithura",
-                yesFunction: () {
+                yesFunction: () async {
+                  await pAuthentication.signOut();
                   pHome.onNavigationChange(0);
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()),
-                  );
+                  if (context.mounted) {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const LoginScreen()),
+                    );
+                  }
                 },
               ),
             );

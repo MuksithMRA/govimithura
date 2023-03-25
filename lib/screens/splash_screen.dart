@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/authentication_provider.dart';
+import 'package:govimithura/screens/home.dart';
 import 'package:govimithura/screens/login.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../utils/screen_size.dart';
 
@@ -12,14 +15,18 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  late AuthenticationProvider pAuthentication;
   @override
   void initState() {
     super.initState();
+    pAuthentication =
+        Provider.of<AuthenticationProvider>(context, listen: false);
     Future.delayed(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const LoginScreen(),
+          builder: (context) =>
+              pAuthentication.isLoggedIn() ? const Home() : const LoginScreen(),
         ),
       );
     });

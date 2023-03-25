@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/screens/login.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
+import 'package:govimithura/utils/utils.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/authentication_provider.dart';
@@ -129,7 +131,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onPressed: () async {
                           if (registerFormKey.currentState!.validate()) {
                             LoadingOverlay overlay = LoadingOverlay.of(context);
-                            await overlay.during(pAuthentication.register());
+                            bool success = await overlay
+                                .during(pAuthentication.register());
+                            if (success) {
+                              if (context.mounted) {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreen(),
+                                  ),
+                                );
+                              }
+                            } else {
+                              if (context.mounted) {
+                                Utils.showSnackBar(
+                                    context, ErrorModel.errorMessage);
+                              }
+                            }
                           }
                         },
                       ),

@@ -1,14 +1,34 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/error_model.dart';
+import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/screens/register.dart';
-import 'package:govimithura/services/auth_service.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
+import 'package:govimithura/utils/utils.dart';
 import 'package:govimithura/widgets/utils/buttons/custom_elevated_button.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
+import 'package:provider/provider.dart';
 
-class LoginScreen extends StatelessWidget {
+import 'home.dart';
+
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  late AuthenticationProvider pAuthentication;
+
+  @override
+  void initState() {
+    super.initState();
+    pAuthentication =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,13 +75,22 @@ class LoginScreen extends StatelessWidget {
                   CustomElevatedButton(
                     text: "Login",
                     onPressed: () async {
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (_) => const Home(),
-                      //   ),
-                      // );
-                      AuthService authService = AuthService();
+                      bool success = await LoadingOverlay.of(context)
+                          .during(pAuthentication.login());
+                      if (success) {
+                        if (mounted) {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const Home(),
+                            ),
+                          );
+                        }
+                      } else {
+                        if (mounted) {
+                          Utils.showSnackBar(context, ErrorModel.errorMessage);
+                        }
+                      }
                     },
                   ),
                   spacingWidget(20, SpaceDirection.vertical),
