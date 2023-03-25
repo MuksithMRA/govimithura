@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/screens/home.dart';
-import 'package:govimithura/screens/my_post.dart';
+import 'package:govimithura/screens/my_post_list.dart';
 import 'package:govimithura/screens/my_profile.dart';
+import 'package:provider/provider.dart';
 
 import '../screens/saved_posts.dart';
 
-class DrawerWidget extends StatelessWidget {
+class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
+
+  @override
+  State<DrawerWidget> createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
+  late AuthenticationProvider pAuthentication;
+
+  @override
+  void initState() {
+    super.initState();
+    pAuthentication =
+        Provider.of<AuthenticationProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,11 +38,12 @@ class DrawerWidget extends StatelessWidget {
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
             ),
-            accountName: const Text(
-              'John Doe',
-              style: TextStyle(fontSize: 20),
+            accountName: Text(
+              pAuthentication.getCurrentUser()!.displayName.toString(),
+              style: const TextStyle(fontSize: 20),
             ),
-            accountEmail: const Text('john@doe.com'),
+            accountEmail:
+                Text(pAuthentication.getCurrentUser()!.email.toString()),
           ),
           ListTile(
             onTap: () {
@@ -46,8 +63,8 @@ class DrawerWidget extends StatelessWidget {
           ),
           ListTile(
             onTap: () {
-              Navigator.pushReplacement(
-                  context, MaterialPageRoute(builder: (_) => const MyPosts()));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const MyPostList()));
             },
             leading: const Icon(Icons.post_add_rounded),
             title: const Text('My Posts'),

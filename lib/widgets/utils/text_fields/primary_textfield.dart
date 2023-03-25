@@ -6,13 +6,18 @@ class PrimaryTextField extends StatefulWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
-  const PrimaryTextField(
-      {super.key,
-      this.onChanged,
-      required this.label,
-      this.prefixIcon,
-      this.suffixIcon,
-      this.validator});
+  final int maxLines;
+  final bool isPassword;
+  const PrimaryTextField({
+    super.key,
+    this.onChanged,
+    required this.label,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.validator,
+    this.maxLines = 1,
+    this.isPassword = false,
+  });
 
   @override
   State<PrimaryTextField> createState() => _PrimaryTextFieldState();
@@ -24,8 +29,10 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     InputDecorationTheme inputDecorationTheme =
         Theme.of(context).inputDecorationTheme;
     return TextFormField(
+      maxLines: widget.maxLines,
       onChanged: widget.onChanged,
       validator: widget.validator,
+      obscureText: widget.isPassword,
       decoration: InputDecoration(
         border: inputDecorationTheme.border,
         hintText: widget.label,

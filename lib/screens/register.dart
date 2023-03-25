@@ -64,7 +64,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          pAuthentication.setFirstName(value);
+                          pAuthentication.setFirstName(value.trim());
                         },
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
@@ -77,7 +77,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          pAuthentication.setLastName(value);
+                          pAuthentication.setLastName(value.trim());
                         },
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
@@ -93,11 +93,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          pAuthentication.setEmail(value);
+                          pAuthentication.setEmail(value.trim());
                         },
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
+                        isPassword: true,
                         label: "Password",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -106,11 +107,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          pAuthentication.setPassWord(value);
+                          pAuthentication.setPassWord(value.trim());
                         },
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
+                        isPassword: true,
                         label: "Confirm password",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
@@ -122,7 +124,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          pAuthentication.setConfirmPassword(value);
+                          pAuthentication.setConfirmPassword(value.trim());
                         },
                       ),
                       spacingWidget(30, SpaceDirection.vertical),

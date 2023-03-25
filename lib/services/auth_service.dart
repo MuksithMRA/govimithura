@@ -12,6 +12,7 @@ class AuthService {
           .signInWithEmailAndPassword(
               email: authModel.email, password: authModel.password)
           .then((value) => value);
+
       return userCred.user?.uid != null;
     } on FirebaseAuthException catch (e) {
       ErrorModel.errorMessage = e.message ?? '';

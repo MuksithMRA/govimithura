@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import '../../constants/images.dart';
 
@@ -75,12 +77,26 @@ Widget spacingWidget(double size, SpaceDirection direction) {
 }
 
 Widget confirmationDialog(BuildContext context,
-    {required String title, void Function()? yesFunction}) {
+    {required String title,
+    void Function()? yesFunction,
+    String additionalText = ""}) {
   return AlertDialog(
     title: Text(title),
-    content: const Text(
-      "Are you sure ",
-      style: TextStyle(fontSize: 18),
+    content: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (additionalText.isNotEmpty)
+          Text(
+            additionalText,
+            style: const TextStyle(fontSize: 18),
+          ),
+        const Text(
+          "Are you sure ",
+          style: TextStyle(fontSize: 18),
+        ),
+      ],
     ),
     actions: [
       TextButton(
@@ -111,4 +127,58 @@ class SlidePageRoute extends PageRouteBuilder {
             child: child,
           ),
         );
+}
+
+class ReadOnlyRatingBar extends StatelessWidget {
+  final double rating;
+  final double itemSize;
+  const ReadOnlyRatingBar(
+      {super.key, required this.rating, this.itemSize = 15});
+
+  @override
+  Widget build(BuildContext context) {
+    return RatingBar.builder(
+      onRatingUpdate: (value) {},
+      initialRating: rating,
+      minRating: 0,
+      itemSize: itemSize,
+      direction: Axis.horizontal,
+      allowHalfRating: true,
+      itemCount: 5,
+      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Colors.amber,
+      ),
+    );
+  }
+}
+
+Widget postStatus(String status) {
+  Color color = Colors.green;
+  if (status == PostStatus.PENDING) {
+    color = Colors.orange;
+  }
+  if (status == PostStatus.REJECTED) {
+    color = Colors.red;
+  }
+  return Row(
+    children: [
+      const Text(
+        "Status: ",
+        style: TextStyle(fontWeight: FontWeight.bold),
+      ),
+      Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Text(
+          status,
+          style: const TextStyle(color: Colors.white),
+        ),
+      ),
+    ],
+  );
 }

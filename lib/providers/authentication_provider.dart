@@ -1,14 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:govimithura/models/auth_model.dart';
-import 'package:govimithura/models/user_model.dart';
-import 'package:govimithura/services/auth_service.dart';
-import 'package:govimithura/services/user_service.dart';
+
+import '../models/auth_model.dart';
+import '../models/user_model.dart';
+import '../services/auth_service.dart';
+import '../services/user_service.dart';
 
 class AuthenticationProvider extends ChangeNotifier {
   AuthService authService = AuthService();
   UserModel userModel = UserModel();
   AuthModel authModel = AuthModel();
+
   Future<bool> login() async {
+    await getCurentUserModel();
     return authService.login(authModel).then((value) => value);
   }
 
@@ -33,6 +37,41 @@ class AuthenticationProvider extends ChangeNotifier {
 
   bool isLoggedIn() {
     return authService.isLoggedIn();
+  }
+
+  Future<UserModel?> getCurentUserModel() async {
+    return await UserService.getCurentUser().then((value) {
+      if (value != null) {
+        Map<String, dynamic> user = value.docs.first.data();
+        authModel.email = user['email'];
+        authModel.userType = user['user_type'];
+        authModel.uid = user['uid'];
+        userModel.authModel = authModel;
+        userModel.firstName = user['first_name'];
+        userModel.lastName = user['last_name'];
+        notifyListeners();
+        return userModel;
+      }
+      return null;
+    });
+  }
+
+  Future<bool> updateSingleField(String key, String value) async {
+    return await UserService.updateSingleField(key, value)
+        .then((success) async {
+      if (success) {
+        await getCurentUserModel();
+        getCurrentUser()!
+            .updateDisplayName("${userModel.firstName} ${userModel.lastName}");
+        return true;
+      } else {
+        return false;
+      }
+    });
+  }
+
+  User? getCurrentUser() {
+    return FirebaseAuth.instance.currentUser;
   }
 
   setFirstName(String firstName) {
