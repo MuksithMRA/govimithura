@@ -12,8 +12,11 @@ class AuthenticationProvider extends ChangeNotifier {
   AuthModel authModel = AuthModel();
 
   Future<bool> login() async {
-    await getCurentUserModel();
-    return authService.login(authModel).then((value) => value);
+    bool success = await authService.login(authModel).then((value) => value);
+    if (success) {
+      await getCurentUserModel();
+    }
+    return success;
   }
 
   Future<bool> register() async {
