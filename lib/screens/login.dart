@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:govimithura/screens/home.dart';
 import 'package:govimithura/screens/register.dart';
+import 'package:govimithura/services/auth_service.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/buttons/custom_elevated_button.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
@@ -54,13 +54,14 @@ class LoginScreen extends StatelessWidget {
                   spacingWidget(20, SpaceDirection.vertical),
                   CustomElevatedButton(
                     text: "Login",
-                    onPressed: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const Home(),
-                        ),
-                      );
+                    onPressed: () async {
+                      // Navigator.pushReplacement(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (_) => const Home(),
+                      //   ),
+                      // );
+                      AuthService authService = AuthService();
                     },
                   ),
                   spacingWidget(20, SpaceDirection.vertical),

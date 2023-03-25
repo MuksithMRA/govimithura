@@ -60,7 +60,7 @@ class HomeScreen extends StatelessWidget {
                 "29 C",
                 style: TextStyle(
                   color: Colors.white,
-                  fontSize: 60,
+                  fontSize: 50,
                 ),
               )
             ],
@@ -68,7 +68,7 @@ class HomeScreen extends StatelessWidget {
         ),
         Positioned(
           top: ScreenSize.height * 0.12,
-          height: ScreenSize.height * 0.715,
+          height: ScreenSize.height * 0.725,
           width: ScreenSize.width,
           child: Container(
             padding: EdgeInsets.symmetric(
@@ -123,7 +123,6 @@ class HomeScreen extends StatelessWidget {
             vertical: ScreenSize.height * 0.02,
           ),
           width: ScreenSize.width,
-          height: ScreenSize.height * 0.1,
           child: Row(
             children: [
               Flexible(

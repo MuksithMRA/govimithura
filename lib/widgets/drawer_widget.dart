@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/screens/home.dart';
 import 'package:govimithura/screens/my_post.dart';
+import 'package:govimithura/screens/my_profile.dart';
 
 import '../screens/saved_posts.dart';
 
@@ -36,9 +37,12 @@ class DrawerWidget extends StatelessWidget {
             title: const Text('Home'),
           ),
           ListTile(
-            onTap: () {},
+            onTap: () {
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const MyProfile()));
+            },
             leading: const Icon(Icons.person_rounded),
-            title: const Text('About'),
+            title: const Text('My Profile'),
           ),
           ListTile(
             onTap: () {

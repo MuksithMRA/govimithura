@@ -5,12 +5,14 @@ class PrimaryTextField extends StatefulWidget {
   final String label;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final String? Function(String?)? validator;
   const PrimaryTextField(
       {super.key,
       this.onChanged,
       required this.label,
       this.prefixIcon,
-      this.suffixIcon});
+      this.suffixIcon,
+      this.validator});
 
   @override
   State<PrimaryTextField> createState() => _PrimaryTextFieldState();
@@ -22,7 +24,8 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     InputDecorationTheme inputDecorationTheme =
         Theme.of(context).inputDecorationTheme;
     return TextFormField(
-      onChanged: (value) {},
+      onChanged: widget.onChanged,
+      validator: widget.validator,
       decoration: InputDecoration(
         border: inputDecorationTheme.border,
         hintText: widget.label,

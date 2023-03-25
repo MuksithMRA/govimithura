@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "200276878285",
+    "project_id": "govi-mithura-412b5",
+    "storage_bucket": "govi-mithura-412b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:200276878285:android:f1de8056b0f201cfd55a84",
+        "android_client_info": {
+          "package_name": "com.coda.govimithura"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "200276878285-45csaf5hvfhn5q2fasuk7afpvdpoajoh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBx9jyMkP8KrCyTqNZuPtrWKyZrr4upjbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "200276878285-45csaf5hvfhn5q2fasuk7afpvdpoajoh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

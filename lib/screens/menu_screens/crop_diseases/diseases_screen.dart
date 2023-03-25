@@ -27,7 +27,7 @@ class DiseasesScreen extends StatelessWidget {
         ),
         Positioned(
           top: ScreenSize.height * 0.12,
-          height: ScreenSize.height * 0.715,
+          height: ScreenSize.height * 0.725,
           width: ScreenSize.width,
           child: Container(
             padding: EdgeInsets.symmetric(
