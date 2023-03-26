@@ -1,7 +1,9 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:govimithura/constants/user_types.dart';
 import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
+import 'package:govimithura/screens/admin_home.dart';
 import 'package:govimithura/screens/register.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
@@ -109,7 +111,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Navigator.pushReplacement(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const Home(),
+                                    builder: (_) =>
+                                        pAuthentication.authModel.userType ==
+                                                UserType.user
+                                            ? const Home()
+                                            : const AdminHome(),
                                   ),
                                 );
                               }

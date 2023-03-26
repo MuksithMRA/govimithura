@@ -43,20 +43,23 @@ class AuthenticationProvider extends ChangeNotifier {
   }
 
   Future<UserModel?> getCurentUserModel() async {
-    return await UserService.getCurentUser().then((value) {
-      if (value != null) {
-        Map<String, dynamic> user = value.docs.first.data();
-        authModel.email = user['email'];
-        authModel.userType = user['user_type'];
-        authModel.uid = user['uid'];
-        userModel.authModel = authModel;
-        userModel.firstName = user['first_name'];
-        userModel.lastName = user['last_name'];
-        notifyListeners();
-        return userModel;
-      }
-      return null;
-    });
+    if (authService.isLoggedIn()) {
+      return await UserService.getCurentUser().then((value) {
+        if (value != null) {
+          Map<String, dynamic> user = value.docs.first.data();
+          authModel.email = user['email'];
+          authModel.userType = user['user_type'];
+          authModel.uid = user['uid'];
+          userModel.authModel = authModel;
+          userModel.firstName = user['first_name'];
+          userModel.lastName = user['last_name'];
+          notifyListeners();
+          return userModel;
+        }
+        return null;
+      });
+    }
+    return null;
   }
 
   Future<bool> updateSingleField(String key, String value) async {

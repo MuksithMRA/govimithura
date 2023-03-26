@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../utils/utils.dart';
 import 'utils/common_widget.dart';
 
@@ -36,26 +35,14 @@ class _ExpandablePostState extends State<ExpandablePost> {
                   backgroundImage: AssetImage("assets/images/user.png"),
                 ),
                 title: Row(
-                  children: [
-                    const Text("Written By"),
+                  children: const [
+                    Text("Written By"),
                     Flexible(
-                      child: RatingBar.builder(
-                        onRatingUpdate: (value) {},
-                        initialRating: 3,
-                        minRating: 1,
-                        itemSize: 15,
-                        direction: Axis.horizontal,
-                        allowHalfRating: true,
-                        itemCount: 5,
-                        itemPadding:
-                            const EdgeInsets.symmetric(horizontal: 4.0),
-                        itemBuilder: (context, _) => const Icon(
-                          Icons.star,
-                          color: Colors.amber,
-                        ),
+                      child: CustomRatingBar(
+                        rating: 2,
                       ),
                     ),
-                    const Text(
+                    Text(
                       "(20)",
                       style: TextStyle(fontSize: 15),
                     )

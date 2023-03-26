@@ -19,8 +19,18 @@ class PostService {
     return false;
   }
 
-  static deletePost() {}
-  static updatePost() {}
+  static Future<QuerySnapshot<Map<String, dynamic>>>? getAllPosts() {
+    Future<QuerySnapshot<Map<String, dynamic>>>? querySnapshot;
+    try {
+      querySnapshot = _firestore.get();
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return querySnapshot;
+  }
+
   static Future<DocumentSnapshot<Map<String, dynamic>>?> getPostById(
       String id) async {
     DocumentSnapshot<Map<String, dynamic>>? documentSnapshot;

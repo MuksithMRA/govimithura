@@ -129,15 +129,20 @@ class SlidePageRoute extends PageRouteBuilder {
         );
 }
 
-class ReadOnlyRatingBar extends StatelessWidget {
+class CustomRatingBar extends StatelessWidget {
   final double rating;
   final double itemSize;
-  const ReadOnlyRatingBar(
-      {super.key, required this.rating, this.itemSize = 15});
+  final bool isReadOnly;
+  const CustomRatingBar(
+      {super.key,
+      required this.rating,
+      this.itemSize = 15,
+      this.isReadOnly = true});
 
   @override
   Widget build(BuildContext context) {
     return RatingBar.builder(
+      ignoreGestures: isReadOnly,
       onRatingUpdate: (value) {},
       initialRating: rating,
       minRating: 0,
@@ -156,10 +161,10 @@ class ReadOnlyRatingBar extends StatelessWidget {
 
 Widget postStatus(String status) {
   Color color = Colors.green;
-  if (status == PostStatus.PENDING) {
+  if (status == PostStatus.pending) {
     color = Colors.orange;
   }
-  if (status == PostStatus.REJECTED) {
+  if (status == PostStatus.rejected) {
     color = Colors.red;
   }
   return Row(

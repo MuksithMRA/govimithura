@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
@@ -61,21 +62,22 @@ class _MyPostState extends State<MyPost> {
                   ),
                 ),
                 spacingWidget(10, SpaceDirection.vertical),
-                Row(
-                  children: [
-                    ReadOnlyRatingBar(
-                      rating: post.rating,
-                      itemSize: 20,
-                    ),
-                    spacingWidget(5, SpaceDirection.horizontal),
-                    Text(
-                      '(${post.rateCount})',
-                      style: const TextStyle(
-                        fontSize: 15,
+                if (post.status != PostStatus.pending)
+                  Row(
+                    children: [
+                      CustomRatingBar(
+                        rating: post.rating,
+                        itemSize: 20,
                       ),
-                    ),
-                  ],
-                ),
+                      spacingWidget(5, SpaceDirection.horizontal),
+                      Text(
+                        '(${post.rateCount})',
+                        style: const TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
                 spacingWidget(10, SpaceDirection.vertical),
                 Text(
                   'Posted on ${post.formattedDateTime}',

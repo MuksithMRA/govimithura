@@ -1,3 +1,5 @@
+import 'package:govimithura/constants/user_types.dart';
+
 class AuthModel {
   String email;
   String password;
@@ -8,7 +10,7 @@ class AuthModel {
     this.email = '',
     this.password = '',
     this.uid = '',
-    this.userType = 'user',
+    this.userType = UserType.user,
     this.confirmPassword = '',
   });
 
@@ -31,9 +33,4 @@ class AuthModel {
   void setConfirmPassword(String confirmPassword) {
     this.confirmPassword = confirmPassword;
   }
-}
-
-enum UserType {
-  admin,
-  user,
 }

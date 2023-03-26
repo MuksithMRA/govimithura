@@ -37,6 +37,18 @@ class PostProvider extends ChangeNotifier {
     return posts;
   }
 
+  Future<List<PostModel>> getAllPost() async {
+    List<PostModel> posts = [];
+    var response = await PostService.getAllPosts();
+    if (response != null) {
+      for (var item in response.docs) {
+        posts.add(PostModel.fromMap(item.data()));
+      }
+    }
+    notifyListeners();
+    return posts;
+  }
+
   Future<PostModel> getPostsById(String id) async {
     PostModel post = PostModel();
     var response = await PostService.getPostById(id);
