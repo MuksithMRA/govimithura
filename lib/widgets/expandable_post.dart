@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:govimithura/widgets/utils/ratings/custom_rating_dialog.dart';
+import 'package:govimithura/models/post_model.dart';
 import '../utils/utils.dart';
 import 'utils/common_widget.dart';
 import 'utils/ratings/custom_rating_bar.dart';
+import 'utils/ratings/custom_rating_dialog.dart';
 
 class ExpandablePost extends StatefulWidget {
   final int index;
+  final PostModel post;
   const ExpandablePost({
     super.key,
     required this.index,
+    required this.post,
   });
 
   @override
@@ -21,9 +24,9 @@ class _ExpandablePostState extends State<ExpandablePost> {
   Widget build(BuildContext context) {
     return ExpansionTile(
       initiallyExpanded: widget.index == 0,
-      title: const Text(
-        'Garlic and pepper spray',
-        style: TextStyle(
+      title: Text(
+        widget.post.title,
+        style: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -39,21 +42,24 @@ class _ExpandablePostState extends State<ExpandablePost> {
                 title: Row(
                   children: [
                     const Text("Written By"),
-                    GestureDetector(
-                      onTap: () {
-                        showDialog(
+                    Flexible(
+                      child: GestureDetector(
+                        onTap: () {
+                          showDialog(
                             context: context,
-                            builder: (_) => const CustomRatingDialog());
-                      },
-                      child: const Flexible(
+                            builder: (_) => CustomRatingDialog(
+                              postId: widget.post.id,
+                            ),
+                          );
+                        },
                         child: CustomRatingBar(
-                          rating: 2,
+                          rating: widget.post.rating,
                         ),
                       ),
                     ),
-                    const Text(
-                      "(20)",
-                      style: TextStyle(fontSize: 15),
+                    Text(
+                      "(${widget.post.rateCount})",
+                      style: const TextStyle(fontSize: 15),
                     )
                   ],
                 ),
@@ -73,8 +79,7 @@ class _ExpandablePostState extends State<ExpandablePost> {
                 ),
               ),
               spacingWidget(10, SpaceDirection.vertical),
-              const Text(
-                  'Garlic and pepper spray: Garlic and pepper spray can be made at home and sprayed on plants to repel flea beetles. Mix garlic and hot peppers in water, let it steep overnight, then strain and spray the mixture on the plants.'),
+              Text(widget.post.content),
               spacingWidget(10, SpaceDirection.vertical),
             ],
           ),

@@ -7,6 +7,7 @@ import 'package:govimithura/utils/utils.dart';
 
 class PostProvider extends ChangeNotifier {
   PostModel postModel = PostModel();
+  double givenRating = 0;
 
   Future<void> addPost(BuildContext context) async {
     setPostUid(FirebaseAuth.instance.currentUser!.uid);
@@ -30,7 +31,8 @@ class PostProvider extends ChangeNotifier {
         await PostService.getPostsByUid(FirebaseAuth.instance.currentUser!.uid);
     if (response != null) {
       for (var item in response.docs) {
-        posts.add(PostModel.fromMap(item.data()));
+        PostModel post = PostModel.fromMap(item.data());
+        posts.add(post);
       }
     }
     notifyListeners();
@@ -42,7 +44,21 @@ class PostProvider extends ChangeNotifier {
     var response = await PostService.getAllPosts();
     if (response != null) {
       for (var item in response.docs) {
-        posts.add(PostModel.fromMap(item.data()));
+        PostModel post = PostModel.fromMap(item.data());
+        posts.add(post);
+      }
+    }
+    notifyListeners();
+    return posts;
+  }
+
+  Future<List<PostModel>> getAllPostByType(String postType) async {
+    List<PostModel> posts = [];
+    var response = await PostService.getPostsByType(postType);
+    if (response != null) {
+      for (var item in response.docs) {
+        PostModel post = PostModel.fromMap(item.data());
+        posts.add(post);
       }
     }
     notifyListeners();
@@ -57,6 +73,38 @@ class PostProvider extends ChangeNotifier {
     }
     notifyListeners();
     return post;
+  }
+
+  Future<PostModel> getAverageRating(String id) async {
+    PostModel ratingPost = PostModel();
+    var response = await PostService.getRatingsByPostId(id);
+    if (response != null && response.docs.isNotEmpty) {
+      double totalRating = 0;
+      for (var item in response.docs) {
+        if (item.data()['rating'] != null) {
+          totalRating += item.data()['rating'];
+        }
+      }
+      ratingPost.rateCount = response.docs.length;
+      ratingPost.rating = totalRating / ratingPost.rateCount;
+    }
+    notifyListeners();
+    return ratingPost;
+  }
+
+  Future<bool> addRating(String postId) async {
+    bool success = false;
+    await PostService.addRating(postId, givenRating).then(
+      (value) async {
+        success = value;
+        if (success) {
+          PostModel postModel = await getAverageRating(postId);
+          success = await PostService.updateRating(postId, postModel);
+        }
+      },
+    );
+    notifyListeners();
+    return success;
   }
 
   void setPostModel(PostModel postModel) {
@@ -86,6 +134,11 @@ class PostProvider extends ChangeNotifier {
 
   void clearPostModel() {
     postModel = PostModel();
+    notifyListeners();
+  }
+
+  void setGivenRating(double rating) {
+    givenRating = rating;
     notifyListeners();
   }
 }

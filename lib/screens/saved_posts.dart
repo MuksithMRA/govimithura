@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/post_model.dart';
 
 import '../widgets/drawer_widget.dart';
 import '../widgets/expandable_post.dart';
@@ -18,7 +19,7 @@ class SavedPosts extends StatelessWidget {
           children: List.generate(
             10,
             (index) {
-              return ExpandablePost(index: index);
+              return ExpandablePost(index: index, post: PostModel());
             },
           ),
         ),

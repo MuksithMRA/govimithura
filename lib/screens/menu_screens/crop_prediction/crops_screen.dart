@@ -93,10 +93,11 @@ class _CropsScreenState extends State<CropsScreen> {
                         width: imageSize.width,
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                              image: Provider.of<ImageUtilProvider>(context)
-                                      .image ??
-                                  const AssetImage("assets/images/soil.png"),
-                              fit: BoxFit.cover),
+                            image:
+                                Provider.of<ImageUtilProvider>(context).image ??
+                                    const AssetImage("assets/images/soil.png"),
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       ButtonBar(
@@ -109,7 +110,10 @@ class _CropsScreenState extends State<CropsScreen> {
                                 .backgroundColor,
                             onPressed: () async {
                               await Utils.pickImage(
-                                  ImageSource.gallery, imageSize, context);
+                                ImageSource.gallery,
+                                imageSize,
+                                context,
+                              );
                             },
                             child: const Icon(
                               Icons.image_rounded,

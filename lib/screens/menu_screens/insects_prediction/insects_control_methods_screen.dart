@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/constants/post_types.dart';
+import 'package:govimithura/models/post_model.dart';
+import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/screens/menu_screens/insects_prediction/insect_control_method_post.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/widgets/expandable_post.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
+import 'package:provider/provider.dart';
 
 class InsectsControlMethodsScreen extends StatefulWidget {
   const InsectsControlMethodsScreen({super.key});
@@ -14,6 +19,19 @@ class InsectsControlMethodsScreen extends StatefulWidget {
 class _InsectsControlMethodsScreenState
     extends State<InsectsControlMethodsScreen> {
   bool isBookMarked = false;
+  late PostProvider pPost;
+  List<PostModel> posts = [];
+  String noPostMessage = '';
+
+  @override
+  void initState() {
+    super.initState();
+    pPost = Provider.of<PostProvider>(context, listen: false);
+    Future.delayed(Duration.zero, () async {
+      await initialize();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,13 +79,24 @@ class _InsectsControlMethodsScreenState
                 ],
               ),
             ),
+            if (posts.isEmpty) Center(child: Text(noPostMessage)),
             ...List.generate(
-              5,
-              (index) => ExpandablePost(index: index),
+              posts.length,
+              (index) => ExpandablePost(
+                index: index,
+                post: posts[index],
+              ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> initialize() async {
+    posts = await LoadingOverlay.of(context)
+        .during(pPost.getAllPostByType(PostType.pestControlMethod));
+    noPostMessage = 'No posts available';
+    setState(() {});
   }
 }

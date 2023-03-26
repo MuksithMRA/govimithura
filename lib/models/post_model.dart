@@ -1,5 +1,8 @@
 import 'dart:convert';
 
+import 'package:govimithura/constants/post_status.dart';
+import 'package:govimithura/constants/post_types.dart';
+
 class PostModel {
   String id;
   String title;
@@ -8,7 +11,8 @@ class PostModel {
   double rating;
   String status;
   String formattedDateTime;
-  int rateCount = 0;
+  int rateCount;
+  String postType;
   DateTime? createdAt;
 
   PostModel({
@@ -18,9 +22,10 @@ class PostModel {
     this.uid = '',
     this.createdAt,
     this.rating = 0.0,
-    this.status = 'Pending',
+    this.status = PostStatus.pending,
     this.rateCount = 0,
     this.formattedDateTime = '',
+    this.postType = PostType.pestControlMethod,
   });
 
   Map<String, dynamic> toMap() {
@@ -32,7 +37,8 @@ class PostModel {
       'rating': rating,
       'createdAt': createdAt?.millisecondsSinceEpoch,
       'status': status,
-      'rate_count': rateCount
+      'rateCount': rateCount,
+      'postType': postType,
     };
   }
 
@@ -43,8 +49,9 @@ class PostModel {
       content: map['content'] ?? '',
       uid: map['uid'] ?? '',
       rating: map['rating'] ?? 0.0,
-      status: map['status'] ?? 'Pending',
-      rateCount: map['rate_count'] ?? 0,
+      status: map['status'] ?? PostStatus.pending,
+      rateCount: map['rateCount'] ?? 0,
+      postType: map['postType'] ?? PostType.pestControlMethod,
       createdAt: map['createdAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int)
           : null,
