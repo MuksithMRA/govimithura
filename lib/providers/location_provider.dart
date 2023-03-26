@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:govimithura/models/error_model.dart';
+import 'package:govimithura/models/location_model.dart';
 import 'package:govimithura/services/location_service.dart';
 import 'package:govimithura/services/weather_service.dart';
 import 'package:govimithura/utils/utils.dart';
@@ -11,6 +12,7 @@ class LocationProvider extends ChangeNotifier {
   Position? currentPosition;
   double? currentLocationTemp;
   String? currentAddress;
+  LocationModel? locationModel;
   Future<void> getCurrentPosition(BuildContext context) async {
     await LocationService.getCurrentPosition().then((Position? position) {
       if (position == null) {
@@ -48,6 +50,7 @@ class LocationProvider extends ChangeNotifier {
           return;
         }
         Placemark place = placemarks[1];
+        locationModel = LocationModel.fromJson(place.toJson());
         if (place.street != null && place.street!.isNotEmpty) {
           currentAddress = place.street;
         }

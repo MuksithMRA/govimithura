@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import '../../constants/images.dart';
@@ -127,36 +126,6 @@ class SlidePageRoute extends PageRouteBuilder {
             child: child,
           ),
         );
-}
-
-class CustomRatingBar extends StatelessWidget {
-  final double rating;
-  final double itemSize;
-  final bool isReadOnly;
-  const CustomRatingBar(
-      {super.key,
-      required this.rating,
-      this.itemSize = 15,
-      this.isReadOnly = true});
-
-  @override
-  Widget build(BuildContext context) {
-    return RatingBar.builder(
-      ignoreGestures: isReadOnly,
-      onRatingUpdate: (value) {},
-      initialRating: rating,
-      minRating: 0,
-      itemSize: itemSize,
-      direction: Axis.horizontal,
-      allowHalfRating: true,
-      itemCount: 5,
-      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
-      itemBuilder: (context, _) => const Icon(
-        Icons.star,
-        color: Colors.amber,
-      ),
-    );
-  }
 }
 
 Widget postStatus(String status) {

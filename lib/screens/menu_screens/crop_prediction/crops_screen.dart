@@ -5,6 +5,7 @@ import 'package:govimithura/screens/menu_screens/crop_prediction/crops_details_s
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/image_util.dart';
+import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/screen_size.dart';
@@ -64,9 +65,9 @@ class _CropsScreenState extends State<CropsScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
-                              child: Text(
-                            "${location.currentAddress}",
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                              child: PrimaryTextField(
+                            label: "Nearest District",
+                            initialValue: location.locationModel?.district,
                           )),
                           spacingWidget(10, SpaceDirection.horizontal),
                           CustomElevatedButton(

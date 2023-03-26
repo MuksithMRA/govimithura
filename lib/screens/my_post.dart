@@ -7,6 +7,8 @@ import 'package:govimithura/utils/utils.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../widgets/utils/ratings/custom_rating_bar.dart';
+
 class MyPost extends StatefulWidget {
   final String postId;
   final bool isAdmin;

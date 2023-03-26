@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/widgets/utils/ratings/custom_rating_dialog.dart';
 import '../utils/utils.dart';
 import 'utils/common_widget.dart';
+import 'utils/ratings/custom_rating_bar.dart';
 
 class ExpandablePost extends StatefulWidget {
   final int index;
@@ -35,14 +37,21 @@ class _ExpandablePostState extends State<ExpandablePost> {
                   backgroundImage: AssetImage("assets/images/user.png"),
                 ),
                 title: Row(
-                  children: const [
-                    Text("Written By"),
-                    Flexible(
-                      child: CustomRatingBar(
-                        rating: 2,
+                  children: [
+                    const Text("Written By"),
+                    GestureDetector(
+                      onTap: () {
+                        showDialog(
+                            context: context,
+                            builder: (_) => const CustomRatingDialog());
+                      },
+                      child: const Flexible(
+                        child: CustomRatingBar(
+                          rating: 2,
+                        ),
                       ),
                     ),
-                    Text(
+                    const Text(
                       "(20)",
                       style: TextStyle(fontSize: 15),
                     )
