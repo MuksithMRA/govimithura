@@ -66,10 +66,11 @@ class _CropsScreenState extends State<CropsScreen> {
                         children: [
                           Flexible(
                               child: PrimaryTextField(
+                            prefixIcon: const Icon(Icons.location_city_rounded),
                             onChanged: (value) {
                               location.setDistrict(value);
                             },
-                            hintText: "Nearest District",
+                            label: "Nearest District",
                             initialValue: location.locationModel.district,
                           )),
                           spacingWidget(10, SpaceDirection.horizontal),
@@ -94,8 +95,7 @@ class _CropsScreenState extends State<CropsScreen> {
                           image: DecorationImage(
                               image: Provider.of<ImageUtilProvider>(context)
                                       .image ??
-                                  const AssetImage(
-                                      "assets/images/crops_home.png"),
+                                  const AssetImage("assets/images/soil.png"),
                               fit: BoxFit.cover),
                         ),
                       ),

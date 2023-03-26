@@ -9,16 +9,18 @@ class PrimaryTextField extends StatefulWidget {
   final int maxLines;
   final bool isPassword;
   final String? initialValue;
+  final String? label;
   const PrimaryTextField({
     super.key,
     this.onChanged,
-    required this.hintText,
+    this.hintText = "",
     this.prefixIcon,
     this.suffixIcon,
     this.validator,
     this.maxLines = 1,
     this.isPassword = false,
     this.initialValue,
+    this.label,
   });
 
   @override
@@ -37,6 +39,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
       validator: widget.validator,
       obscureText: widget.isPassword,
       decoration: InputDecoration(
+        label: widget.label != null ? Text(widget.label!) : null,
         border: inputDecorationTheme.border,
         hintText: widget.hintText,
         prefixIcon: widget.prefixIcon,
