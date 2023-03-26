@@ -51,7 +51,7 @@ class _InsectControlMethodPostState extends State<InsectControlMethodPost> {
                     }
                     return null;
                   },
-                  label: 'Title',
+                  hintText: 'Title',
                 ),
                 spacingWidget(20, SpaceDirection.vertical),
                 PrimaryTextField(
@@ -65,7 +65,7 @@ class _InsectControlMethodPostState extends State<InsectControlMethodPost> {
                     return null;
                   },
                   maxLines: 10,
-                  label: 'Write a Method...',
+                  hintText: 'Write a Method...',
                 ),
                 spacingWidget(20, SpaceDirection.vertical),
                 CustomElevatedButton(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class PrimaryTextField extends StatefulWidget {
   final Function(String)? onChanged;
-  final String label;
+  final String hintText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? Function(String?)? validator;
@@ -12,7 +12,7 @@ class PrimaryTextField extends StatefulWidget {
   const PrimaryTextField({
     super.key,
     this.onChanged,
-    required this.label,
+    required this.hintText,
     this.prefixIcon,
     this.suffixIcon,
     this.validator,
@@ -38,7 +38,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
       obscureText: widget.isPassword,
       decoration: InputDecoration(
         border: inputDecorationTheme.border,
-        hintText: widget.label,
+        hintText: widget.hintText,
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.suffixIcon,
         focusColor: inputDecorationTheme.focusColor,

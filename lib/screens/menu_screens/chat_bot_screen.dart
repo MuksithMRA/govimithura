@@ -89,7 +89,7 @@ class ChatBotScreen extends StatelessWidget {
                         children: [
                           Flexible(
                             child: PrimaryTextField(
-                              label: "Type a message",
+                              hintText: "Type a message",
                               suffixIcon: IconButton(
                                 onPressed: () {},
                                 icon: const Icon(

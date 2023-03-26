@@ -56,7 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
-                        label: "First name",
+                        hintText: "First name",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';
@@ -69,7 +69,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
-                        label: "Last name",
+                        hintText: "Last name",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';
@@ -82,7 +82,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
-                        label: "Email address",
+                        hintText: "Email address",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';
@@ -99,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
                         isPassword: true,
-                        label: "Password",
+                        hintText: "Password",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';
@@ -113,7 +113,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
                         isPassword: true,
-                        label: "Confirm password",
+                        hintText: "Confirm password",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';

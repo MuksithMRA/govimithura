@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
-                        label: "Enter your email",
+                        hintText: "Enter your email",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';
@@ -75,7 +75,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       spacingWidget(20, SpaceDirection.vertical),
                       PrimaryTextField(
                         isPassword: true,
-                        label: "Enter password",
+                        hintText: "Enter password",
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Required';

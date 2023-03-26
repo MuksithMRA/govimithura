@@ -66,20 +66,24 @@ class _CropsScreenState extends State<CropsScreen> {
                         children: [
                           Flexible(
                               child: PrimaryTextField(
-                            label: "Nearest District",
-                            initialValue: location.locationModel?.district,
+                            onChanged: (value) {
+                              location.setDistrict(value);
+                            },
+                            hintText: "Nearest District",
+                            initialValue: location.locationModel.district,
                           )),
                           spacingWidget(10, SpaceDirection.horizontal),
                           CustomElevatedButton(
-                              text: "Predict",
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) =>
-                                          const CropDetailsScreen()),
-                                );
-                              }),
+                            text: "Predict",
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => const CropDetailsScreen(),
+                                ),
+                              );
+                            },
+                          ),
                         ],
                       ),
                       spacingWidget(20, SpaceDirection.vertical),

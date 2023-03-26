@@ -7,12 +7,12 @@ class LocationModel {
   String postalCode;
 
   LocationModel({
-    required this.street,
-    required this.city,
-    required this.province,
-    required this.country,
-    required this.district,
-    required this.postalCode,
+    this.street = '',
+    this.city = '',
+    this.province = '',
+    this.country = '',
+    this.district = '',
+    this.postalCode = '',
   });
 
   LocationModel.fromJson(Map<String, dynamic> json)

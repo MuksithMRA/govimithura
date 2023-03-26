@@ -12,7 +12,7 @@ class LocationProvider extends ChangeNotifier {
   Position? currentPosition;
   double? currentLocationTemp;
   String? currentAddress;
-  LocationModel? locationModel;
+  LocationModel locationModel = LocationModel();
   Future<void> getCurrentPosition(BuildContext context) async {
     await LocationService.getCurrentPosition().then((Position? position) {
       if (position == null) {
@@ -69,5 +69,10 @@ class LocationProvider extends ChangeNotifier {
         Utils.showSnackBar(context, ErrorModel.errorMessage);
       }
     });
+  }
+
+  setDistrict(String district) {
+    locationModel.district = district;
+    notifyListeners();
   }
 }
