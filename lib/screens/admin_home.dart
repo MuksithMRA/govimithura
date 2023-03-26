@@ -98,7 +98,10 @@ class _AdminHomeState extends State<AdminHome> {
                           Navigator.push(
                               context,
                               SlidePageRoute(
-                                  page: MyPost(postId: posts[index].id)));
+                                  page: MyPost(
+                                postId: posts[index].id,
+                                isAdmin: true,
+                              )));
                         },
                         title: Text(
                           posts[index].title,
@@ -119,23 +122,24 @@ class _AdminHomeState extends State<AdminHome> {
                         children: [
                           postStatus(posts[index].status),
                           Flexible(
-                              child: ButtonBar(
-                            children: [
-                              FloatingActionButton.small(
+                            child: ButtonBar(
+                              children: [
+                                FloatingActionButton.small(
+                                    elevation: 0,
+                                    backgroundColor: Colors.red,
+                                    heroTag: 'reject$index',
+                                    onPressed: () {},
+                                    child: const Icon(Icons.close)),
+                                FloatingActionButton.small(
                                   elevation: 0,
-                                  backgroundColor: Colors.red,
-                                  heroTag: 'reject$index',
+                                  backgroundColor: Colors.green,
+                                  heroTag: 'approve$index',
                                   onPressed: () {},
-                                  child: const Icon(Icons.close)),
-                              FloatingActionButton.small(
-                                elevation: 0,
-                                backgroundColor: Colors.green,
-                                heroTag: 'approve$index',
-                                onPressed: () {},
-                                child: const Icon(Icons.done),
-                              ),
-                            ],
-                          ))
+                                  child: const Icon(Icons.done),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       )
                     ],

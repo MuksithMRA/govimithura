@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 
 class MyPost extends StatefulWidget {
   final String postId;
-  const MyPost({super.key, required this.postId});
+  final bool isAdmin;
+  const MyPost({super.key, required this.postId, this.isAdmin = false});
 
   @override
   State<MyPost> createState() => _MyPostState();
@@ -87,6 +88,36 @@ class _MyPostState extends State<MyPost> {
                 ),
                 spacingWidget(10, SpaceDirection.vertical),
                 postStatus(post.status),
+                spacingWidget(10, SpaceDirection.vertical),
+                if (widget.isAdmin)
+                  Row(
+                    children: [
+                      const Text(
+                        "Post Approval",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                      Flexible(
+                        child: ButtonBar(
+                          children: [
+                            FloatingActionButton.small(
+                                elevation: 0,
+                                backgroundColor: Colors.red,
+                                heroTag: 'reject',
+                                onPressed: () {},
+                                child: const Icon(Icons.close)),
+                            FloatingActionButton.small(
+                              elevation: 0,
+                              backgroundColor: Colors.green,
+                              heroTag: 'approve',
+                              onPressed: () {},
+                              child: const Icon(Icons.done),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 spacingWidget(50, SpaceDirection.vertical),
                 Text(
                   post.content,
