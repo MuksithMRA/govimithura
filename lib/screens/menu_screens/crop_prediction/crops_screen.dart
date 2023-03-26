@@ -61,6 +61,7 @@ class _CropsScreenState extends State<CropsScreen> {
                   return Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Flexible(
                               child: Text(

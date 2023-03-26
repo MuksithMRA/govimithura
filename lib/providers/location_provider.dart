@@ -39,11 +39,20 @@ class LocationProvider extends ChangeNotifier {
     await placemarkFromCoordinates(
             currentPosition!.latitude, currentPosition!.longitude)
         .then((List<Placemark> placemarks) {
-      Placemark place = placemarks[0];
-
-      currentAddress =
-          '${place.street}, ${place.subLocality}, ${place.subAdministrativeArea}, ${place.postalCode}';
-
+      Placemark place = placemarks[1];
+      if (place.street != null && place.street!.isNotEmpty) {
+        currentAddress = place.street;
+      }
+      if (place.subLocality != null && place.subLocality!.isNotEmpty) {
+        currentAddress = '$currentAddress, ${place.subLocality}';
+      }
+      if (place.subAdministrativeArea != null &&
+          place.subAdministrativeArea!.isNotEmpty) {
+        currentAddress = '$currentAddress, ${place.subAdministrativeArea}';
+      }
+      if (place.postalCode != null && place.postalCode!.isNotEmpty) {
+        currentAddress = '$currentAddress, ${place.postalCode}';
+      }
       notifyListeners();
     }).catchError((e) {
       debugPrint(e);
