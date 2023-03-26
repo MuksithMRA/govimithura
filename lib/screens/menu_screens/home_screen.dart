@@ -1,12 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/home_provider.dart';
+import 'package:govimithura/providers/location_provider.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/image_util.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  late LocationProvider pLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    pLocation = Provider.of<LocationProvider>(context, listen: false);
+    Future.delayed(Duration.zero, () => initialize());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,29 +59,51 @@ class HomeScreen extends StatelessWidget {
     return Stack(
       children: [
         Container(
-          height: ScreenSize.height,
-          width: ScreenSize.width,
-          color: Theme.of(context).primaryColor,
-          child: Column(
-            children: [
-              const Text(
-                "Current Temperature",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-                ),
-              ),
-              spacingWidget(10, SpaceDirection.vertical),
-              const Text(
-                "29 C",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 50,
-                ),
-              )
-            ],
-          ),
-        ),
+            height: ScreenSize.height,
+            width: ScreenSize.width,
+            color: Theme.of(context).primaryColor,
+            child: Consumer<LocationProvider>(
+              builder: (context, location, child) {
+                String temprature = "";
+                if (location.currentLocationTemp == null) {
+                  temprature = "fetching temprature ...";
+                } else {
+                  temprature =
+                      "${location.currentLocationTemp!.toStringAsFixed(1)} °C";
+                }
+                return Column(
+                  children: [
+                    spacingWidget(10, SpaceDirection.vertical),
+                    Text(
+                      temprature,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize:
+                            location.currentLocationTemp != null ? 40 : 20,
+                      ),
+                    ),
+                    // spacingWidget(10, SpaceDirection.vertical),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(
+                          Icons.location_on_rounded,
+                          color: Colors.white,
+                        ),
+                        Flexible(
+                          child: Text(
+                            location.currentAddress.toString(),
+                            style: const TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              },
+            )),
         Positioned(
           top: ScreenSize.height * 0.12,
           height: ScreenSize.height * 0.725,
@@ -162,6 +200,10 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> initialize() async {
+    await LoadingOverlay.of(context).during(pLocation.getCurrentLocationTemp());
   }
 }
 

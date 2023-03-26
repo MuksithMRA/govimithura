@@ -1,4 +1,5 @@
 import 'package:govimithura/providers/authentication_provider.dart';
+import 'package:govimithura/providers/location_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -21,5 +22,8 @@ List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider<PostProvider>(
     create: (_) => PostProvider(),
+  ),
+  ChangeNotifierProvider<LocationProvider>(
+    create: (_) => LocationProvider(),
   ),
 ];

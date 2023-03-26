@@ -8,6 +8,7 @@ class PrimaryTextField extends StatefulWidget {
   final String? Function(String?)? validator;
   final int maxLines;
   final bool isPassword;
+  final String? initialValue;
   const PrimaryTextField({
     super.key,
     this.onChanged,
@@ -17,6 +18,7 @@ class PrimaryTextField extends StatefulWidget {
     this.validator,
     this.maxLines = 1,
     this.isPassword = false,
+    this.initialValue,
   });
 
   @override
@@ -29,6 +31,7 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     InputDecorationTheme inputDecorationTheme =
         Theme.of(context).inputDecorationTheme;
     return TextFormField(
+      initialValue: widget.initialValue,
       maxLines: widget.maxLines,
       onChanged: widget.onChanged,
       validator: widget.validator,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
+import 'package:govimithura/providers/location_provider.dart';
 import 'package:govimithura/screens/menu_screens/crop_prediction/crops_details_screen.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:govimithura/widgets/utils/image_util.dart';
-import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../utils/screen_size.dart';
@@ -18,6 +19,15 @@ class CropsScreen extends StatefulWidget {
 }
 
 class _CropsScreenState extends State<CropsScreen> {
+  late LocationProvider pLocation;
+
+  @override
+  void initState() {
+    super.initState();
+    pLocation = Provider.of<LocationProvider>(context, listen: false);
+    Future.delayed(Duration.zero, () => initialize());
+  }
+
   @override
   Widget build(BuildContext context) {
     Size imageSize = Size(ScreenSize.width, ScreenSize.height * 0.45);
@@ -36,96 +46,107 @@ class _CropsScreenState extends State<CropsScreen> {
           height: ScreenSize.height * 0.725,
           width: ScreenSize.width,
           child: Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: ScreenSize.width * 0.05,
-              vertical: ScreenSize.height * 0.02,
-            ),
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    const Flexible(
-                      child: PrimaryTextField(
-                          prefixIcon: Icon(Icons.location_on),
-                          label: "Where do you live?"),
-                    ),
-                    spacingWidget(10, SpaceDirection.horizontal),
-                    CustomElevatedButton(
-                        text: "Predict",
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => const CropDetailsScreen()),
-                          );
-                        }),
-                  ],
-                ),
-                spacingWidget(20, SpaceDirection.vertical),
-                Container(
-                  height: imageSize.height,
-                  width: imageSize.width,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: Provider.of<ImageUtilProvider>(context).image ??
-                            const AssetImage("assets/images/crops_home.png"),
-                        fit: BoxFit.cover),
-                  ),
-                ),
-                ButtonBar(
-                  alignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    FloatingActionButton(
-                      heroTag: "gallery",
-                      backgroundColor: Theme.of(context)
-                          .floatingActionButtonTheme
-                          .backgroundColor,
-                      onPressed: () async {
-                        await Utils.pickImage(
-                            ImageSource.gallery, imageSize, context);
-                      },
-                      child: const Icon(
-                        Icons.image_rounded,
+              padding: EdgeInsets.symmetric(
+                horizontal: ScreenSize.width * 0.05,
+                vertical: ScreenSize.height * 0.02,
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    topRight: Radius.circular(20)),
+              ),
+              child: Consumer<LocationProvider>(
+                builder: (context, location, child) {
+                  return Column(
+                    children: [
+                      Row(
+                        children: [
+                          Flexible(
+                              child: Text(
+                            "${location.currentAddress}",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          )),
+                          spacingWidget(10, SpaceDirection.horizontal),
+                          CustomElevatedButton(
+                              text: "Predict",
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const CropDetailsScreen()),
+                                );
+                              }),
+                        ],
                       ),
-                    ),
-                    FloatingActionButton.large(
-                      heroTag: "camera",
-                      backgroundColor: Theme.of(context)
-                          .floatingActionButtonTheme
-                          .backgroundColor,
-                      onPressed: () async {
-                        await Utils.pickImage(
-                            ImageSource.camera, imageSize, context);
-                      },
-                      child: const Icon(
-                        Icons.photo_camera_rounded,
-                        size: 50,
+                      spacingWidget(20, SpaceDirection.vertical),
+                      Container(
+                        height: imageSize.height,
+                        width: imageSize.width,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: Provider.of<ImageUtilProvider>(context)
+                                      .image ??
+                                  const AssetImage(
+                                      "assets/images/crops_home.png"),
+                              fit: BoxFit.cover),
+                        ),
                       ),
-                    ),
-                    FloatingActionButton(
-                      heroTag: "cropImage",
-                      backgroundColor: Theme.of(context)
-                          .floatingActionButtonTheme
-                          .backgroundColor,
-                      onPressed: () async {
-                        await Utils.cropImage(context, imageSize);
-                      },
-                      child: const Icon(
-                        Icons.crop,
+                      ButtonBar(
+                        alignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          FloatingActionButton(
+                            heroTag: "gallery",
+                            backgroundColor: Theme.of(context)
+                                .floatingActionButtonTheme
+                                .backgroundColor,
+                            onPressed: () async {
+                              await Utils.pickImage(
+                                  ImageSource.gallery, imageSize, context);
+                            },
+                            child: const Icon(
+                              Icons.image_rounded,
+                            ),
+                          ),
+                          FloatingActionButton.large(
+                            heroTag: "camera",
+                            backgroundColor: Theme.of(context)
+                                .floatingActionButtonTheme
+                                .backgroundColor,
+                            onPressed: () async {
+                              await Utils.pickImage(
+                                  ImageSource.camera, imageSize, context);
+                            },
+                            child: const Icon(
+                              Icons.photo_camera_rounded,
+                              size: 50,
+                            ),
+                          ),
+                          FloatingActionButton(
+                            heroTag: "cropImage",
+                            backgroundColor: Theme.of(context)
+                                .floatingActionButtonTheme
+                                .backgroundColor,
+                            onPressed: () async {
+                              await Utils.cropImage(context, imageSize);
+                            },
+                            child: const Icon(
+                              Icons.crop,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
+                    ],
+                  );
+                },
+              )),
         ),
       ],
     );
+  }
+
+  Future<void> initialize() async {
+    await LoadingOverlay.of(context).during(pLocation.getCurrentPosition());
   }
 }
