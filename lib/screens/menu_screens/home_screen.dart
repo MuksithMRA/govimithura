@@ -203,7 +203,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> initialize() async {
-    await LoadingOverlay.of(context).during(pLocation.getCurrentLocationTemp());
+    await LoadingOverlay.of(context)
+        .during(pLocation.getCurrentLocationTemp(context));
   }
 }
 

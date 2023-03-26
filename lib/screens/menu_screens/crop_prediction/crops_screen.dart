@@ -148,6 +148,7 @@ class _CropsScreenState extends State<CropsScreen> {
   }
 
   Future<void> initialize() async {
-    await LoadingOverlay.of(context).during(pLocation.getCurrentPosition());
+    await LoadingOverlay.of(context)
+        .during(pLocation.getCurrentPosition(context));
   }
 }
