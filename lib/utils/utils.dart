@@ -85,7 +85,7 @@ class Utils {
   static void showSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message),
+        content: Text(reBuildExceptionMessage(message)),
         duration: const Duration(seconds: 5),
       ),
     );
@@ -112,8 +112,14 @@ class Utils {
     }
   }
 
-  //formatted date time considering with zero
   static String getFormattedDateTime(DateTime dateTime) {
     return '${dateTime.year}-${dateTime.month.toString().padLeft(2, '0')}-${dateTime.day.toString().padLeft(2, '0')} ${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}:${dateTime.second.toString().padLeft(2, '0')}';
+  }
+
+  static String reBuildExceptionMessage(String message) {
+    if (message.startsWith("Exception:")) {
+      return message.substring(11, message.length - 1);
+    }
+    return message;
   }
 }
