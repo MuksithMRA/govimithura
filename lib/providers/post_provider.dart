@@ -99,7 +99,8 @@ class PostProvider extends ChangeNotifier {
         success = value;
         if (success) {
           PostModel postModel = await getAverageRating(postId);
-          success = await PostService.updateRating(postId, postModel);
+          postModel.id = postId;
+          success = await PostService.updateRating(postModel);
         }
       },
     );

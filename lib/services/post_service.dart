@@ -74,23 +74,23 @@ class PostService {
     return querySnapshot;
   }
 
-  static Future<bool> addRating(String postId, double rating) async {
+  static Future<bool> addRating(String postId, double ratingValue) async {
     try {
       var rating = await getRatingsByPostId(postId);
       if (rating != null && rating.docs.isNotEmpty) {
         for (var element in rating.docs) {
           if (element.data()['uId'] == FirebaseAuth.instance.currentUser!.uid) {
             _postRatings.doc(element.id).update({
-              'rating': rating,
+              'rating': ratingValue,
             });
             return true;
           }
         }
       } else {
         await _postRatings.add({
-          "postId": postId,
-          "rating": rating,
-          "uId": FirebaseAuth.instance.currentUser!.uid,
+          'postId': postId,
+          'uId': FirebaseAuth.instance.currentUser!.uid,
+          'rating': ratingValue,
         });
         return true;
       }
@@ -116,11 +116,11 @@ class PostService {
     return querySnapshot;
   }
 
-  static Future<bool> updateRating(postId, postModel) async {
+  static Future<bool> updateRating(PostModel postModel) async {
     try {
-      await _posts.doc(postId).update({
+      await _posts.doc(postModel.id).update({
         'rating': postModel.rating,
-        'rateCount': postModel.ratingCount,
+        'rateCount': postModel.rateCount,
       });
       return true;
     } on FirebaseException catch (e) {
