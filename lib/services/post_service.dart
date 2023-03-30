@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/models/post_model.dart';
 
@@ -7,6 +8,7 @@ class PostService {
   static final _posts = FirebaseFirestore.instance.collection('posts');
   static final _postRatings =
       FirebaseFirestore.instance.collection('post_ratings');
+  static final _currentUser = FirebaseAuth.instance.currentUser!;
 
   static Future<bool> addPost(PostModel postModel) async {
     try {
@@ -61,11 +63,14 @@ class PostService {
     return querySnapshot;
   }
 
-  static Future<QuerySnapshot<Map<String, dynamic>>?> getPostsByType(
+  static Future<QuerySnapshot<Map<String, dynamic>>?> getApprovedPostsByType(
       String postType) async {
     QuerySnapshot<Map<String, dynamic>>? querySnapshot;
     try {
-      querySnapshot = await _posts.where('postType', isEqualTo: postType).get();
+      querySnapshot = await _posts
+          .where('postType', isEqualTo: postType)
+          .where('status', isEqualTo: PostStatus.approved)
+          .get();
     } on FirebaseException catch (e) {
       ErrorModel.errorMessage = e.message!;
     } on Exception catch (e) {
@@ -79,7 +84,7 @@ class PostService {
       var rating = await getRatingsByPostId(postId);
       if (rating != null && rating.docs.isNotEmpty) {
         for (var element in rating.docs) {
-          if (element.data()['uId'] == FirebaseAuth.instance.currentUser!.uid) {
+          if (element.data()['uId'] == _currentUser.uid) {
             _postRatings.doc(element.id).update({
               'rating': ratingValue,
             });
@@ -89,7 +94,7 @@ class PostService {
       } else {
         await _postRatings.add({
           'postId': postId,
-          'uId': FirebaseAuth.instance.currentUser!.uid,
+          'uId': _currentUser.uid,
           'rating': ratingValue,
         });
         return true;
@@ -129,5 +134,46 @@ class PostService {
       ErrorModel.errorMessage = e.toString();
     }
     return false;
+  }
+
+  static Future<bool> savePost(String postId) async {
+    try {
+      await _posts.doc(postId).update({
+        'savedBy': FieldValue.arrayUnion([_currentUser.uid]),
+      });
+      return true;
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return false;
+  }
+
+  static Future<bool> unSavePost(String postId) async {
+    try {
+      await _posts.doc(postId).update({
+        'savedBy': FieldValue.arrayRemove([_currentUser.uid]),
+      });
+      return true;
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return false;
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>?> getSavedPosts() async {
+    QuerySnapshot<Map<String, dynamic>>? querySnapshot;
+    try {
+      querySnapshot =
+          await _posts.where('savedBy', arrayContains: _currentUser.uid).get();
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return querySnapshot;
   }
 }

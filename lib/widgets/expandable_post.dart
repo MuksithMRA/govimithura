@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/models/post_model.dart';
+import 'package:govimithura/providers/post_provider.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
+import 'package:provider/provider.dart';
 import '../utils/utils.dart';
 import 'utils/common_widget.dart';
 import 'utils/ratings/custom_rating_bar.dart';
@@ -19,7 +22,14 @@ class ExpandablePost extends StatefulWidget {
 }
 
 class _ExpandablePostState extends State<ExpandablePost> {
-  bool isBookMarked = false;
+  late PostProvider pPost;
+
+  @override
+  void initState() {
+    super.initState();
+    pPost = Provider.of<PostProvider>(context, listen: false);
+  }
+
   @override
   Widget build(BuildContext context) {
     return ExpansionTile(
@@ -49,6 +59,7 @@ class _ExpandablePostState extends State<ExpandablePost> {
                             context: context,
                             builder: (_) => CustomRatingDialog(
                               postId: widget.post.id,
+                              initialRating: widget.post.rating,
                             ),
                           );
                         },
@@ -65,14 +76,27 @@ class _ExpandablePostState extends State<ExpandablePost> {
                 ),
                 subtitle: const Text("john doe"),
                 trailing: IconButton(
-                  onPressed: () {
-                    if (isBookMarked) {
-                      Utils.showSnackBar(context, "Bookmarked");
+                  onPressed: () async {
+                    LoadingOverlay overlay = LoadingOverlay.of(context);
+                    if (widget.post.isSaved) {
+                      bool isUnsaved = await overlay
+                          .during(pPost.unSavePost(widget.post.id));
+                      if (isUnsaved) {
+                        if (mounted) {
+                          Utils.showSnackBar(context, "Removed from bookmark");
+                        }
+                      }
                     } else {
-                      Utils.showSnackBar(context, "Removed from bookmark");
+                      bool isSaved =
+                          await overlay.during(pPost.savePost(widget.post.id));
+                      if (isSaved) {
+                        if (mounted) {
+                          Utils.showSnackBar(context, "Bookmarked");
+                        }
+                      }
                     }
                   },
-                  icon: isBookMarked
+                  icon: widget.post.isSaved
                       ? Icon(Icons.bookmark_rounded,
                           color: Theme.of(context).primaryColor)
                       : const Icon(Icons.bookmark_add_rounded),

@@ -54,7 +54,7 @@ class PostProvider extends ChangeNotifier {
 
   Future<List<PostModel>> getAllPostByType(String postType) async {
     List<PostModel> posts = [];
-    var response = await PostService.getPostsByType(postType);
+    var response = await PostService.getApprovedPostsByType(postType);
     if (response != null) {
       for (var item in response.docs) {
         PostModel post = PostModel.fromMap(item.data());
@@ -102,6 +102,28 @@ class PostProvider extends ChangeNotifier {
           postModel.id = postId;
           success = await PostService.updateRating(postModel);
         }
+      },
+    );
+    notifyListeners();
+    return success;
+  }
+
+  Future<bool> savePost(String postId) async {
+    bool success = false;
+    await PostService.savePost(postId).then(
+      (value) async {
+        success = value;
+      },
+    );
+    notifyListeners();
+    return success;
+  }
+
+  Future<bool> unSavePost(String postId) async {
+    bool success = false;
+    await PostService.unSavePost(postId).then(
+      (value) async {
+        success = value;
       },
     );
     notifyListeners();

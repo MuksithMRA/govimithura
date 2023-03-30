@@ -38,8 +38,11 @@ class _InsectsControlMethodsScreenState
       appBar: AppBar(
         title: const Text('Cultural Pest Control Methods'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await initialize();
+        },
+        child: ListView(
           children: [
             Padding(
               padding: const EdgeInsets.all(20.0),
@@ -94,9 +97,13 @@ class _InsectsControlMethodsScreenState
   }
 
   Future<void> initialize() async {
-    posts = await LoadingOverlay.of(context)
+    List<PostModel> posts = await LoadingOverlay.of(context)
         .during(pPost.getAllPostByType(PostType.pestControlMethod));
-    noPostMessage = 'No posts available';
+    if (posts.isEmpty) {
+      noPostMessage = 'No posts available';
+    } else {
+      this.posts = posts;
+    }
     setState(() {});
   }
 }
