@@ -82,9 +82,10 @@ class _CropsScreenState extends State<CropsScreen> {
                                 onPressed: () async {
                                   if (pImage.imagePath != null) {
                                     await LoadingOverlay.of(context).during(
-                                        Provider.of<MLProvider>(context,
-                                                listen: false)
-                                            .predictSoil(context));
+                                      Provider.of<MLProvider>(context,
+                                              listen: false)
+                                          .predictSoil(context),
+                                    );
                                     if (mounted) {
                                       Navigator.push(
                                         context,

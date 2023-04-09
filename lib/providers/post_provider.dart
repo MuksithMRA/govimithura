@@ -13,17 +13,19 @@ class PostProvider extends ChangeNotifier {
   Future<void> addPost(BuildContext context) async {
     setPostUid(FirebaseAuth.instance.currentUser!.uid);
     setPostCreatedAt(DateTime.now());
-    await PostService.addPost(postModel).then((success) => {
-          if (success)
-            {
-              clearPostModel(),
-              Navigator.pop(context),
-            }
-          else
-            {
-              Utils.showSnackBar(context, ErrorModel.errorMessage),
-            }
-        });
+    await PostService.addPost(postModel).then(
+      (success) => {
+        if (success)
+          {
+            clearPostModel(),
+            Navigator.pop(context),
+          }
+        else
+          {
+            Utils.showSnackBar(context, ErrorModel.errorMessage),
+          }
+      },
+    );
   }
 
   Future<List<PostModel>> getPostsByUid() async {

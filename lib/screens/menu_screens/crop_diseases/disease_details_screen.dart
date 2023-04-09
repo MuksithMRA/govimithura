@@ -1,8 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/disease_provider.dart';
+import 'package:govimithura/providers/img_util_provider.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
+import 'package:provider/provider.dart';
 
-class DiseaseDetailsScreen extends StatelessWidget {
+class DiseaseDetailsScreen extends StatefulWidget {
   const DiseaseDetailsScreen({super.key});
+
+  @override
+  State<DiseaseDetailsScreen> createState() => _DiseaseDetailsScreenState();
+}
+
+class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
+  late DiseaseProvider pDisease;
+
+  @override
+  void initState() {
+    super.initState();
+    pDisease = Provider.of<DiseaseProvider>(context, listen: false);
+    Future.delayed(Duration.zero, () => initialize());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +33,17 @@ class DiseaseDetailsScreen extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
+            ListTile(
+              leading: CircleAvatar(
+                backgroundImage:
+                    Provider.of<ImageUtilProvider>(context, listen: false)
+                        .image,
+              ),
+              title: Text(Provider.of<DiseaseProvider>(context, listen: true)
+                  .entityModel
+                  .description),
+              subtitle: const Text("Crop Name"),
+            ),
             const Text(
               "Bacterial Spot",
               style: TextStyle(
@@ -52,5 +81,9 @@ class DiseaseDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> initialize() async {
+    await LoadingOverlay.of(context).during(pDisease.getLeafsById(1));
   }
 }
