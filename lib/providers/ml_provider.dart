@@ -34,6 +34,11 @@ class MLProvider extends ChangeNotifier {
     request.message = messageText;
     chatResponses.add(request);
     notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 500));
+    chatResponses.add(
+      ChatResponse(status: ChatStatus.typing, message: "Typing..."),
+    );
+    notifyListeners();
     await MLService.replyChat(pImage?.imagePath ?? '').then(
       (value) {
         ChatResponse response = ChatResponse();
@@ -42,6 +47,7 @@ class MLProvider extends ChangeNotifier {
         } else {
           response.message = value;
         }
+        chatResponses.removeLast();
         chatResponses.add(response);
         debugPrint("${response.status}   ${response.message}");
         notifyListeners();

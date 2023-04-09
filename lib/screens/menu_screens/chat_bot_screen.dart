@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/models/chat_response.dart';
 import 'package:govimithura/providers/ml_provider.dart';
-import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
+import 'package:govimithura/utils/screen_size.dart';
 import 'package:provider/provider.dart';
-import '../../utils/screen_size.dart';
 import '../../widgets/utils/common_widget.dart';
 import '../../widgets/utils/image_util.dart';
+import '../../widgets/utils/text_fields/primary_textfield.dart';
 
 class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
@@ -16,6 +16,12 @@ class ChatBotScreen extends StatefulWidget {
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
   final TextEditingController _messageController = TextEditingController();
+  double keyboardHeight = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -25,89 +31,89 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Stack(
-        children: [
-          Container(
-            height: ScreenSize.height -
-                (ScreenSize.appBarHeight + ScreenSize.height * 0.12),
-            width: ScreenSize.width,
-            color: Theme.of(context).primaryColor,
-            child: Column(
-              children: const [
-                CustomAssetImage(assetName: "chat_bots_home.png")
-              ],
-            ),
-          ),
-          Positioned(
-            top: ScreenSize.height * 0.12,
-            height: ScreenSize.height * 0.715,
-            width: ScreenSize.width,
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: ScreenSize.width * 0.05,
-                vertical: ScreenSize.height * 0.02,
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)),
-              ),
+    return Consumer<MLProvider>(
+      builder: (context, pML, child) {
+        return Stack(
+          children: [
+            Container(
+              width: ScreenSize.width,
+              color: Theme.of(context).primaryColor,
               child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Chats",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          )),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.settings,
-                                  color: Colors.black)),
-                          IconButton(
+                children: const [
+                  CustomAssetImage(assetName: "chat_bots_home.png")
+                ],
+              ),
+            ),
+            Container(
+              alignment: Alignment.bottomCenter,
+              width: ScreenSize.width,
+              height: ScreenSize.height * 0.84,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: ScreenSize.width * 0.05,
+                  vertical: ScreenSize.height * 0.02,
+                ),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20)),
+                ),
+                height: ScreenSize.height * 0.75,
+                width: ScreenSize.width,
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Chats",
+                            style: TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            )),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                                onPressed: () {},
+                                icon: const Icon(Icons.settings,
+                                    color: Colors.black)),
+                            IconButton(
                               onPressed: () {},
                               icon: const Icon(
                                 Icons.more_vert,
                                 color: Colors.black,
-                              )),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Consumer<MLProvider>(
-                    builder: (context, pML, child) {
-                      return Column(
-                        children: [
-                          SizedBox(
-                            height: ScreenSize.height * 0.55,
-                            width: ScreenSize.width,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: List.generate(
-                                  pML.chatResponses.length,
-                                  (index) => _chatBubble(
-                                    pML.chatResponses[index],
-                                    context,
-                                  ),
-                                ),
                               ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: pML.chatResponses.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return _chatBubble(
+                                  pML.chatResponses[index],
+                                  context,
+                                );
+                              },
                             ),
                           ),
                           Row(
                             children: [
                               Flexible(
                                 child: PrimaryTextField(
-                                  onChanged: (value) {
-                                    pML.setMessgeText(value.trim());
-                                  },
+                                  onTap: () {},
+                                  controller: _messageController,
                                   hintText: "Type a message",
+                                  onChanged: (value) =>
+                                      pML.setMessgeText(value),
                                   suffixIcon: IconButton(
                                     onPressed: () async {
                                       _messageController.clear();
@@ -122,15 +128,15 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                             ],
                           ),
                         ],
-                      );
-                    },
-                  )
-                ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ),
-        ],
-      ),
+            )
+          ],
+        );
+      },
     );
   }
 
@@ -153,20 +159,22 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                 horizontal: 20,
                 vertical: 10,
               ),
-              decoration: BoxDecoration(
-                color: !chat.isResponse
-                    ? Theme.of(context).primaryColor
-                    : Colors.grey[200],
-                borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(20),
-                    topRight: const Radius.circular(20),
-                    bottomLeft: !chat.isResponse
-                        ? const Radius.circular(20)
-                        : const Radius.circular(0),
-                    bottomRight: !chat.isResponse
-                        ? const Radius.circular(0)
-                        : const Radius.circular(20)),
-              ),
+              decoration: chat.status == ChatStatus.typing
+                  ? null
+                  : BoxDecoration(
+                      color: !chat.isResponse
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey[200],
+                      borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(20),
+                          topRight: const Radius.circular(20),
+                          bottomLeft: !chat.isResponse
+                              ? const Radius.circular(20)
+                              : const Radius.circular(0),
+                          bottomRight: !chat.isResponse
+                              ? const Radius.circular(0)
+                              : const Radius.circular(20)),
+                    ),
               child: Text(
                 chat.message,
                 style: TextStyle(

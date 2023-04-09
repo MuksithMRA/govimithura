@@ -10,4 +10,4 @@ class ChatResponse {
   });
 }
 
-enum ChatStatus { success, error }
+enum ChatStatus { success, error, typing }

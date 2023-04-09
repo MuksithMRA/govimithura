@@ -10,6 +10,9 @@ class PrimaryTextField extends StatefulWidget {
   final bool isPassword;
   final String? initialValue;
   final String? label;
+  final TextEditingController? controller;
+  final Function()? onTap;
+  final bool isFilled;
   const PrimaryTextField({
     super.key,
     this.onChanged,
@@ -21,6 +24,9 @@ class PrimaryTextField extends StatefulWidget {
     this.isPassword = false,
     this.initialValue,
     this.label,
+    this.controller,
+    this.onTap,
+    this.isFilled = false,
   });
 
   @override
@@ -33,14 +39,21 @@ class _PrimaryTextFieldState extends State<PrimaryTextField> {
     InputDecorationTheme inputDecorationTheme =
         Theme.of(context).inputDecorationTheme;
     return TextFormField(
+      onTap: widget.onTap,
       initialValue: widget.initialValue,
+      controller: widget.controller,
       maxLines: widget.maxLines,
       onChanged: widget.onChanged,
       validator: widget.validator,
       obscureText: widget.isPassword,
       decoration: InputDecoration(
+        filled: widget.isFilled,
         label: widget.label != null ? Text(widget.label!) : null,
-        border: inputDecorationTheme.border,
+        border:
+            widget.isFilled ? InputBorder.none : inputDecorationTheme.border,
+        focusedBorder: widget.isFilled
+            ? InputBorder.none
+            : inputDecorationTheme.focusedBorder,
         hintText: widget.hintText,
         prefixIcon: widget.prefixIcon,
         suffixIcon: widget.suffixIcon,
