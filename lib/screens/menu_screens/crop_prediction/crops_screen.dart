@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/providers/location_provider.dart';
+import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/screens/menu_screens/crop_prediction/crops_details_screen.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
@@ -74,17 +75,33 @@ class _CropsScreenState extends State<CropsScreen> {
                             initialValue: location.locationModel.district,
                           )),
                           spacingWidget(10, SpaceDirection.horizontal),
-                          CustomElevatedButton(
-                            text: "Predict",
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => const CropDetailsScreen(),
-                                ),
+                          Consumer<ImageUtilProvider>(
+                            builder: (context, pImage, child) {
+                              return CustomElevatedButton(
+                                text: "Predict",
+                                onPressed: () async {
+                                  if (pImage.imagePath != null) {
+                                    await LoadingOverlay.of(context).during(
+                                        Provider.of<MLProvider>(context,
+                                                listen: false)
+                                            .predictSoil(context));
+                                    if (mounted) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) =>
+                                              const CropDetailsScreen(),
+                                        ),
+                                      );
+                                    }
+                                  } else {
+                                    Utils.showSnackBar(
+                                        context, "Please choose an image");
+                                  }
+                                },
                               );
                             },
-                          ),
+                          )
                         ],
                       ),
                       spacingWidget(20, SpaceDirection.vertical),

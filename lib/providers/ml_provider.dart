@@ -10,6 +10,7 @@ class MLProvider extends ChangeNotifier {
   String messageText = "";
 
   MLProvider({this.pImage});
+
   Future<void> predictLeaf(BuildContext context) async {
     if (pImage?.imagePath != null) {
       String? response =
@@ -26,6 +27,27 @@ class MLProvider extends ChangeNotifier {
       );
 
       debugPrint(response);
+    }
+  }
+
+  Future<void> predictSoil(BuildContext context) async {
+    if (pImage?.imagePath != null) {
+      String? response =
+          await MLService.predictSoil(pImage?.imagePath ?? '').then(
+        (value) {
+          if (value == null) {
+            Utils.showSnackBar(
+                context, "Something went wrong , please try again");
+          } else {
+            return value;
+          }
+          return null;
+        },
+      );
+
+      debugPrint(response);
+    } else {
+      Utils.showSnackBar(context, "Please choose an image");
     }
   }
 
