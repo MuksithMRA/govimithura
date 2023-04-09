@@ -1,5 +1,6 @@
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/location_provider.dart';
+import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
@@ -25,5 +26,10 @@ List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider<LocationProvider>(
     create: (_) => LocationProvider(),
+  ),
+  ChangeNotifierProxyProvider<ImageUtilProvider, MLProvider>(
+    create: (_) => MLProvider(),
+    update: (_, imageUtilProvider, mlProvider) =>
+        MLProvider(pImage: imageUtilProvider),
   ),
 ];

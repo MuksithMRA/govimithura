@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
@@ -121,25 +122,38 @@ class _AdminHomeState extends State<AdminHome> {
                       Row(
                         children: [
                           postStatus(posts[index].status),
-                          Flexible(
-                            child: ButtonBar(
-                              children: [
-                                FloatingActionButton.small(
+                          if (posts[index].status == PostStatus.pending)
+                            Flexible(
+                              child: ButtonBar(
+                                children: [
+                                  FloatingActionButton.small(
+                                      elevation: 0,
+                                      backgroundColor: Colors.red,
+                                      heroTag: 'reject$index',
+                                      onPressed: () async {
+                                        PostModel post = posts[index];
+                                        post.status = PostStatus.rejected;
+                                        await LoadingOverlay.of(context).during(
+                                            pPost.changePostStatus(post));
+                                        await initialize();
+                                      },
+                                      child: const Icon(Icons.close)),
+                                  FloatingActionButton.small(
                                     elevation: 0,
-                                    backgroundColor: Colors.red,
-                                    heroTag: 'reject$index',
-                                    onPressed: () {},
-                                    child: const Icon(Icons.close)),
-                                FloatingActionButton.small(
-                                  elevation: 0,
-                                  backgroundColor: Colors.green,
-                                  heroTag: 'approve$index',
-                                  onPressed: () {},
-                                  child: const Icon(Icons.done),
-                                ),
-                              ],
-                            ),
-                          )
+                                    backgroundColor: Colors.green,
+                                    heroTag: 'approve$index',
+                                    onPressed: () async {
+                                      PostModel post = posts[index];
+                                      post.status = PostStatus.approved;
+                                      await LoadingOverlay.of(context)
+                                          .during(pPost.changePostStatus(post));
+                                      await initialize();
+                                    },
+                                    child: const Icon(Icons.done),
+                                  ),
+                                ],
+                              ),
+                            )
                         ],
                       )
                     ],

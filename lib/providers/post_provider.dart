@@ -8,6 +8,7 @@ import 'package:govimithura/utils/utils.dart';
 class PostProvider extends ChangeNotifier {
   PostModel postModel = PostModel();
   double givenRating = 0;
+  List<PostModel> posts = [];
 
   Future<void> addPost(BuildContext context) async {
     setPostUid(FirebaseAuth.instance.currentUser!.uid);
@@ -26,7 +27,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<List<PostModel>> getPostsByUid() async {
-    List<PostModel> posts = [];
+    posts = [];
     var response =
         await PostService.getPostsByUid(FirebaseAuth.instance.currentUser!.uid);
     if (response != null) {
@@ -40,7 +41,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<List<PostModel>> getAllPost() async {
-    List<PostModel> posts = [];
+    posts = [];
     var response = await PostService.getAllPosts();
     if (response != null) {
       for (var item in response.docs) {
@@ -53,7 +54,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<List<PostModel>> getAllPostByType(String postType) async {
-    List<PostModel> posts = [];
+    posts = [];
     var response = await PostService.getApprovedPostsByType(postType);
     if (response != null) {
       for (var item in response.docs) {
@@ -131,7 +132,7 @@ class PostProvider extends ChangeNotifier {
   }
 
   Future<List<PostModel>> getAllSavedPost() async {
-    List<PostModel> posts = [];
+    posts = [];
     var response = await PostService.getSavedPosts();
     if (response != null) {
       for (var item in response.docs) {
@@ -141,6 +142,17 @@ class PostProvider extends ChangeNotifier {
     }
     notifyListeners();
     return posts;
+  }
+
+  Future<bool> changePostStatus(PostModel post) async {
+    bool success = false;
+    await PostService.changePostStatus(post).then(
+      (value) async {
+        success = value;
+      },
+    );
+    notifyListeners();
+    return success;
   }
 
   void setPostModel(PostModel postModel) {

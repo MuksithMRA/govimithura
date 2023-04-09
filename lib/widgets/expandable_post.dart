@@ -44,6 +44,7 @@ class _ExpandablePostState extends State<ExpandablePost> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
                 leading: const CircleAvatar(

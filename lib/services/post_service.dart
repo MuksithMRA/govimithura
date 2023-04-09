@@ -176,4 +176,18 @@ class PostService {
     }
     return querySnapshot;
   }
+
+  static Future<bool> changePostStatus(PostModel post) async {
+    try {
+      await _posts.doc(post.id).update({
+        'status': post.status,
+      });
+      return true;
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return false;
+  }
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/screens/my_post.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
@@ -17,7 +16,6 @@ class MyPostList extends StatefulWidget {
 
 class _MyPostListState extends State<MyPostList> {
   late PostProvider pPost;
-  List<PostModel> posts = [];
 
   @override
   void initState() {
@@ -37,45 +35,51 @@ class _MyPostListState extends State<MyPostList> {
       ),
       body: SingleChildScrollView(
         child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (posts.isEmpty)
-                const Center(
-                  child: Text('No posts found'),
-                ),
-              ...List.generate(
-                posts.length,
-                (index) => Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: ListTile(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            SlidePageRoute(
-                                page: MyPost(postId: posts[index].id)));
-                      },
-                      title: Text(
-                        posts[index].title,
-                        style: const TextStyle(fontWeight: FontWeight.bold),
+            padding: const EdgeInsets.all(20),
+            child: Consumer<PostProvider>(
+              builder: (context, post, child) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (post.posts.isEmpty)
+                      const Center(
+                        child: Text('No posts found'),
                       ),
-                      subtitle: Text(Utils.getAgoTime(posts[index].createdAt!)),
-                      trailing: const Icon(
-                        Icons.chevron_right_rounded,
-                        size: 30,
-                      )),
-                ),
-              ),
-            ],
-          ),
-        ),
+                    ...List.generate(
+                      post.posts.length,
+                      (index) => Padding(
+                        padding: const EdgeInsets.only(bottom: 10),
+                        child: ListTile(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  SlidePageRoute(
+                                      page: MyPost(
+                                          postId: post.posts[index].id)));
+                            },
+                            title: Text(
+                              post.posts[index].title,
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            subtitle: Text(
+                                Utils.getAgoTime(post.posts[index].createdAt!)),
+                            trailing: const Icon(
+                              Icons.chevron_right_rounded,
+                              size: 30,
+                            )),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            )),
       ),
     );
   }
 
   Future<void> initialize() async {
-    posts = await LoadingOverlay.of(context).during(pPost.getPostsByUid());
+    await LoadingOverlay.of(context).during(pPost.getPostsByUid());
     setState(() {});
   }
 }

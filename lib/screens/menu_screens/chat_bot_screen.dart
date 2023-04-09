@@ -1,11 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/chat_response.dart';
+import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
+import 'package:provider/provider.dart';
 import '../../utils/screen_size.dart';
 import '../../widgets/utils/common_widget.dart';
 import '../../widgets/utils/image_util.dart';
 
-class ChatBotScreen extends StatelessWidget {
+class ChatBotScreen extends StatefulWidget {
   const ChatBotScreen({super.key});
+
+  @override
+  State<ChatBotScreen> createState() => _ChatBotScreenState();
+}
+
+class _ChatBotScreenState extends State<ChatBotScreen> {
+  final TextEditingController _messageController = TextEditingController();
+
+  @override
+  void dispose() {
+    _messageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,42 +81,49 @@ class ChatBotScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Column(
-                    children: [
-                      SizedBox(
-                        height: ScreenSize.height * 0.55,
-                        width: ScreenSize.width,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              _chatBubble(false, context),
-                              _chatBubble(true, context),
-                              _chatBubble(false, context),
-                              _chatBubble(true, context),
-                              _chatBubble(false, context),
-                              _chatBubble(true, context),
-                              _chatBubble(false, context),
-                              _chatBubble(true, context),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Row(
+                  Consumer<MLProvider>(
+                    builder: (context, pML, child) {
+                      return Column(
                         children: [
-                          Flexible(
-                            child: PrimaryTextField(
-                              hintText: "Type a message",
-                              suffixIcon: IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  Icons.send,
+                          SizedBox(
+                            height: ScreenSize.height * 0.55,
+                            width: ScreenSize.width,
+                            child: SingleChildScrollView(
+                              child: Column(
+                                children: List.generate(
+                                  pML.chatResponses.length,
+                                  (index) => _chatBubble(
+                                    pML.chatResponses[index],
+                                    context,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
+                          Row(
+                            children: [
+                              Flexible(
+                                child: PrimaryTextField(
+                                  onChanged: (value) {
+                                    pML.setMessgeText(value.trim());
+                                  },
+                                  hintText: "Type a message",
+                                  suffixIcon: IconButton(
+                                    onPressed: () async {
+                                      _messageController.clear();
+                                      await pML.replyChat();
+                                    },
+                                    icon: const Icon(
+                                      Icons.send,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
-                      ),
-                    ],
+                      );
+                    },
                   )
                 ],
               ),
@@ -111,19 +134,19 @@ class ChatBotScreen extends StatelessWidget {
     );
   }
 
-  Widget _chatBubble(bool isMe, BuildContext context) {
+  Widget _chatBubble(ChatResponse chat, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         mainAxisAlignment:
-            isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
+            !chat.isResponse ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
-          if (!isMe)
+          if (chat.isResponse)
             const CircleAvatar(
               radius: 20,
               backgroundImage: AssetImage("assets/images/user.png"),
             ),
-          if (!isMe) spacingWidget(10, SpaceDirection.horizontal),
+          if (chat.isResponse) spacingWidget(10, SpaceDirection.horizontal),
           Flexible(
             child: Container(
               padding: const EdgeInsets.symmetric(
@@ -131,28 +154,30 @@ class ChatBotScreen extends StatelessWidget {
                 vertical: 10,
               ),
               decoration: BoxDecoration(
-                color: isMe ? Theme.of(context).primaryColor : Colors.grey[200],
+                color: !chat.isResponse
+                    ? Theme.of(context).primaryColor
+                    : Colors.grey[200],
                 borderRadius: BorderRadius.only(
                     topLeft: const Radius.circular(20),
                     topRight: const Radius.circular(20),
-                    bottomLeft: isMe
+                    bottomLeft: !chat.isResponse
                         ? const Radius.circular(20)
                         : const Radius.circular(0),
-                    bottomRight: isMe
+                    bottomRight: !chat.isResponse
                         ? const Radius.circular(0)
                         : const Radius.circular(20)),
               ),
               child: Text(
-                "Hi, how can I help you?,",
+                chat.message,
                 style: TextStyle(
                   fontSize: 15,
-                  color: isMe ? Colors.white : Colors.black,
+                  color: !chat.isResponse ? Colors.white : Colors.black,
                 ),
               ),
             ),
           ),
-          if (isMe) spacingWidget(10, SpaceDirection.horizontal),
-          if (isMe)
+          if (!chat.isResponse) spacingWidget(10, SpaceDirection.horizontal),
+          if (!chat.isResponse)
             const CircleAvatar(
               radius: 20,
               backgroundImage: AssetImage("assets/images/user.png"),

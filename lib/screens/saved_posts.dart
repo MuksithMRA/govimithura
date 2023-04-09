@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +14,6 @@ class SavedPosts extends StatefulWidget {
 }
 
 class _SavedPostsState extends State<SavedPosts> {
-  List<PostModel> posts = [];
   late PostProvider pPost;
 
   @override
@@ -34,21 +32,23 @@ class _SavedPostsState extends State<SavedPosts> {
       appBar: AppBar(
         title: const Text('Saved Posts'),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: List.generate(
-            posts.length,
-            (index) {
-              return ExpandablePost(index: index, post: posts[index]);
-            },
-          ),
-        ),
-      ),
+      body: SingleChildScrollView(child: Consumer<PostProvider>(
+        builder: (context, post, child) {
+          return Column(
+            children: List.generate(
+              post.posts.length,
+              (index) {
+                return ExpandablePost(index: index, post: post.posts[index]);
+              },
+            ),
+          );
+        },
+      )),
     );
   }
 
   Future<void> initialize() async {
-    posts = await LoadingOverlay.of(context).during(pPost.getAllSavedPost());
+    await LoadingOverlay.of(context).during(pPost.getAllSavedPost());
     setState(() {});
   }
 }

@@ -90,33 +90,37 @@ class _MyPostState extends State<MyPost> {
                 ),
                 spacingWidget(10, SpaceDirection.vertical),
                 postStatus(post.status),
-                spacingWidget(10, SpaceDirection.vertical),
-                if (widget.isAdmin)
-                  Row(
+                if (widget.isAdmin && post.status == PostStatus.pending)
+                  Column(
                     children: [
-                      const Text(
-                        "Post Approval",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                      Flexible(
-                        child: ButtonBar(
-                          children: [
-                            FloatingActionButton.small(
-                                elevation: 0,
-                                backgroundColor: Colors.red,
-                                heroTag: 'reject',
-                                onPressed: () {},
-                                child: const Icon(Icons.close)),
-                            FloatingActionButton.small(
-                              elevation: 0,
-                              backgroundColor: Colors.green,
-                              heroTag: 'approve',
-                              onPressed: () {},
-                              child: const Icon(Icons.done),
+                      spacingWidget(10, SpaceDirection.vertical),
+                      Row(
+                        children: [
+                          const Text(
+                            "Post Approval",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          Flexible(
+                            child: ButtonBar(
+                              children: [
+                                FloatingActionButton.small(
+                                    elevation: 0,
+                                    backgroundColor: Colors.red,
+                                    heroTag: 'reject',
+                                    onPressed: () {},
+                                    child: const Icon(Icons.close)),
+                                FloatingActionButton.small(
+                                  elevation: 0,
+                                  backgroundColor: Colors.green,
+                                  heroTag: 'approve',
+                                  onPressed: () {},
+                                  child: const Icon(Icons.done),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
