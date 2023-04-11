@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/constants/post_types.dart';
@@ -14,6 +13,8 @@ class PostModel {
   String formattedDateTime;
   int rateCount;
   String postType;
+  int ref;
+  String author;
   List<String> savedBy;
   DateTime? createdAt;
 
@@ -28,7 +29,9 @@ class PostModel {
     this.rateCount = 0,
     this.formattedDateTime = '',
     this.savedBy = const [],
+    this.author = '',
     this.postType = PostType.pestControlMethod,
+    this.ref = 0,
   });
 
   Map<String, dynamic> toMap() {
@@ -43,6 +46,8 @@ class PostModel {
       'rateCount': rateCount,
       'postType': postType,
       'savedBy': savedBy,
+      'ref': ref,
+      'author': author,
     };
   }
 
@@ -62,6 +67,8 @@ class PostModel {
       createdAt: map['createdAt'] != null
           ? DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int)
           : null,
+      ref: map['ref'] ?? 0,
+      author: map['author'] ?? '',
     );
   }
 

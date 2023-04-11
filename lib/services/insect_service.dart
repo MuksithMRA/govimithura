@@ -17,10 +17,10 @@ class InsectService {
   }
 
   static Future<DocumentSnapshot<Map<String, dynamic>>?> getInsectById(
-      String id) async {
+      int id) async {
     DocumentSnapshot<Map<String, dynamic>>? documentSnapshot;
     try {
-      documentSnapshot = await _insects.doc(id).get();
+      documentSnapshot = await _insects.doc(id.toString()).get();
     } on FirebaseException catch (e) {
       ErrorModel.errorMessage = e.message!;
     } on Exception catch (e) {
@@ -33,11 +33,11 @@ class InsectService {
     try {
       getRecentInsect()!.then((value) {
         if (value.docs.isEmpty) {
-          insect.id = '1';
+          insect.id = 1;
         } else {
-          insect.id = (int.parse(value.docs[0]['id']) + 1).toString();
+          insect.id = value.docs[0]['id'] + 1;
         }
-        _insects.doc(insect.id).set(insect.toJson());
+        _insects.doc(insect.id.toString()).set(insect.toJson());
       });
       return true;
     } on FirebaseException catch (e) {

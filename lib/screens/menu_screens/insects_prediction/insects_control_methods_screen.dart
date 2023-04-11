@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/constants/post_types.dart';
 import 'package:govimithura/models/post_model.dart';
+import 'package:govimithura/providers/insect_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/screens/menu_screens/insects_prediction/insect_control_method_post.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
@@ -20,6 +21,7 @@ class _InsectsControlMethodsScreenState
     extends State<InsectsControlMethodsScreen> {
   bool isBookMarked = false;
   late PostProvider pPost;
+  late InsectProvider pInsect;
   List<PostModel> posts = [];
   String noPostMessage = '';
 
@@ -27,6 +29,7 @@ class _InsectsControlMethodsScreenState
   void initState() {
     super.initState();
     pPost = Provider.of<PostProvider>(context, listen: false);
+    pInsect = Provider.of<InsectProvider>(context, listen: false);
     Future.delayed(Duration.zero, () async {
       await initialize();
     });
@@ -59,7 +62,10 @@ class _InsectsControlMethodsScreenState
                     onTap: () {
                       Navigator.push(
                         context,
-                        SlidePageRoute(page: const InsectControlMethodPost()),
+                        SlidePageRoute(
+                            page: InsectControlMethodPost(
+                          postRef: pInsect.selectedInsect.id,
+                        )),
                       );
                     },
                     decoration: const InputDecoration(
@@ -97,8 +103,11 @@ class _InsectsControlMethodsScreenState
   }
 
   Future<void> initialize() async {
+    PostModel postFilter = PostModel();
+    postFilter.postType = PostType.pestControlMethod;
+    postFilter.ref = pInsect.selectedInsect.id;
     List<PostModel> posts = await LoadingOverlay.of(context)
-        .during(pPost.getAllPostByType(PostType.pestControlMethod));
+        .during(pPost.getAllPostByType(postFilter));
     if (posts.isEmpty) {
       noPostMessage = 'No posts available';
     } else {

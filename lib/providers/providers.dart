@@ -1,5 +1,6 @@
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/disease_provider.dart';
+import 'package:govimithura/providers/insect_provider.dart';
 import 'package:govimithura/providers/location_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
@@ -35,5 +36,8 @@ List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider<DiseaseProvider>(
     create: (context) => DiseaseProvider(),
+  ),
+  ChangeNotifierProvider<InsectProvider>(
+    create: (context) => InsectProvider(),
   )
 ];

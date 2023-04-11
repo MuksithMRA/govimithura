@@ -55,9 +55,9 @@ class PostProvider extends ChangeNotifier {
     return posts;
   }
 
-  Future<List<PostModel>> getAllPostByType(String postType) async {
+  Future<List<PostModel>> getAllPostByType(PostModel postModel) async {
     posts = [];
-    var response = await PostService.getApprovedPostsByType(postType);
+    var response = await PostService.getApprovedPostsByTypeAndRef(postModel);
     if (response != null) {
       for (var item in response.docs) {
         PostModel post = PostModel.fromMap(item.data());
@@ -174,6 +174,11 @@ class PostProvider extends ChangeNotifier {
 
   void setPostUid(String uid) {
     postModel.uid = uid;
+    notifyListeners();
+  }
+
+  void setPostRef(int ref) {
+    postModel.ref = ref;
     notifyListeners();
   }
 

@@ -75,7 +75,7 @@ class _ExpandablePostState extends State<ExpandablePost> {
                     )
                   ],
                 ),
-                subtitle: const Text("john doe"),
+                subtitle: Text(widget.post.author),
                 trailing: IconButton(
                   onPressed: () async {
                     LoadingOverlay overlay = LoadingOverlay.of(context);

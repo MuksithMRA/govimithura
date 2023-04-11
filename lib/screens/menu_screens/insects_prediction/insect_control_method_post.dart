@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
@@ -8,7 +9,8 @@ import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
 import 'package:provider/provider.dart';
 
 class InsectControlMethodPost extends StatefulWidget {
-  const InsectControlMethodPost({super.key});
+  final int postRef;
+  const InsectControlMethodPost({super.key, required this.postRef});
 
   @override
   State<InsectControlMethodPost> createState() =>
@@ -22,6 +24,7 @@ class _InsectControlMethodPostState extends State<InsectControlMethodPost> {
   void initState() {
     super.initState();
     pPost = Provider.of<PostProvider>(context, listen: false);
+    pPost.postModel = PostModel();
   }
 
   @override
@@ -72,6 +75,7 @@ class _InsectControlMethodPostState extends State<InsectControlMethodPost> {
                     text: "Post",
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
+                        pPost.setPostRef(widget.postRef);
                         await LoadingOverlay.of(context)
                             .during(pPost.addPost(context));
                       }

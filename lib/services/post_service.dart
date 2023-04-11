@@ -12,6 +12,7 @@ class PostService {
 
   static Future<bool> addPost(PostModel postModel) async {
     try {
+      postModel.author = _currentUser.displayName ?? '';
       await _posts.add(postModel.toMap()).then((value) {
         postModel.id = value.id;
         _posts.doc(value.id).update(postModel.toMap());
@@ -63,13 +64,14 @@ class PostService {
     return querySnapshot;
   }
 
-  static Future<QuerySnapshot<Map<String, dynamic>>?> getApprovedPostsByType(
-      String postType) async {
+  static Future<QuerySnapshot<Map<String, dynamic>>?>
+      getApprovedPostsByTypeAndRef(PostModel postModel) async {
     QuerySnapshot<Map<String, dynamic>>? querySnapshot;
     try {
       querySnapshot = await _posts
-          .where('postType', isEqualTo: postType)
+          .where('postType', isEqualTo: postModel.postType)
           .where('status', isEqualTo: PostStatus.approved)
+          .where('ref', isEqualTo: postModel.ref)
           .get();
     } on FirebaseException catch (e) {
       ErrorModel.errorMessage = e.message!;

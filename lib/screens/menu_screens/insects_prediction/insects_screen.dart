@@ -1,5 +1,6 @@
 // ignore: file_names
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/insect_provider.dart';
 import 'package:govimithura/screens/menu_screens/insects_prediction/insects_details_screen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +48,8 @@ class InsectsScreen extends StatelessWidget {
                     CustomElevatedButton(
                       text: "Predict",
                       onPressed: () {
+                        Provider.of<InsectProvider>(context, listen: false)
+                            .setSelectedInsectId(1);
                         Navigator.push(
                           context,
                           MaterialPageRoute(
