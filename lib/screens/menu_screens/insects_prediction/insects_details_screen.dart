@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/insect_provider.dart';
-import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
@@ -26,10 +25,6 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(Provider.of<PostProvider>(context, listen: false)
-        .filterPostModel
-        .ref
-        .toString());
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
