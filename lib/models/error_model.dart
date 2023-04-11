@@ -1,3 +1,3 @@
 class ErrorModel {
-  static String errorMessage = '';
+  static String errorMessage = 'Something went wrong , please try again';
 }

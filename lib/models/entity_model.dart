@@ -4,23 +4,31 @@ import 'dart:convert';
 class EntityModel {
   int id;
   String description;
+  String name;
+  String image;
 
   EntityModel({
     this.id = 0,
     this.description = '',
+    this.name = '',
+    this.image = '',
   });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'id': id,
       'description': description,
+      'name': name,
+      'image': image,
     };
   }
 
   factory EntityModel.fromMap(Map<String, dynamic> map) {
     return EntityModel(
-      id: map['id'] as int,
-      description: map['description'] as String,
+      id: map['id'] ?? 0,
+      description: map['description'] ?? '',
+      name: map['name'] ?? '',
+      image: map['image'] ?? '',
     );
   }
 

@@ -22,7 +22,6 @@ class _InsectsControlMethodsScreenState
   bool isBookMarked = false;
   late PostProvider pPost;
   late InsectProvider pInsect;
-  List<PostModel> posts = [];
   String noPostMessage = '';
 
   @override
@@ -41,63 +40,67 @@ class _InsectsControlMethodsScreenState
       appBar: AppBar(
         title: const Text('Cultural Pest Control Methods'),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await initialize();
-        },
-        child: ListView(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 20,
-                    backgroundImage: AssetImage('assets/images/user.png'),
+      body: Consumer<PostProvider>(
+        builder: (context, pConsumer, child) {
+          return RefreshIndicator(
+            onRefresh: () async {
+              await initialize();
+            },
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 20,
+                        backgroundImage: AssetImage('assets/images/user.png'),
+                      ),
+                      spacingWidget(10, SpaceDirection.horizontal),
+                      Flexible(
+                          child: TextFormField(
+                        readOnly: true,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            SlidePageRoute(
+                                page: InsectControlMethodPost(
+                              postRef: pInsect.selectedInsect.id,
+                            )),
+                          );
+                        },
+                        decoration: const InputDecoration(
+                          hintText: 'Write a Method...',
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(50),
+                            ),
+                          ),
+                        ),
+                      )),
+                    ],
                   ),
-                  spacingWidget(10, SpaceDirection.horizontal),
-                  Flexible(
-                      child: TextFormField(
-                    readOnly: true,
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        SlidePageRoute(
-                            page: InsectControlMethodPost(
-                          postRef: pInsect.selectedInsect.id,
-                        )),
-                      );
-                    },
-                    decoration: const InputDecoration(
-                      hintText: 'Write a Method...',
-                      filled: true,
-                      border: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(50),
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(50),
-                        ),
-                      ),
-                    ),
-                  )),
-                ],
-              ),
+                ),
+                if (pConsumer.posts.isEmpty) Center(child: Text(noPostMessage)),
+                ...List.generate(
+                  pConsumer.posts.length,
+                  (index) => ExpandablePost(
+                    index: index,
+                    post: pConsumer.posts[index],
+                  ),
+                ),
+              ],
             ),
-            if (posts.isEmpty) Center(child: Text(noPostMessage)),
-            ...List.generate(
-              posts.length,
-              (index) => ExpandablePost(
-                index: index,
-                post: posts[index],
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -106,12 +109,12 @@ class _InsectsControlMethodsScreenState
     PostModel postFilter = PostModel();
     postFilter.postType = PostType.pestControlMethod;
     postFilter.ref = pInsect.selectedInsect.id;
-    List<PostModel> posts = await LoadingOverlay.of(context)
-        .during(pPost.getAllPostByType(postFilter));
+    pPost.setFilterPostModel(postFilter);
+    pPost.setCurrentScreen('posts');
+    List<PostModel> posts =
+        await LoadingOverlay.of(context).during(pPost.getAllPostByType());
     if (posts.isEmpty) {
       noPostMessage = 'No posts available';
-    } else {
-      this.posts = posts;
     }
     setState(() {});
   }

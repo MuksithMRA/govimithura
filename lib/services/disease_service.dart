@@ -4,11 +4,26 @@ import '../models/error_model.dart';
 
 class DiseaseService {
   static final _leafs = FirebaseFirestore.instance.collection('leafs');
+  static final _diseases = FirebaseFirestore.instance.collection('Diseases');
+
   static Future<QuerySnapshot<Map<String, dynamic>>?> getLeafsById(
       int id) async {
     QuerySnapshot<Map<String, dynamic>>? documentSnapshot;
     try {
       documentSnapshot = await _leafs.where('id', isEqualTo: id).get();
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return documentSnapshot;
+  }
+
+  static Future<QuerySnapshot<Map<String, dynamic>>?> getDiseaseById(
+      int id) async {
+    QuerySnapshot<Map<String, dynamic>>? documentSnapshot;
+    try {
+      documentSnapshot = await _diseases.where('id', isEqualTo: id).get();
     } on FirebaseException catch (e) {
       ErrorModel.errorMessage = e.message!;
     } on Exception catch (e) {

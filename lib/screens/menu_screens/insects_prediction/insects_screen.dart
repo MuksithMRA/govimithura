@@ -5,14 +5,29 @@ import 'package:govimithura/screens/menu_screens/insects_prediction/insects_deta
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/img_util_provider.dart';
+import '../../../providers/ml_provider.dart';
+import '../../../utils/loading_overlay.dart';
 import '../../../utils/screen_size.dart';
 import '../../../utils/utils.dart';
 import '../../../widgets/utils/buttons/custom_elevated_button.dart';
 import '../../../widgets/utils/common_widget.dart';
 import '../../../widgets/utils/image_util.dart';
 
-class InsectsScreen extends StatelessWidget {
+class InsectsScreen extends StatefulWidget {
   const InsectsScreen({super.key});
+
+  @override
+  State<InsectsScreen> createState() => _InsectsScreenState();
+}
+
+class _InsectsScreenState extends State<InsectsScreen> {
+  late ImageUtilProvider pImage;
+
+  @override
+  void initState() {
+    super.initState();
+    pImage = Provider.of<ImageUtilProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,14 +62,28 @@ class InsectsScreen extends StatelessWidget {
                   children: [
                     CustomElevatedButton(
                       text: "Predict",
-                      onPressed: () {
-                        Provider.of<InsectProvider>(context, listen: false)
-                            .setSelectedInsectId(1);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => const InsectsDetailsScreen()),
-                        );
+                      onPressed: () async {
+                        if (pImage.imagePath != null) {
+                          await LoadingOverlay.of(context).during(
+                            Provider.of<MLProvider>(context, listen: false)
+                                .predictInsect(context)
+                                .then(
+                                  (value) => Provider.of<InsectProvider>(
+                                          context,
+                                          listen: false)
+                                      .setSelectedInsectId(value),
+                                ),
+                          );
+                          if (mounted) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => const InsectsDetailsScreen()),
+                            );
+                          }
+                        } else {
+                          Utils.showSnackBar(context, "Please choose an image");
+                        }
                       },
                     ),
                   ],

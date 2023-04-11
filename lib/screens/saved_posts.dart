@@ -48,6 +48,7 @@ class _SavedPostsState extends State<SavedPosts> {
   }
 
   Future<void> initialize() async {
+    pPost.setCurrentScreen('saved_posts');
     await LoadingOverlay.of(context).during(pPost.getAllSavedPost());
     setState(() {});
   }

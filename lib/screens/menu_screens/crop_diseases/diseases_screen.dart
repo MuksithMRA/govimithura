@@ -56,29 +56,35 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
                     ButtonBar(
                       children: [
                         CustomElevatedButton(
-                            text: "Predict",
-                            onPressed: () async {
-                              if (pImage.imagePath != null) {
-                                MLProvider pML = Provider.of<MLProvider>(
-                                    context,
-                                    listen: false);
-                                LoadingOverlay overlay =
-                                    LoadingOverlay.of(context);
+                          text: "Predict",
+                          onPressed: () async {
+                            if (pImage.imagePath == null) {
+                              Utils.showSnackBar(
+                                  context, "Please select an image");
+                              return;
+                            }
+                            MLProvider pML =
+                                Provider.of<MLProvider>(context, listen: false);
+                            LoadingOverlay overlay = LoadingOverlay.of(context);
+                            int leafId =
                                 await overlay.during(pML.predictLeaf(context));
-                                if (mounted) {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const DiseaseDetailsScreen(),
+                            if (mounted) {
+                              int diseaseId = await overlay
+                                  .during(pML.predictDisease(context));
+                              if (mounted && leafId > 0 && diseaseId > 0) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DiseaseDetailsScreen(
+                                      leafId: leafId,
+                                      diseaseId: diseaseId,
                                     ),
-                                  );
-                                }
-                              } else {
-                                Utils.showSnackBar(
-                                    context, "Please Choose an Image");
+                                  ),
+                                );
                               }
-                            }),
+                            }
+                          },
+                        ),
                       ],
                     ),
                     spacingWidget(10, SpaceDirection.vertical),

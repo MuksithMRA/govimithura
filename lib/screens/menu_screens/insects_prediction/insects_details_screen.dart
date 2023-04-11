@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/insect_provider.dart';
+import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
@@ -25,6 +26,10 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(Provider.of<PostProvider>(context, listen: false)
+        .filterPostModel
+        .ref
+        .toString());
     return Scaffold(
         floatingActionButton: FloatingActionButton.extended(
             onPressed: () {
@@ -54,18 +59,26 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
                         insect.selectedInsect.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
-                          fontSize: 18,
+                          fontSize: 20,
                         ),
                       ),
+                      spacingWidget(20, SpaceDirection.vertical),
                       Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                             image: DecorationImage(
-                          image: AssetImage("assets/images/insect_inner.png"),
+                          image: NetworkImage(insect.selectedInsect.image),
+                          fit: BoxFit.cover,
                         )),
                         height: ScreenSize.height * 0.3,
                         width: ScreenSize.width,
                       ),
-                      Text(insect.selectedInsect.description)
+                      spacingWidget(20, SpaceDirection.vertical),
+                      Text(
+                        insect.selectedInsect.description,
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      )
                       // ListView.builder(
                       //   shrinkWrap: true,
                       //   physics: const NeverScrollableScrollPhysics(),

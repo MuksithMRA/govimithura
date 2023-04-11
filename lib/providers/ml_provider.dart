@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/models/chat_response.dart';
+import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/services/ml_service.dart';
 import 'package:govimithura/utils/utils.dart';
@@ -11,44 +12,82 @@ class MLProvider extends ChangeNotifier {
 
   MLProvider({this.pImage});
 
-  Future<void> predictLeaf(BuildContext context) async {
+  Future<int> predictLeaf(BuildContext context) async {
     if (pImage?.imagePath != null) {
-      String? response =
-          await MLService.predictLeaf(pImage?.imagePath ?? '').then(
+      int? response = await MLService.predictLeaf(pImage?.imagePath ?? '').then(
         (value) {
           if (value == null) {
-            Utils.showSnackBar(
-                context, "Something went wrong , please try again");
+            Utils.showSnackBar(context, ErrorModel.errorMessage);
           } else {
             return value;
           }
           return null;
         },
       );
-
-      debugPrint(response);
+      debugPrint(response.toString());
+      return response ?? 0;
     }
+    return 0;
   }
 
-  Future<void> predictSoil(BuildContext context) async {
+  Future<int> predictDisease(BuildContext context) async {
     if (pImage?.imagePath != null) {
-      String? response =
-          await MLService.predictSoil(pImage?.imagePath ?? '').then(
+      int? response = await MLService.predictDisease().then(
         (value) {
           if (value == null) {
-            Utils.showSnackBar(
-                context, "Something went wrong , please try again");
+            Utils.showSnackBar(context, ErrorModel.errorMessage);
           } else {
             return value;
           }
           return null;
         },
       );
-
-      debugPrint(response);
-    } else {
-      Utils.showSnackBar(context, "Please choose an image");
+      debugPrint(response.toString());
+      return response ?? 0;
     }
+    return 0;
+  }
+
+  Future<int> predictSoil(BuildContext context) async {
+    if (pImage?.imagePath != null) {
+      int? response = await MLService.predictSoil(pImage?.imagePath ?? '').then(
+        (value) {
+          if (value == null) {
+            Utils.showSnackBar(context, ErrorModel.errorMessage);
+          } else {
+            return value;
+          }
+          return null;
+        },
+      );
+      debugPrint(response.toString());
+      return response ?? 0;
+    } else {
+      ErrorModel.errorMessage = "Please choose an image";
+      Utils.showSnackBar(context, ErrorModel.errorMessage);
+    }
+    return 0;
+  }
+
+  Future<int> predictInsect(BuildContext context) async {
+    if (pImage?.imagePath != null) {
+      int? response =
+          await MLService.predictInsect(pImage?.imagePath ?? '').then(
+        (value) {
+          if (value == null) {
+            Utils.showSnackBar(context, ErrorModel.errorMessage);
+          } else {
+            return value;
+          }
+          return null;
+        },
+      );
+      return response ?? 0;
+    } else {
+      ErrorModel.errorMessage = "Please choose an image";
+      Utils.showSnackBar(context, ErrorModel.errorMessage);
+    }
+    return 0;
   }
 
   Future replyChat() async {

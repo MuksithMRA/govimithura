@@ -9,6 +9,8 @@ class PostProvider extends ChangeNotifier {
   PostModel postModel = PostModel();
   double givenRating = 0;
   List<PostModel> posts = [];
+  PostModel filterPostModel = PostModel();
+  String currentScreen = '';
 
   Future<void> addPost(BuildContext context) async {
     setPostUid(FirebaseAuth.instance.currentUser!.uid);
@@ -55,16 +57,19 @@ class PostProvider extends ChangeNotifier {
     return posts;
   }
 
-  Future<List<PostModel>> getAllPostByType(PostModel postModel) async {
+  Future<List<PostModel>> getAllPostByType() async {
     posts = [];
-    var response = await PostService.getApprovedPostsByTypeAndRef(postModel);
-    if (response != null) {
-      for (var item in response.docs) {
-        PostModel post = PostModel.fromMap(item.data());
-        posts.add(post);
+    if (filterPostModel.ref > 0) {
+      var response =
+          await PostService.getApprovedPostsByTypeAndRef(filterPostModel);
+      if (response != null) {
+        for (var item in response.docs) {
+          PostModel post = PostModel.fromMap(item.data());
+          posts.add(post);
+        }
       }
+      notifyListeners();
     }
-    notifyListeners();
     return posts;
   }
 
@@ -104,6 +109,9 @@ class PostProvider extends ChangeNotifier {
           PostModel postModel = await getAverageRating(postId);
           postModel.id = postId;
           success = await PostService.updateRating(postModel);
+          if (success) {
+            await refreshPostList();
+          }
         }
       },
     );
@@ -116,6 +124,9 @@ class PostProvider extends ChangeNotifier {
     await PostService.savePost(postId).then(
       (value) async {
         success = value;
+        if (success) {
+          await refreshPostList();
+        }
       },
     );
     notifyListeners();
@@ -127,6 +138,9 @@ class PostProvider extends ChangeNotifier {
     await PostService.unSavePost(postId).then(
       (value) async {
         success = value;
+        if (success) {
+          await refreshPostList();
+        }
       },
     );
     notifyListeners();
@@ -157,8 +171,28 @@ class PostProvider extends ChangeNotifier {
     return success;
   }
 
+  Future<void> refreshPostList() async {
+    if (currentScreen == 'posts') {
+      await getAllPostByType();
+    } else if (currentScreen == 'saved_posts') {
+      await getAllSavedPost();
+    } else {
+      await getAllPost();
+    }
+  }
+
   void setPostModel(PostModel postModel) {
     this.postModel = postModel;
+    notifyListeners();
+  }
+
+  void setCurrentScreen(String currentScreen) {
+    this.currentScreen = currentScreen;
+    notifyListeners();
+  }
+
+  void setFilterPostModel(PostModel postModel) {
+    filterPostModel = postModel;
     notifyListeners();
   }
 
