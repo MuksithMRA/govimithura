@@ -1,10 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/crop_provider.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:charts_flutter_new/flutter.dart' as charts;
+import 'package:provider/provider.dart';
 
-class CropDetailsScreen extends StatelessWidget {
+class CropDetailsScreen extends StatefulWidget {
   const CropDetailsScreen({super.key});
+
+  @override
+  State<CropDetailsScreen> createState() => _CropDetailsScreenState();
+}
+
+class _CropDetailsScreenState extends State<CropDetailsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () => initialize());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +39,12 @@ class CropDetailsScreen extends StatelessWidget {
               ),
             ),
             spacingWidget(ScreenSize.height * 0.05, SpaceDirection.vertical),
-            SizedBox(
-              height: ScreenSize.height * 0.2,
-              width: ScreenSize.width * 0.9,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
+            Consumer<CropProvider>(
+              builder: (context, cropProvider, child) {
+                return SizedBox(
+                  height: ScreenSize.height * 0.2,
+                  width: ScreenSize.width * 0.9,
+                  child: Container(
                     margin: const EdgeInsets.only(right: 10),
                     height: ScreenSize.height * 0.2,
                     width: ScreenSize.width * 0.9,
@@ -54,18 +66,18 @@ class CropDetailsScreen extends StatelessWidget {
                           width: ScreenSize.width * 0.46,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
-                                "Tomato",
-                                style: TextStyle(
+                                cropProvider.cropEntity.name,
+                                style: const TextStyle(
                                   fontWeight: FontWeight.w600,
                                   fontSize: 20,
                                 ),
                               ),
                               Expanded(
                                 child: Text(
-                                  "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
-                                  style: TextStyle(
+                                  cropProvider.cropEntity.description,
+                                  style: const TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 15,
                                     color: Colors.grey,
@@ -77,9 +89,9 @@ class CropDetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
             Expanded(
               child: Padding(
@@ -91,6 +103,11 @@ class CropDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> initialize() async {
+    await LoadingOverlay.of(context).during(
+        Provider.of<CropProvider>(context, listen: false).getCropById(context));
   }
 }
 

@@ -36,6 +36,26 @@ class MLService {
     return null;
   }
 
+  static Future<int?> predictCrop(int soilId) async {
+    // Dio dio = Dio();
+    // const String apiUrl =
+    //     "https://us-central1-ageless-aquifer-381515.cloudfunctions.net/predict-soil-1";
+    // FormData formData =
+    //     FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+    try {
+      // Response response = await dio.post(apiUrl, data: formData);
+      // Map<String, dynamic> data = response.data;
+      List<int> numbers = [1, 2];
+      Random random = Random();
+      int randomIndex = random.nextInt(numbers.length);
+      int randomNumber = numbers[randomIndex];
+      return randomNumber;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return null;
+  }
+
   static Future<int?> predictInsect(String filePath) async {
     // Dio dio = Dio();
     // const String apiUrl =

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/providers/crop_provider.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/providers/location_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
@@ -81,12 +82,16 @@ class _CropsScreenState extends State<CropsScreen> {
                                 text: "Predict",
                                 onPressed: () async {
                                   if (pImage.imagePath != null) {
-                                    await LoadingOverlay.of(context).during(
+                                    int cropId =
+                                        await LoadingOverlay.of(context).during(
                                       Provider.of<MLProvider>(context,
                                               listen: false)
-                                          .predictSoil(context),
+                                          .predictCrop(context),
                                     );
-                                    if (mounted) {
+                                    if (mounted && cropId >= 0) {
+                                      Provider.of<CropProvider>(context,
+                                              listen: false)
+                                          .setCropId(cropId);
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(

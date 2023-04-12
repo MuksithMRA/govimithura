@@ -69,6 +69,25 @@ class MLProvider extends ChangeNotifier {
     return 0;
   }
 
+  Future<int> predictCrop(BuildContext context) async {
+    await predictSoil(context).then((soilId) async {
+      int? response = await MLService.predictCrop(soilId).then(
+        (value) {
+          if (value == null) {
+            Utils.showSnackBar(context, ErrorModel.errorMessage);
+          } else {
+            return value;
+          }
+          return null;
+        },
+      );
+      debugPrint(response.toString());
+      return response ?? -1;
+    });
+
+    return -1;
+  }
+
   Future<int> predictInsect(BuildContext context) async {
     if (pImage?.imagePath != null) {
       int? response =
