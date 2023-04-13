@@ -43,52 +43,47 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
               builder: (context, cropProvider, child) {
                 return SizedBox(
                   height: ScreenSize.height * 0.2,
-                  width: ScreenSize.width * 0.9,
-                  child: Container(
-                    margin: const EdgeInsets.only(right: 10),
-                    height: ScreenSize.height * 0.2,
-                    width: ScreenSize.width * 0.9,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage(
-                                    "assets/images/tomato.png",
-                                  ),
-                                  fit: BoxFit.fill)),
-                          height: ScreenSize.height * 0.2,
-                          width: ScreenSize.width * 0.4,
-                        ),
-                        spacingWidget(10, SpaceDirection.horizontal),
-                        SizedBox(
-                          width: ScreenSize.width * 0.46,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                cropProvider.cropEntity.name,
+                  width: ScreenSize.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                  "assets/images/tomato.png",
+                                ),
+                                fit: BoxFit.fill)),
+                        height: ScreenSize.height * 0.2,
+                        width: ScreenSize.width * 0.4,
+                      ),
+                      spacingWidget(10, SpaceDirection.horizontal),
+                      SizedBox(
+                        width: ScreenSize.width * 0.46,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              cropProvider.cropEntity.name,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 20,
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                cropProvider.cropEntity.description,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w600,
-                                  fontSize: 20,
+                                  fontSize: 15,
+                                  color: Colors.grey,
                                 ),
                               ),
-                              Expanded(
-                                child: Text(
-                                  cropProvider.cropEntity.description,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 15,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 );
               },

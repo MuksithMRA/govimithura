@@ -70,7 +70,7 @@ class MLProvider extends ChangeNotifier {
   }
 
   Future<int> predictCrop(BuildContext context) async {
-    await predictSoil(context).then((soilId) async {
+    int? response = await predictSoil(context).then((soilId) async {
       int? response = await MLService.predictCrop(soilId).then(
         (value) {
           if (value == null) {
@@ -81,11 +81,9 @@ class MLProvider extends ChangeNotifier {
           return null;
         },
       );
-      debugPrint(response.toString());
       return response ?? -1;
     });
-
-    return -1;
+    return response ?? -1;
   }
 
   Future<int> predictInsect(BuildContext context) async {
