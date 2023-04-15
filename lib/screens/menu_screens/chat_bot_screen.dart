@@ -65,28 +65,24 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   children: [
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text("Chats",
+                      children: [
+                        const Text("Chats",
                             style: TextStyle(
                               fontSize: 25,
                               fontWeight: FontWeight.bold,
                             )),
-                        // Row(
-                        //   mainAxisSize: MainAxisSize.min,
-                        //   children: [
-                        //     IconButton(
-                        //         onPressed: () {},
-                        //         icon: const Icon(Icons.settings,
-                        //             color: Colors.black)),
-                        //     IconButton(
-                        //       onPressed: () {},
-                        //       icon: const Icon(
-                        //         Icons.more_vert,
-                        //         color: Colors.black,
-                        //       ),
-                        //     ),
-                        //   ],
-                        // ),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              onPressed: () {},
+                              icon: const Icon(
+                                Icons.info,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                     spacingWidget(20, SpaceDirection.vertical),

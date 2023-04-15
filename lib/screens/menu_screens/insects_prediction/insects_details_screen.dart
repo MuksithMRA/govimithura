@@ -60,10 +60,11 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
                       spacingWidget(20, SpaceDirection.vertical),
                       Container(
                         decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
                             image: DecorationImage(
-                          image: NetworkImage(insect.selectedInsect.image),
-                          fit: BoxFit.cover,
-                        )),
+                              image: NetworkImage(insect.selectedInsect.image),
+                              fit: BoxFit.cover,
+                            )),
                         height: ScreenSize.height * 0.3,
                         width: ScreenSize.width,
                       ),

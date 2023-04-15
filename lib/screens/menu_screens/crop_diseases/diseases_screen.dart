@@ -71,7 +71,7 @@ class _DiseasesScreenState extends State<DiseasesScreen> {
                             if (mounted) {
                               int diseaseId = await overlay
                                   .during(pML.predictDisease(context));
-                              if (mounted && leafId > 0 && diseaseId > 0) {
+                              if (mounted && leafId >= 0 && diseaseId >= 0) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

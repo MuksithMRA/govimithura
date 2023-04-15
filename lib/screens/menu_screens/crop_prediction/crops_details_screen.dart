@@ -42,19 +42,19 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
             Consumer<CropProvider>(
               builder: (context, cropProvider, child) {
                 return SizedBox(
-                  height: ScreenSize.height * 0.2,
+                  height: ScreenSize.height * 0.25,
                   width: ScreenSize.width,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
-                        decoration: const BoxDecoration(
+                        decoration: BoxDecoration(
                             image: DecorationImage(
-                                image: AssetImage(
-                                  "assets/images/tomato.png",
+                                image: NetworkImage(
+                                  cropProvider.cropEntity.image,
                                 ),
-                                fit: BoxFit.fill)),
-                        height: ScreenSize.height * 0.2,
+                                fit: BoxFit.cover)),
+                        height: ScreenSize.height * 0.25,
                         width: ScreenSize.width * 0.4,
                       ),
                       spacingWidget(10, SpaceDirection.horizontal),
@@ -74,8 +74,6 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
                               child: Text(
                                 cropProvider.cropEntity.description,
                                 style: const TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15,
                                   color: Colors.grey,
                                 ),
                               ),

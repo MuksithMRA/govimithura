@@ -20,10 +20,14 @@ class DiseaseService {
   }
 
   static Future<QuerySnapshot<Map<String, dynamic>>?> getDiseaseById(
-      int id) async {
+      String leafRef, int id) async {
     QuerySnapshot<Map<String, dynamic>>? documentSnapshot;
     try {
-      documentSnapshot = await _diseases.where('id', isEqualTo: id).get();
+      documentSnapshot = await _leafs
+          .doc(leafRef)
+          .collection("diseases")
+          .where('id', isEqualTo: id)
+          .get();
     } on FirebaseException catch (e) {
       ErrorModel.errorMessage = e.message!;
     } on Exception catch (e) {
