@@ -59,7 +59,7 @@ class PostProvider extends ChangeNotifier {
 
   Future<List<PostModel>> getAllPostByType() async {
     posts = [];
-    if (filterPostModel.ref > 0) {
+    if (filterPostModel.ref >= 0) {
       var response =
           await PostService.getApprovedPostsByTypeAndRef(filterPostModel);
       if (response != null) {

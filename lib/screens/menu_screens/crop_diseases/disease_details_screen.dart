@@ -16,12 +16,29 @@ class DiseaseDetailsScreen extends StatefulWidget {
   State<DiseaseDetailsScreen> createState() => _DiseaseDetailsScreenState();
 }
 
-class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
+class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen>
+    with SingleTickerProviderStateMixin {
   late DiseaseProvider pDisease;
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   void initState() {
     super.initState();
+    _controller = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    );
+    final curvedAnimation =
+        CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+    _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
+    _controller.forward();
     pDisease = Provider.of<DiseaseProvider>(context, listen: false);
     Future.delayed(Duration.zero, () => initialize());
   }
@@ -82,53 +99,44 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    Text(
-                      disease.diseaseEntity.name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 20,
-                      ),
-                    ),
-                    spacingWidget(20, SpaceDirection.vertical),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        image: const DecorationImage(
-                            image:
-                                AssetImage("assets/images/disease_inner.png"),
-                            fit: BoxFit.cover),
-                      ),
-                      height: ScreenSize.height * 0.3,
-                      width: ScreenSize.width,
-                    ),
-                    spacingWidget(20, SpaceDirection.vertical),
-                    Text(
-                      disease.diseaseEntity.description,
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
-                    )
-                    // Expanded(
-                    //   child: ListView.builder(
-                    //     shrinkWrap: true,
-                    //     physics: const NeverScrollableScrollPhysics(),
-                    //     itemCount: 3,
-                    //     itemBuilder: (BuildContext context, int index) {
-                    //       return const ListTile(
-                    //         minLeadingWidth: 10,
-                    //         leading: Text(
-                    //           '\u2022',
-                    //           style: TextStyle(fontSize: 30),
-                    //         ),
-                    //         title: Text(
-                    //             "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."),
-                    //       );
-                    //     },
-                    //   ),
-                    // ),
+                    if (!disease.diseaseEntity.name
+                        .toLowerCase()
+                        .startsWith("healthy"))
+                      Column(
+                        children: [
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            disease.diseaseEntity.name,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 20,
+                            ),
+                          ),
+                          spacingWidget(20, SpaceDirection.vertical),
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: const DecorationImage(
+                                  image: AssetImage(
+                                      "assets/images/disease_inner.png"),
+                                  fit: BoxFit.cover),
+                            ),
+                            height: ScreenSize.height * 0.3,
+                            width: ScreenSize.width,
+                          ),
+                          spacingWidget(20, SpaceDirection.vertical),
+                          Text(
+                            disease.diseaseEntity.description,
+                            style: const TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      _successIntro()
                   ],
                 );
               },
@@ -137,8 +145,42 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen> {
     );
   }
 
+  Widget _successIntro() {
+    return ScaleTransition(
+      scale: _animation,
+      child: SizedBox(
+        height: ScreenSize.height * 0.6,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              width: 200,
+              height: 200,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.green,
+              ),
+              child: const Icon(
+                Icons.check_rounded,
+                size: 120,
+                color: Colors.white,
+              ),
+            ),
+            spacingWidget(20, SpaceDirection.vertical),
+            const Text(
+              "This leaf is Healthy",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Future<void> initialize() async {
-    await LoadingOverlay.of(context).during(
-        pDisease.getLeafsById(widget.leafId, widget.diseaseId, context));
+    // await LoadingOverlay.of(context).during(
+    //     pDisease.getLeafsById(widget.leafId, widget.diseaseId, context));
+    await LoadingOverlay.of(context)
+        .during(pDisease.getLeafsById(2, 2, context));
   }
 }

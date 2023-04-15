@@ -49,7 +49,7 @@ class MLService {
     try {
       // Response response = await dio.post(apiUrl, data: formData);
       // Map<String, dynamic> data = response.data;
-      List<int> numbers = [1, 2];
+      List<int> numbers = [0, 1, 2, 3, 4, 5, 6];
       Random random = Random();
       int randomIndex = random.nextInt(numbers.length);
       int randomNumber = numbers[randomIndex];
