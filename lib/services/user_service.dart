@@ -1,12 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:govimithura/constants/images.dart';
 import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/models/user_model.dart';
 
 class UserService {
+  static final User? authUser = FirebaseAuth.instance.currentUser;
   static Future<bool> addUser(UserModel user) async {
     try {
-      final User? authUser = FirebaseAuth.instance.currentUser;
       await FirebaseFirestore.instance
           .collection('users')
           .doc(user.authModel!.uid)
@@ -16,9 +17,10 @@ class UserService {
         'last_name': user.lastName,
         'email': user.authModel?.email ?? '',
         'user_type': user.authModel?.userType ?? '',
+        'profilePic': Images.defaultAvatar,
       });
       authUser!.updateDisplayName("${user.firstName} ${user.lastName}");
-      authUser.updateEmail(user.authModel!.email);
+      authUser!.updateEmail(user.authModel!.email);
       return true;
     } on FirebaseException catch (e) {
       ErrorModel.errorMessage = e.message ?? '';

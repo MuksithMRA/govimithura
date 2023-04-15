@@ -4,6 +4,7 @@ import 'package:govimithura/providers/insect_provider.dart';
 import 'package:govimithura/providers/location_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
+import 'package:govimithura/providers/storage_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import '../theme/theme_manager.dart';
@@ -43,5 +44,10 @@ List<SingleChildWidget> providers = [
   ),
   ChangeNotifierProvider<CropProvider>(
     create: (context) => CropProvider(),
-  )
+  ),
+  ChangeNotifierProxyProvider<ImageUtilProvider, StorageProvider>(
+    create: (_) => StorageProvider(),
+    update: (_, imageUtilProvider, mlProvider) =>
+        StorageProvider(pImage: imageUtilProvider),
+  ),
 ];

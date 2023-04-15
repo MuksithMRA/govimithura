@@ -9,6 +9,10 @@ import 'package:govimithura/widgets/expandable_post.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../constants/images.dart';
+import '../../../providers/authentication_provider.dart';
+import '../../../utils/utils.dart';
+
 class InsectsControlMethodsScreen extends StatefulWidget {
   const InsectsControlMethodsScreen({super.key});
 
@@ -52,9 +56,16 @@ class _InsectsControlMethodsScreenState
                   padding: const EdgeInsets.all(20.0),
                   child: Row(
                     children: [
-                      const CircleAvatar(
+                      CircleAvatar(
+                        onBackgroundImageError: (exception, stackTrace) =>
+                            Utils.showSnackBar(context, 'Error loading image'),
+                        backgroundColor: Theme.of(context).primaryColor,
                         radius: 20,
-                        backgroundImage: AssetImage('assets/images/user.png'),
+                        backgroundImage: NetworkImage(context
+                                .read<AuthenticationProvider>()
+                                .getCurrentUser()
+                                ?.photoURL ??
+                            Images.defaultAvatar),
                       ),
                       spacingWidget(10, SpaceDirection.horizontal),
                       Flexible(

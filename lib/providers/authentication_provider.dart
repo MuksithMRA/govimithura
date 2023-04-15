@@ -53,6 +53,7 @@ class AuthenticationProvider extends ChangeNotifier {
           userModel.authModel = authModel;
           userModel.firstName = user['first_name'];
           userModel.lastName = user['last_name'];
+          userModel.profilePic = user['profilePic'];
           notifyListeners();
           return userModel;
         }
@@ -66,9 +67,15 @@ class AuthenticationProvider extends ChangeNotifier {
     return await UserService.updateSingleField(key, value)
         .then((success) async {
       if (success) {
-        await getCurentUserModel();
-        getCurrentUser()!
-            .updateDisplayName("${userModel.firstName} ${userModel.lastName}");
+        if (key == 'profilePic') {
+          getCurrentUser()!.updatePhotoURL(value);
+        }
+
+        if (key == 'first_name' || key == 'last_name') {
+          await getCurentUserModel();
+          getCurrentUser()!.updateDisplayName(
+              "${userModel.firstName} ${userModel.lastName}");
+        }
         return true;
       } else {
         return false;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class ImageUtilProvider extends ChangeNotifier {
   ImageProvider? _image;
   String? _imagePath;
+  String imageUrl = '';
 
   String? get imagePath => _imagePath;
   ImageProvider? get image => _image;
@@ -20,6 +21,11 @@ class ImageUtilProvider extends ChangeNotifier {
   void clearImage() {
     _image = null;
     _imagePath = null;
+    notifyListeners();
+  }
+
+  void setImageUrl(String url) {
+    imageUrl = url;
     notifyListeners();
   }
 }

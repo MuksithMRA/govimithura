@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/constants/images.dart';
 import 'package:govimithura/models/chat_response.dart';
+import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:provider/provider.dart';
+import '../../utils/utils.dart';
 import '../../widgets/utils/common_widget.dart';
 import '../../widgets/utils/image_util.dart';
 import '../../widgets/utils/text_fields/primary_textfield.dart';
@@ -145,9 +148,12 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
             !chat.isResponse ? MainAxisAlignment.end : MainAxisAlignment.start,
         children: [
           if (chat.isResponse)
-            const CircleAvatar(
+            CircleAvatar(
+              onBackgroundImageError: (exception, stackTrace) =>
+                  Utils.showSnackBar(context, 'Error loading image'),
+              backgroundColor: Theme.of(context).primaryColor,
               radius: 20,
-              backgroundImage: AssetImage("assets/images/user.png"),
+              backgroundImage: const AssetImage(Images.logo),
             ),
           if (chat.isResponse) spacingWidget(10, SpaceDirection.horizontal),
           Flexible(
@@ -183,10 +189,16 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
           ),
           if (!chat.isResponse) spacingWidget(10, SpaceDirection.horizontal),
           if (!chat.isResponse)
-            const CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage("assets/images/user.png"),
-            ),
+            CircleAvatar(
+                onBackgroundImageError: (exception, stackTrace) =>
+                    Utils.showSnackBar(context, 'Error loading image'),
+                backgroundColor: Theme.of(context).primaryColor,
+                radius: 20,
+                backgroundImage: NetworkImage(context
+                        .read<AuthenticationProvider>()
+                        .getCurrentUser()
+                        ?.photoURL ??
+                    Images.defaultAvatar)),
         ],
       ),
     );

@@ -6,6 +6,8 @@ import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../../../utils/utils.dart';
+
 class DiseaseDetailsScreen extends StatefulWidget {
   final int leafId;
   final int diseaseId;
@@ -66,6 +68,10 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen>
                           children: [
                             spacingWidget(20, SpaceDirection.horizontal),
                             CircleAvatar(
+                              onBackgroundImageError: (exception, stackTrace) =>
+                                  Utils.showSnackBar(
+                                      context, 'Error loading image'),
+                              backgroundColor: Theme.of(context).primaryColor,
                               radius: 50,
                               backgroundImage: Provider.of<ImageUtilProvider>(
                                       context,

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/models/user_model.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
+import 'package:govimithura/providers/storage_provider.dart';
+import 'package:govimithura/utils/loading_overlay.dart';
+import 'package:govimithura/utils/utils.dart';
 import 'package:govimithura/widgets/drawer_widget.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../widgets/field_editor.dart';
 
@@ -50,9 +54,44 @@ class _MyProfileState extends State<MyProfile> {
                     child: Row(
                       children: [
                         spacingWidget(20, SpaceDirection.horizontal),
-                        const CircleAvatar(
-                          radius: 50,
-                          backgroundImage: AssetImage('assets/images/user.png'),
+                        Stack(
+                          children: [
+                            CircleAvatar(
+                              onBackgroundImageError: (exception, stackTrace) =>
+                                  Utils.showSnackBar(
+                                      context, 'Error loading image'),
+                              backgroundColor: Theme.of(context).primaryColor,
+                              radius: 50,
+                              backgroundImage: NetworkImage(
+                                snapshot.data!.profilePic,
+                              ),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              child: FloatingActionButton(
+                                heroTag: 'add_profile_pic',
+                                mini: true,
+                                elevation: 0,
+                                onPressed: () async {
+                                  await Utils.pickImage(ImageSource.camera,
+                                      const Size(100, 100), context);
+                                  if (mounted) {
+                                    String? profileUrl =
+                                        await LoadingOverlay.of(context).during(
+                                            context
+                                                .read<StorageProvider>()
+                                                .uploadImage(context));
+                                    if (profileUrl != null) {
+                                      await pAuthentication.updateSingleField(
+                                          "profilePic", profileUrl);
+                                    }
+                                  }
+                                },
+                                child: const Icon(Icons.add_a_photo),
+                              ),
+                            )
+                          ],
                         ),
                         spacingWidget(20, SpaceDirection.horizontal),
                         Flexible(

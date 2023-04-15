@@ -4,11 +4,13 @@ class UserModel {
   AuthModel? authModel;
   String firstName;
   String lastName;
+  String profilePic;
 
   UserModel({
     this.authModel,
     this.firstName = '',
     this.lastName = '',
+    this.profilePic = '',
   });
 
   set setFirstName(String firstName) {

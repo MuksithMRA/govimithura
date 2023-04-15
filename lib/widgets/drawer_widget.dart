@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/constants/images.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/screens/home.dart';
 import 'package:govimithura/screens/my_post_list.dart';
@@ -32,8 +33,10 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         padding: EdgeInsets.zero,
         children: <Widget>[
           UserAccountsDrawerHeader(
-            currentAccountPicture: const CircleAvatar(
-              backgroundImage: AssetImage('assets/images/user.png'),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: NetworkImage(
+                  pAuthentication.getCurrentUser()?.photoURL ??
+                      Images.defaultAvatar),
             ),
             decoration: BoxDecoration(
               color: Theme.of(context).primaryColor,
