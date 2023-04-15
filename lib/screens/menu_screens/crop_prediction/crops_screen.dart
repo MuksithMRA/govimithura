@@ -89,16 +89,18 @@ class _CropsScreenState extends State<CropsScreen> {
                                           .predictCrop(context),
                                     );
                                     if (mounted && cropId >= 0) {
-                                      Provider.of<CropProvider>(context,
+                                      await Provider.of<CropProvider>(context,
                                               listen: false)
                                           .setCropId(cropId);
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const CropDetailsScreen(),
-                                        ),
-                                      );
+                                      if (mounted) {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) =>
+                                                const CropDetailsScreen(),
+                                          ),
+                                        );
+                                      }
                                     }
                                   } else {
                                     Utils.showSnackBar(

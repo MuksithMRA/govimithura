@@ -10,13 +10,14 @@ class CropProvider extends ChangeNotifier {
     await CropService.getCropById(cropEntity.id).then((value) {
       if (value != null) {
         cropEntity = EntityModel.fromMap(value.docs.first.data());
+        notifyListeners();
       } else {
         Utils.showSnackBar(context, ErrorModel.errorMessage);
       }
     });
   }
 
-  setCropId(int id) {
+  setCropId(int id) async {
     cropEntity.id = id;
     notifyListeners();
   }
