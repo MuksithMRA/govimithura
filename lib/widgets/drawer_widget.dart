@@ -7,6 +7,7 @@ import 'package:govimithura/screens/my_profile.dart';
 import 'package:provider/provider.dart';
 
 import '../screens/saved_posts.dart';
+import '../utils/utils.dart';
 
 class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
@@ -34,6 +35,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
         children: <Widget>[
           UserAccountsDrawerHeader(
             currentAccountPicture: CircleAvatar(
+              onBackgroundImageError: (exception, stackTrace) =>
+                  Utils.showSnackBar(context, 'Error loading image'),
+              backgroundColor: Theme.of(context).primaryColor,
               backgroundImage: NetworkImage(
                   pAuthentication.getCurrentUser()?.photoURL ??
                       Images.defaultAvatar),
