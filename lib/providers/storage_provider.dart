@@ -13,7 +13,7 @@ class StorageProvider extends ChangeNotifier {
 
   Future<String?> uploadImage(BuildContext context) async {
     if (pImage!.imagePath != null) {
-      await StorageService.uploadImage(File(pImage!.imagePath!)).then(
+      return await StorageService.uploadImage(File(pImage!.imagePath!)).then(
         (value) {
           if (value != null) {
             pImage!.setImageUrl(value);
@@ -21,6 +21,7 @@ class StorageProvider extends ChangeNotifier {
           } else {
             Utils.showSnackBar(context, ErrorModel.errorMessage);
           }
+          return null;
         },
       );
     }

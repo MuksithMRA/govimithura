@@ -10,6 +10,7 @@ class AuthenticationProvider extends ChangeNotifier {
   AuthService authService = AuthService();
   UserModel userModel = UserModel();
   AuthModel authModel = AuthModel();
+  bool isOpen = false;
 
   Future<bool> login() async {
     bool success = await authService.login(authModel).then((value) => value);
@@ -75,6 +76,7 @@ class AuthenticationProvider extends ChangeNotifier {
           await getCurentUserModel();
           getCurrentUser()!.updateDisplayName(
               "${userModel.firstName} ${userModel.lastName}");
+          notifyListeners();
         }
         return true;
       } else {
@@ -109,6 +111,11 @@ class AuthenticationProvider extends ChangeNotifier {
 
   setEmail(String email) {
     authModel.email = email;
+    notifyListeners();
+  }
+
+  setIsOpen(bool isOpen) {
+    this.isOpen = isOpen;
     notifyListeners();
   }
 }

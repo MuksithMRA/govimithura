@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/authentication_provider.dart';
-import '../screens/my_profile.dart';
 import '../utils/utils.dart';
 import 'utils/common_widget.dart';
 
@@ -72,20 +71,15 @@ class _FieldEditorState extends State<FieldEditor> {
                 ),
                 onPressed: () async {
                   if (_formKey.currentState!.validate()) {
-                    await Provider.of<AuthenticationProvider>(context,
+                    bool success = await Provider.of<AuthenticationProvider>(
+                            context,
                             listen: false)
                         .updateSingleField(
-                            Utils.toSnakeCase(widget.title), _controller.text)
-                        .then((value) {
-                      if (value) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const MyProfile(),
-                          ),
-                        );
-                      }
-                    });
+                            Utils.toSnakeCase(widget.title), _controller.text);
+
+                    if (mounted && success) {
+                      Navigator.pop(context);
+                    }
                   }
                 },
                 child: const Text('Save'),
