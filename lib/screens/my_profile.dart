@@ -51,131 +51,134 @@ class _MyProfileState extends State<MyProfile> {
             );
           }
           Map<String, dynamic> data = snapshot.data!.data()!;
-          return Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              children: [
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(70),
-                  child: SizedBox(
-                    height: 150,
-                    child: Row(
-                      children: [
-                        spacingWidget(20, SpaceDirection.horizontal),
-                        Stack(
-                          children: [
-                            CircleAvatar(
-                              onBackgroundImageError: (exception, stackTrace) =>
-                                  Utils.showSnackBar(
-                                      context, 'Error loading image'),
-                              backgroundColor: Theme.of(context).primaryColor,
-                              radius: 50,
-                              backgroundImage: NetworkImage(
-                                  data['profilePic'] ?? Images.defaultAvatar),
-                            ),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              child: FloatingActionButton(
-                                heroTag: 'add_profile_pic',
-                                mini: true,
-                                elevation: 0,
-                                onPressed: () async {
-                                  bool isOpen = pAuthentication.isOpen;
-                                  if (!isOpen) {
-                                    _bottomSheetController =
-                                        _key.currentState!.showBottomSheet(
-                                      (_) => selectImageAddingSource(),
-                                    );
-                                  } else {
-                                    _bottomSheetController.close();
-                                  }
-                                  pAuthentication.setIsOpen(!isOpen);
-                                },
-                                child: const Icon(Icons.add_a_photo),
+          return SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(70),
+                    child: SizedBox(
+                      height: 150,
+                      child: Row(
+                        children: [
+                          spacingWidget(20, SpaceDirection.horizontal),
+                          Stack(
+                            children: [
+                              CircleAvatar(
+                                onBackgroundImageError:
+                                    (exception, stackTrace) =>
+                                        Utils.showSnackBar(
+                                            context, 'Error loading image'),
+                                backgroundColor: Theme.of(context).primaryColor,
+                                radius: 50,
+                                backgroundImage: NetworkImage(
+                                    data['profilePic'] ?? Images.defaultAvatar),
                               ),
-                            )
-                          ],
-                        ),
-                        spacingWidget(20, SpaceDirection.horizontal),
-                        Flexible(
-                          child: Text(
-                            '${data['first_name']} ${data['last_name']}',
-                            style: const TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: FloatingActionButton(
+                                  heroTag: 'add_profile_pic',
+                                  mini: true,
+                                  elevation: 0,
+                                  onPressed: () async {
+                                    bool isOpen = pAuthentication.isOpen;
+                                    if (!isOpen) {
+                                      _bottomSheetController =
+                                          _key.currentState!.showBottomSheet(
+                                        (_) => selectImageAddingSource(),
+                                      );
+                                    } else {
+                                      _bottomSheetController.close();
+                                    }
+                                    pAuthentication.setIsOpen(!isOpen);
+                                  },
+                                  child: const Icon(Icons.add_a_photo),
+                                ),
+                              )
+                            ],
+                          ),
+                          spacingWidget(20, SpaceDirection.horizontal),
+                          Flexible(
+                            child: Text(
+                              '${data['first_name']} ${data['last_name']}',
+                              style: const TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                spacingWidget(20, SpaceDirection.vertical),
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(70),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.person_rounded),
-                          title: const Text('First Name'),
-                          subtitle: Text(data['first_name']),
-                          trailing: IconButton(
-                            onPressed: () {
-                              showDialog(
+                  spacingWidget(20, SpaceDirection.vertical),
+                  Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(70),
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Column(
+                        children: [
+                          ListTile(
+                            leading: const Icon(Icons.person_rounded),
+                            title: const Text('First Name'),
+                            subtitle: Text(data['first_name']),
+                            trailing: IconButton(
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => FieldEditor(
+                                          title: 'First Name',
+                                          text: data['first_name'],
+                                        ));
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
+                          ),
+                          ListTile(
+                            leading: const Icon(Icons.person_2_rounded),
+                            title: const Text('Last Name'),
+                            subtitle: Text(data['last_name']),
+                            trailing: IconButton(
+                              onPressed: () {
+                                showDialog(
                                   context: context,
                                   builder: (_) => FieldEditor(
-                                        title: 'First Name',
-                                        text: data['first_name'],
-                                      ));
-                            },
-                            icon: const Icon(Icons.edit),
+                                    title: 'Last Name',
+                                    text: data['last_name'],
+                                  ),
+                                );
+                              },
+                              icon: const Icon(Icons.edit),
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.person_2_rounded),
-                          title: const Text('Last Name'),
-                          subtitle: Text(data['last_name']),
-                          trailing: IconButton(
-                            onPressed: () {
-                              showDialog(
-                                context: context,
-                                builder: (_) => FieldEditor(
-                                  title: 'Last Name',
-                                  text: data['last_name'],
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.edit),
+                          ListTile(
+                            leading: const Icon(Icons.email_rounded),
+                            title: const Text('Email'),
+                            subtitle: Text(data['email']),
+                            trailing: const IconButton(
+                              onPressed: null,
+                              icon: Icon(Icons.lock),
+                            ),
                           ),
-                        ),
-                        ListTile(
-                          leading: const Icon(Icons.email_rounded),
-                          title: const Text('Email'),
-                          subtitle: Text(data['email']),
-                          trailing: const IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.lock),
+                          const ListTile(
+                            leading: Icon(Icons.password_rounded),
+                            title: Text('Password'),
+                            subtitle: Text("********"),
+                            trailing: IconButton(
+                              onPressed: null,
+                              icon: Icon(Icons.lock),
+                            ),
                           ),
-                        ),
-                        const ListTile(
-                          leading: Icon(Icons.password_rounded),
-                          title: Text('Password'),
-                          subtitle: Text("********"),
-                          trailing: IconButton(
-                            onPressed: null,
-                            icon: Icon(Icons.lock),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },
