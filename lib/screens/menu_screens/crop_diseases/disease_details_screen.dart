@@ -184,9 +184,10 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen>
   }
 
   Future<void> initialize() async {
-    // await LoadingOverlay.of(context).during(
-    //     pDisease.getLeafsById(widget.leafId, widget.diseaseId, context));
-    await LoadingOverlay.of(context)
-        .during(pDisease.getLeafsById(2, 2, context));
+    await LoadingOverlay.of(context).during(
+      pDisease.getLeafsById(widget.leafId, widget.diseaseId, context),
+    );
+    // await LoadingOverlay.of(context)
+    //     .during(pDisease.getLeafsById(2, 2, context));
   }
 }
