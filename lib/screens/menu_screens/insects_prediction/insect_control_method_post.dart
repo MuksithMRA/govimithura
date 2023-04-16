@@ -72,14 +72,15 @@ class _InsectControlMethodPostState extends State<InsectControlMethodPost> {
                 ),
                 spacingWidget(20, SpaceDirection.vertical),
                 CustomElevatedButton(
-                    text: "Post",
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        pPost.setPostRef(widget.postRef);
-                        await LoadingOverlay.of(context)
-                            .during(pPost.addPost(context));
-                      }
-                    })
+                  text: "Post",
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      pPost.setPostRef(widget.postRef);
+                      await LoadingOverlay.of(context)
+                          .during(pPost.addPost(context));
+                    }
+                  },
+                )
               ],
             ),
           ),

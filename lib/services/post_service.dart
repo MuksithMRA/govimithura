@@ -84,7 +84,10 @@ class PostService {
   static Future<bool> addRating(String postId, double ratingValue) async {
     try {
       var rating = await getRatingsByPostId(postId);
-      if (rating != null && rating.docs.isNotEmpty) {
+      if (rating != null &&
+          rating.docs.isNotEmpty &&
+          rating.docs
+              .any((element) => element.data()['uId'] == _currentUser.uid)) {
         for (var element in rating.docs) {
           if (element.data()['uId'] == _currentUser.uid) {
             _postRatings.doc(element.id).update({
