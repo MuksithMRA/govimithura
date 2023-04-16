@@ -32,7 +32,7 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
         child: Column(
           children: [
             const Text(
-              "Best Crops to cultivate in your home garden",
+              "Best Crop to cultivate in your home garden",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
