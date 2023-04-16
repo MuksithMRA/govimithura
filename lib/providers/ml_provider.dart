@@ -117,7 +117,7 @@ class MLProvider extends ChangeNotifier {
       ChatResponse(status: ChatStatus.typing, message: "Typing..."),
     );
     notifyListeners();
-    await MLService.replyChat(pImage?.imagePath ?? '').then(
+    await MLService.replyChat(request.message).then(
       (value) {
         ChatResponse response = ChatResponse();
         if (value == null) {
