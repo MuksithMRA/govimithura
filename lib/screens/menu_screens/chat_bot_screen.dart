@@ -3,6 +3,7 @@ import 'package:govimithura/constants/images.dart';
 import 'package:govimithura/models/chat_response.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
+import 'package:govimithura/screens/my_profile.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:provider/provider.dart';
 import '../../utils/utils.dart';
@@ -78,7 +79,14 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  SlidePageRoute(
+                                    page: const MyProfile(),
+                                  ),
+                                );
+                              },
                               icon: const Icon(
                                 Icons.info,
                                 color: Colors.black,

@@ -20,6 +20,8 @@ class PostProvider extends ChangeNotifier {
         if (success)
           {
             clearPostModel(),
+            Utils.showSnackBar(
+                context, 'Post added successfully , waiting for approval'),
             Navigator.pop(context),
           }
         else
