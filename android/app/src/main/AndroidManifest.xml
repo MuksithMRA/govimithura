@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
    <application
-        android:label="govimithura"
+        android:label="Govimithura"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
