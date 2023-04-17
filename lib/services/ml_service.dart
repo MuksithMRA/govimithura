@@ -41,19 +41,15 @@ class MLService {
   }
 
   static Future<int?> predictInsect(String filePath) async {
-    // Dio dio = Dio();
-    // const String apiUrl =
-    //     "https://us-central1-ageless-aquifer-381515.cloudfunctions.net/predict-soil-1";
-    // FormData formData =
-    //     FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+    Dio dio = Dio();
+    const String apiUrl =
+        "https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/ra-predict-pest";
+    FormData formData =
+        FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
     try {
-      // Response response = await dio.post(apiUrl, data: formData);
-      // Map<String, dynamic> data = response.data;
-      List<int> numbers = [0, 1, 2, 3, 4, 5, 6];
-      Random random = Random();
-      int randomIndex = random.nextInt(numbers.length);
-      int randomNumber = numbers[randomIndex];
-      return randomNumber;
+      Response response = await dio.post(apiUrl, data: formData);
+      Map<String, dynamic> data = response.data;
+      return int.tryParse(data["class"]);
     } on Exception catch (e) {
       ErrorModel.errorMessage = e.toString();
     }
