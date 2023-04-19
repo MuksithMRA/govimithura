@@ -30,9 +30,10 @@ class MLProvider extends ChangeNotifier {
     return 0;
   }
 
-  Future<int> predictDisease(BuildContext context) async {
+  Future<int> predictDisease(BuildContext context, int leafId) async {
     if (pImage?.imagePath != null) {
-      int? response = await MLService.predictDisease().then(
+      int? response =
+          await MLService.predictDisease(pImage?.imagePath ?? '', leafId).then(
         (value) {
           if (value == null) {
             Utils.showSnackBar(context, ErrorModel.errorMessage);
@@ -42,7 +43,6 @@ class MLProvider extends ChangeNotifier {
           return null;
         },
       );
-      debugPrint(response.toString());
       return response ?? 0;
     }
     return 0;

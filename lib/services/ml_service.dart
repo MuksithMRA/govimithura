@@ -72,20 +72,15 @@ class MLService {
     return null;
   }
 
-  static Future<int?> predictDisease() async {
-    // Dio dio = Dio();
-    // const String apiUrl =
-    //     "https://us-central1-ageless-aquifer-381515.cloudfunctions.net/predict-soil-1";
-    // FormData formData =
-    //     FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+  static Future<int?> predictDisease(String filePath, int leafId) async {
+    Dio dio = Dio();
+    String apiUrl = _diseaseApiPipe(leafId);
+    FormData formData =
+        FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
     try {
-      // Response response = await dio.post(apiUrl, data: formData);
-      // Map<String, dynamic> data = response.data;
-      List<int> numbers = [0, 1, 2, 3, 4];
-      Random random = Random();
-      int randomIndex = random.nextInt(numbers.length);
-      int randomNumber = numbers[randomIndex];
-      return randomNumber;
+      Response response = await dio.post(apiUrl, data: formData);
+      Map<String, dynamic> data = response.data;
+      return int.tryParse(data["class"]);
     } on Exception catch (e) {
       ErrorModel.errorMessage = e.toString();
     }
@@ -105,5 +100,22 @@ class MLService {
       ErrorModel.errorMessage = e.toString();
     }
     return null;
+  }
+
+  static String _diseaseApiPipe(int leafId) {
+    switch (leafId) {
+      case 0:
+        return 'https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/sa-predict-beans';
+      case 1:
+        return 'https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/sa-predict-cassava';
+      case 2:
+        return 'https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/sa-predict-corn';
+      case 3:
+        return 'https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/sa-predict-okra';
+      case 4:
+        return 'https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/sa-predict-tomato';
+      default:
+        return '';
+    }
   }
 }

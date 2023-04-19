@@ -4,7 +4,6 @@ import '../models/error_model.dart';
 
 class DiseaseService {
   static final _leafs = FirebaseFirestore.instance.collection('leafs');
-  static final _diseases = FirebaseFirestore.instance.collection('Diseases');
 
   static Future<QuerySnapshot<Map<String, dynamic>>?> getLeafsById(
       int id) async {
