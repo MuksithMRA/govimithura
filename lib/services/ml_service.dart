@@ -87,21 +87,6 @@ class MLService {
     return null;
   }
 
-  static Future<String?> replyChat(String query) async {
-    Dio dio = Dio();
-    const String apiUrl =
-        "https://us-east1-ageless-aquifer-381515.cloudfunctions.net/chat-bot-1";
-    FormData formData = FormData.fromMap({'query': query.trim()});
-    try {
-      Response response = await dio.post(apiUrl, data: formData);
-      Map<String, dynamic> data = response.data;
-      return data["answer"];
-    } on Exception catch (e) {
-      ErrorModel.errorMessage = e.toString();
-    }
-    return null;
-  }
-
   static String _diseaseApiPipe(int leafId) {
     switch (leafId) {
       case 0:
@@ -117,5 +102,20 @@ class MLService {
       default:
         return '';
     }
+  }
+
+  static Future<String?> replyChat(String query) async {
+    Dio dio = Dio();
+    const String apiUrl =
+        "https://us-east1-ageless-aquifer-381515.cloudfunctions.net/chat-bot-1";
+    FormData formData = FormData.fromMap({'query': query.trim()});
+    try {
+      Response response = await dio.post(apiUrl, data: formData);
+      Map<String, dynamic> data = response.data;
+      return data["answer"];
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return null;
   }
 }

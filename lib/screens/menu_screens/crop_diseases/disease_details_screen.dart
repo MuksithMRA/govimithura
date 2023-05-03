@@ -124,9 +124,9 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen>
                           Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              image: const DecorationImage(
-                                  image: AssetImage(
-                                      "assets/images/disease_inner.png"),
+                              image: DecorationImage(
+                                  image:
+                                      NetworkImage(disease.diseaseEntity.image),
                                   fit: BoxFit.cover),
                             ),
                             height: ScreenSize.height * 0.3,

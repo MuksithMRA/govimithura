@@ -29,29 +29,25 @@ class _HomeScreenState extends State<HomeScreen> {
     List<ComponentMenuTile> componentMenuTiles = [
       ComponentMenuTile(
         title: "Crops",
-        description:
-            "What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing ",
+        description: "Identify the best crop for their cultivation",
         image: "crops_home.png",
         routeIndex: 1,
       ),
       ComponentMenuTile(
         title: "Insects",
-        description:
-            "What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing ",
+        description: "Identify the plant leaves and plant diseases",
         image: "insects_home.png",
         routeIndex: 3,
       ),
       ComponentMenuTile(
         title: "Diseases",
-        description:
-            "What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing ",
+        description: "Identifying pests and recommending their control methods",
         image: "diseases_home.png",
         routeIndex: 2,
       ),
       ComponentMenuTile(
         title: "Chat Bot",
-        description:
-            "What is Lorem Ipsum Lorem Ipsum is simply dummy text of the printing ",
+        description: "Answer the necessary home gardening inquiries",
         image: "chat_bots_home.png",
         routeIndex: 4,
       ),
