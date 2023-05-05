@@ -195,4 +195,17 @@ class PostService {
     }
     return false;
   }
+
+  static Future<bool> deletePost(String postId) async {
+    try {
+      return await _posts.doc(postId).delete().then((value) {
+        return true;
+      });
+    } on FirebaseException catch (e) {
+      ErrorModel.errorMessage = e.message!;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return false;
+  }
 }

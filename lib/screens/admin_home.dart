@@ -4,6 +4,7 @@ import 'package:govimithura/models/entity_model.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
+import 'package:govimithura/utils/screen_size.dart';
 import 'package:provider/provider.dart';
 
 import '../models/insect_model.dart';
@@ -108,87 +109,98 @@ class _AdminHomeState extends State<AdminHome> {
                 ],
               ),
               spacingWidget(15, SpaceDirection.vertical),
-              ...List.generate(
-                posts.length,
-                (index) => Container(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              SlidePageRoute(
-                                  page: MyPost(
-                                postId: posts[index].id,
-                                isAdmin: true,
-                              )));
-                        },
-                        title: Text(
-                          '${posts[index].refModel!.name} - ${posts[index].title}',
-                          style: const TextStyle(fontWeight: FontWeight.bold),
+              if (posts.isNotEmpty)
+                ...List.generate(
+                  posts.length,
+                  (index) => Container(
+                    margin: const EdgeInsets.only(bottom: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                SlidePageRoute(
+                                    page: MyPost(
+                                  postId: posts[index].id,
+                                  isAdmin: true,
+                                )));
+                          },
+                          title: Text(
+                            '${posts[index].refModel!.name} - ${posts[index].title}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Text(Utils.getAgoTime(posts[index].createdAt!)),
+                              spacingWidget(10, SpaceDirection.horizontal),
+                            ],
+                          ),
+                          trailing: const Icon(
+                            Icons.chevron_right_rounded,
+                            size: 30,
+                          ),
                         ),
-                        subtitle: Row(
-                          children: [
-                            Text(Utils.getAgoTime(posts[index].createdAt!)),
-                            spacingWidget(10, SpaceDirection.horizontal),
-                          ],
-                        ),
-                        trailing: const Icon(
-                          Icons.chevron_right_rounded,
-                          size: 30,
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Row(
-                          children: [
-                            postStatus(posts[index].status),
-                            if (posts[index].status == PostStatus.pending)
-                              Flexible(
-                                child: ButtonBar(
-                                  children: [
-                                    FloatingActionButton.small(
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Row(
+                            children: [
+                              postStatus(posts[index].status),
+                              if (posts[index].status == PostStatus.pending)
+                                Flexible(
+                                  child: ButtonBar(
+                                    children: [
+                                      FloatingActionButton.small(
+                                          elevation: 0,
+                                          backgroundColor: Colors.red,
+                                          heroTag: 'reject$index',
+                                          onPressed: () async {
+                                            PostModel post = posts[index];
+                                            post.status = PostStatus.rejected;
+                                            await LoadingOverlay.of(context)
+                                                .during(pPost
+                                                    .changePostStatus(post));
+                                            await initialize();
+                                          },
+                                          child: const Icon(Icons.close)),
+                                      FloatingActionButton.small(
                                         elevation: 0,
-                                        backgroundColor: Colors.red,
-                                        heroTag: 'reject$index',
+                                        backgroundColor: Colors.green,
+                                        heroTag: 'approve$index',
                                         onPressed: () async {
                                           PostModel post = posts[index];
-                                          post.status = PostStatus.rejected;
+                                          post.status = PostStatus.approved;
                                           await LoadingOverlay.of(context)
                                               .during(
                                                   pPost.changePostStatus(post));
                                           await initialize();
                                         },
-                                        child: const Icon(Icons.close)),
-                                    FloatingActionButton.small(
-                                      elevation: 0,
-                                      backgroundColor: Colors.green,
-                                      heroTag: 'approve$index',
-                                      onPressed: () async {
-                                        PostModel post = posts[index];
-                                        post.status = PostStatus.approved;
-                                        await LoadingOverlay.of(context).during(
-                                            pPost.changePostStatus(post));
-                                        await initialize();
-                                      },
-                                      child: const Icon(Icons.done),
-                                    ),
-                                  ],
-                                ),
-                              )
-                          ],
-                        ),
-                      )
-                    ],
+                                        child: const Icon(Icons.done),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              )
+                )
+              else
+                SizedBox(
+                  height: ScreenSize.height - (ScreenSize.height * 0.25),
+                  child: Center(
+                    child: Text(
+                      "No ${selectedStatus.description == PostStatus.all ? '' : selectedStatus.description} posts found !",
+                    ),
+                  ),
+                )
             ],
           ),
         ),
@@ -211,17 +223,13 @@ class _AdminHomeState extends State<AdminHome> {
   }
 
   void filterPosts() {
-    List<PostModel<InsectModel>> postsTemp = [];
-    postsTemp = initialPosts.where((element) {
+    posts = initialPosts.where((element) {
       if (selectedStatus.description == PostStatus.all) {
         return true;
       } else {
         return element.status == selectedStatus.description;
       }
     }).toList();
-    if (postsTemp.isNotEmpty) {
-      posts = postsTemp;
-    }
     setState(() {});
   }
 }

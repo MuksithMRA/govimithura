@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
+import 'package:govimithura/screens/admin_home.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/utils.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
@@ -40,11 +41,24 @@ class _MyPostState extends State<MyPost> {
             IconButton(
               onPressed: () async {
                 showDialog(
-                    context: context,
-                    builder: (_) => confirmationDialog(
+                  context: context,
+                  builder: (_) => confirmationDialog(
+                    context,
+                    title: "Delete Post",
+                    yesFunction: () async {
+                      bool isSuccess = await LoadingOverlay.of(context)
+                          .during(pPost.deletePost(widget.postId));
+                      if (mounted && isSuccess) {
+                        Navigator.pushReplacement(
                           context,
-                          title: "Delete Post",
-                        ));
+                          MaterialPageRoute(
+                            builder: (_) => const AdminHome(),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                );
               },
               icon: const Icon(Icons.delete),
             ),

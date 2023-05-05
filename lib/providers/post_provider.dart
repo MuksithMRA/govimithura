@@ -145,6 +145,20 @@ class PostProvider extends ChangeNotifier {
     return success;
   }
 
+  Future<bool> deletePost(String postId) async {
+    bool success = false;
+    await PostService.deletePost(postId).then(
+      (value) async {
+        success = value;
+        if (success) {
+          await refreshPostList();
+        }
+      },
+    );
+    notifyListeners();
+    return success;
+  }
+
   Future<bool> unSavePost(String postId) async {
     bool success = false;
     await PostService.unSavePost(postId).then(
