@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/constants/post_status.dart';
+import 'package:govimithura/models/entity_model.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:provider/provider.dart';
 
+import '../models/insect_model.dart';
 import '../utils/loading_overlay.dart';
 import '../utils/utils.dart';
 import '../widgets/utils/common_widget.dart';
@@ -21,7 +23,10 @@ class AdminHome extends StatefulWidget {
 class _AdminHomeState extends State<AdminHome> {
   late AuthenticationProvider pAuthentication;
   late PostProvider pPost;
-  List<PostModel> posts = [];
+  List<PostModel<InsectModel>> initialPosts = const [];
+  List<PostModel<InsectModel>> posts = [];
+  List<EntityModel> statusList = [];
+  EntityModel selectedStatus = EntityModel();
 
   @override
   void initState() {
@@ -75,11 +80,31 @@ class _AdminHomeState extends State<AdminHome> {
                     "Post Approval",
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  IconButton(
-                      onPressed: () async {
-                        await initialize();
-                      },
-                      icon: const Icon(Icons.refresh))
+                  Row(
+                    children: [
+                      DropdownButton(
+                        items: statusList.map((status) {
+                          return DropdownMenuItem(
+                            value: status.id,
+                            child: Text(status.description),
+                          );
+                        }).toList(),
+                        value: selectedStatus.id,
+                        onChanged: (int? value) {
+                          selectedStatus = statusList
+                              .firstWhere((element) => element.id == value);
+                          filterPosts();
+                        },
+                      ),
+                      spacingWidget(10, SpaceDirection.horizontal),
+                      IconButton(
+                        onPressed: () async {
+                          await initialize();
+                        },
+                        icon: const Icon(Icons.refresh),
+                      ),
+                    ],
+                  )
                 ],
               ),
               spacingWidget(15, SpaceDirection.vertical),
@@ -105,7 +130,7 @@ class _AdminHomeState extends State<AdminHome> {
                               )));
                         },
                         title: Text(
-                          posts[index].title,
+                          '${posts[index].refModel!.name} - ${posts[index].title}',
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         subtitle: Row(
@@ -119,42 +144,46 @@ class _AdminHomeState extends State<AdminHome> {
                           size: 30,
                         ),
                       ),
-                      Row(
-                        children: [
-                          postStatus(posts[index].status),
-                          if (posts[index].status == PostStatus.pending)
-                            Flexible(
-                              child: ButtonBar(
-                                children: [
-                                  FloatingActionButton.small(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Row(
+                          children: [
+                            postStatus(posts[index].status),
+                            if (posts[index].status == PostStatus.pending)
+                              Flexible(
+                                child: ButtonBar(
+                                  children: [
+                                    FloatingActionButton.small(
+                                        elevation: 0,
+                                        backgroundColor: Colors.red,
+                                        heroTag: 'reject$index',
+                                        onPressed: () async {
+                                          PostModel post = posts[index];
+                                          post.status = PostStatus.rejected;
+                                          await LoadingOverlay.of(context)
+                                              .during(
+                                                  pPost.changePostStatus(post));
+                                          await initialize();
+                                        },
+                                        child: const Icon(Icons.close)),
+                                    FloatingActionButton.small(
                                       elevation: 0,
-                                      backgroundColor: Colors.red,
-                                      heroTag: 'reject$index',
+                                      backgroundColor: Colors.green,
+                                      heroTag: 'approve$index',
                                       onPressed: () async {
                                         PostModel post = posts[index];
-                                        post.status = PostStatus.rejected;
+                                        post.status = PostStatus.approved;
                                         await LoadingOverlay.of(context).during(
                                             pPost.changePostStatus(post));
                                         await initialize();
                                       },
-                                      child: const Icon(Icons.close)),
-                                  FloatingActionButton.small(
-                                    elevation: 0,
-                                    backgroundColor: Colors.green,
-                                    heroTag: 'approve$index',
-                                    onPressed: () async {
-                                      PostModel post = posts[index];
-                                      post.status = PostStatus.approved;
-                                      await LoadingOverlay.of(context)
-                                          .during(pPost.changePostStatus(post));
-                                      await initialize();
-                                    },
-                                    child: const Icon(Icons.done),
-                                  ),
-                                ],
-                              ),
-                            )
-                        ],
+                                      child: const Icon(Icons.done),
+                                    ),
+                                  ],
+                                ),
+                              )
+                          ],
+                        ),
                       )
                     ],
                   ),
@@ -169,6 +198,30 @@ class _AdminHomeState extends State<AdminHome> {
 
   Future<void> initialize() async {
     posts = await LoadingOverlay.of(context).during(pPost.getAllPost());
+    initialPosts = posts;
+    statusList = [
+      EntityModel(id: 1, description: PostStatus.all),
+      EntityModel(id: 2, description: PostStatus.pending),
+      EntityModel(id: 3, description: PostStatus.approved),
+      EntityModel(id: 4, description: PostStatus.rejected),
+    ];
+    selectedStatus = statusList.first;
+    filterPosts();
+    setState(() {});
+  }
+
+  void filterPosts() {
+    List<PostModel<InsectModel>> postsTemp = [];
+    postsTemp = initialPosts.where((element) {
+      if (selectedStatus.description == PostStatus.all) {
+        return true;
+      } else {
+        return element.status == selectedStatus.description;
+      }
+    }).toList();
+    if (postsTemp.isNotEmpty) {
+      posts = postsTemp;
+    }
     setState(() {});
   }
 }

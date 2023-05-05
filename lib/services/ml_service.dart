@@ -59,7 +59,7 @@ class MLService {
   static Future<int?> predictLeaf(String filePath) async {
     Dio dio = Dio();
     const String apiUrl =
-        "https://asia-south1-ageless-aquifer-381515.cloudfunctions.net/predict-leaf";
+        "https://asia-southeast1-ageless-aquifer-381515.cloudfunctions.net/sa-predict-leafType";
     FormData formData =
         FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
     try {

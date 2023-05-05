@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/constants/post_types.dart';
 
-class PostModel {
+class PostModel<T> {
   String id;
   String title;
   String content;
@@ -17,21 +17,23 @@ class PostModel {
   String author;
   List<String> savedBy;
   DateTime? createdAt;
+  T? refModel;
 
   PostModel({
     this.id = '',
     this.title = '',
     this.content = '',
     this.uid = '',
-    this.createdAt,
     this.rating = 0.0,
     this.status = PostStatus.pending,
-    this.rateCount = 0,
     this.formattedDateTime = '',
-    this.savedBy = const [],
-    this.author = '',
+    this.rateCount = 0,
     this.postType = PostType.pestControlMethod,
     this.ref = 0,
+    this.author = '',
+    this.savedBy = const [],
+    this.createdAt,
+    this.refModel,
   });
 
   Map<String, dynamic> toMap() {

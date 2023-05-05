@@ -108,13 +108,23 @@ class _MyPostState extends State<MyPost> {
                                     elevation: 0,
                                     backgroundColor: Colors.red,
                                     heroTag: 'reject',
-                                    onPressed: () {},
+                                    onPressed: () async {
+                                      post.status = PostStatus.rejected;
+                                      await LoadingOverlay.of(context)
+                                          .during(pPost.changePostStatus(post));
+                                      await initialize();
+                                    },
                                     child: const Icon(Icons.close)),
                                 FloatingActionButton.small(
                                   elevation: 0,
                                   backgroundColor: Colors.green,
                                   heroTag: 'approve',
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    post.status = PostStatus.approved;
+                                    await LoadingOverlay.of(context)
+                                        .during(pPost.changePostStatus(post));
+                                    await initialize();
+                                  },
                                   child: const Icon(Icons.done),
                                 ),
                               ],

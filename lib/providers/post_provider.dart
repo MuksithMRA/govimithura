@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:govimithura/models/error_model.dart';
+import 'package:govimithura/models/insect_model.dart';
 import 'package:govimithura/models/post_model.dart';
+import 'package:govimithura/services/insect_service.dart';
 import 'package:govimithura/services/post_service.dart';
 import 'package:govimithura/utils/utils.dart';
 
 class PostProvider extends ChangeNotifier {
   PostModel postModel = PostModel();
   double givenRating = 0;
-  List<PostModel> posts = [];
+  List<PostModel<InsectModel>> posts = [];
   PostModel filterPostModel = PostModel();
   String currentScreen = '';
 
@@ -38,7 +40,7 @@ class PostProvider extends ChangeNotifier {
         await PostService.getPostsByUid(FirebaseAuth.instance.currentUser!.uid);
     if (response != null) {
       for (var item in response.docs) {
-        PostModel post = PostModel.fromMap(item.data());
+        PostModel<InsectModel> post = PostModel.fromMap(item.data());
         posts.add(post);
       }
     }
@@ -46,12 +48,19 @@ class PostProvider extends ChangeNotifier {
     return posts;
   }
 
-  Future<List<PostModel>> getAllPost() async {
+  Future<List<PostModel<InsectModel>>> getAllPost() async {
     posts = [];
     var response = await PostService.getAllPosts();
+
     if (response != null) {
       for (var item in response.docs) {
-        PostModel post = PostModel.fromMap(item.data());
+        PostModel<InsectModel> post =
+            PostModel<InsectModel>.fromMap(item.data());
+        var insectResponse = await InsectService.getInsectById(post.ref);
+        if (insectResponse != null) {
+          InsectModel insect = InsectModel.fromJson(insectResponse.data()!);
+          post.refModel = insect;
+        }
         posts.add(post);
       }
     }
@@ -66,7 +75,8 @@ class PostProvider extends ChangeNotifier {
           await PostService.getApprovedPostsByTypeAndRef(filterPostModel);
       if (response != null) {
         for (var item in response.docs) {
-          PostModel post = PostModel.fromMap(item.data());
+          PostModel<InsectModel> post =
+              PostModel<InsectModel>.fromMap(item.data());
           posts.add(post);
         }
       }
@@ -149,12 +159,12 @@ class PostProvider extends ChangeNotifier {
     return success;
   }
 
-  Future<List<PostModel>> getAllSavedPost() async {
+  Future<List<PostModel<InsectModel>>> getAllSavedPost() async {
     posts = [];
     var response = await PostService.getSavedPosts();
     if (response != null) {
       for (var item in response.docs) {
-        PostModel post = PostModel.fromMap(item.data());
+        PostModel<InsectModel> post = PostModel.fromMap(item.data());
         posts.add(post);
       }
     }
