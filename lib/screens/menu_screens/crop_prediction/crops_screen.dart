@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:govimithura/providers/crop_provider.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/providers/location_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
@@ -23,11 +22,13 @@ class CropsScreen extends StatefulWidget {
 
 class _CropsScreenState extends State<CropsScreen> {
   late LocationProvider pLocation;
+  late MLProvider pML;
 
   @override
   void initState() {
     super.initState();
     pLocation = Provider.of<LocationProvider>(context, listen: false);
+    pML = Provider.of<MLProvider>(context, listen: false);
     Future.delayed(Duration.zero, () => initialize());
   }
 
@@ -81,18 +82,25 @@ class _CropsScreenState extends State<CropsScreen> {
                               return CustomElevatedButton(
                                 text: "Predict",
                                 onPressed: () async {
-                                  if (pImage.imagePath != null) {
-                                    int cropId =
-                                        await LoadingOverlay.of(context).during(
-                                      Provider.of<MLProvider>(context,
-                                              listen: false)
-                                          .predictCrop(context),
-                                    );
-                                    if (mounted && cropId >= 0) {
-                                      await Provider.of<CropProvider>(context,
-                                              listen: false)
-                                          .setCropId(cropId);
-                                      if (mounted) {
+                                  LoadingOverlay overlay =
+                                      LoadingOverlay.of(context);
+                                  pML.setNearestDistrict(
+                                      location.locationModel.district);
+                                  if (mounted) {
+                                    await overlay
+                                        .during(pML.getForecast(context));
+                                  }
+                                  if (mounted && pImage.imagePath != null) {
+                                    await overlay
+                                        .during(pML.predictSoil(context));
+
+                                    if (mounted &&
+                                        pML.climateParameters.isNotEmpty) {
+                                      String bestCrop = await overlay.during(
+                                          Provider.of<MLProvider>(context,
+                                                  listen: false)
+                                              .predictCrop(context));
+                                      if (mounted && bestCrop.isNotEmpty) {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(

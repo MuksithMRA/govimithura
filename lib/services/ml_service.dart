@@ -1,6 +1,6 @@
-import 'dart:math';
-
 import 'package:dio/dio.dart';
+import 'package:govimithura/models/climate_parameter.dart';
+import 'package:govimithura/models/crop_request_model.dart';
 import 'package:govimithura/models/error_model.dart';
 
 class MLService {
@@ -20,20 +20,15 @@ class MLService {
     return null;
   }
 
-  static Future<int?> predictCrop(int soilId) async {
-    // Dio dio = Dio();
-    // const String apiUrl =
-    //     "https://us-central1-ageless-aquifer-381515.cloudfunctions.net/predict-soil-1";
-    // FormData formData =
-    //     FormData.fromMap({'file': await MultipartFile.fromFile(filePath)});
+  static Future<String?> predictCrop(CropRequestModel cropRequest) async {
+    Dio dio = Dio();
+    const String apiUrl =
+        "https://asia-south1-ageless-aquifer-381515.cloudfunctions.net/best-crop";
+    FormData formData = FormData.fromMap(cropRequest.toMap());
     try {
-      // Response response = await dio.post(apiUrl, data: formData);
-      // Map<String, dynamic> data = response.data;
-      List<int> numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-      Random random = Random();
-      int randomIndex = random.nextInt(numbers.length);
-      int randomNumber = numbers[randomIndex];
-      return randomNumber;
+      Response response = await dio.post(apiUrl, data: formData);
+      Map<String, dynamic> data = response.data;
+      return data['class'];
     } on Exception catch (e) {
       ErrorModel.errorMessage = e.toString();
     }
@@ -66,6 +61,29 @@ class MLService {
       Response response = await dio.post(apiUrl, data: formData);
       Map<String, dynamic> data = response.data;
       return int.tryParse(data["class"]);
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+    }
+    return null;
+  }
+
+  static Future<List<ClimateParameter>?> getForecast(String district) async {
+    List<ClimateParameter> climateParameters = [];
+    Dio dio = Dio();
+    const String apiUrl = "https://gm-ts-models.herokuapp.com/forecast";
+    FormData formData = FormData.fromMap({'district': district});
+    try {
+      Response response = await dio.post(apiUrl, data: formData);
+      Map<String, dynamic> data = response.data;
+      climateParameters.add(
+          ClimateParameter("eveporation", double.parse(data["eveporation"])));
+      climateParameters
+          .add(ClimateParameter("humidity", double.parse(data["humidity"])));
+      climateParameters
+          .add(ClimateParameter("rainfall", double.parse(data["rainfall"])));
+      climateParameters.add(
+          ClimateParameter("temperature", double.parse(data["temperature"])));
+      return climateParameters;
     } on Exception catch (e) {
       ErrorModel.errorMessage = e.toString();
     }

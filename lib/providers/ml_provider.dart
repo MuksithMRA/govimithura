@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/models/chat_response.dart';
+import 'package:govimithura/models/climate_parameter.dart';
+import 'package:govimithura/models/crop_request_model.dart';
 import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/services/ml_service.dart';
 import 'package:govimithura/utils/utils.dart';
+import '../models/entity_model.dart';
 
 class MLProvider extends ChangeNotifier {
   ImageUtilProvider? pImage;
   List<ChatResponse> chatResponses = [];
   String messageText = "";
+  String nearestDistrict = '';
+  double ph = 0;
+  String soilType = '';
+  List<ClimateParameter> climateParameters = [];
+  String bestCrop = '';
 
   MLProvider({this.pImage});
 
@@ -48,42 +56,78 @@ class MLProvider extends ChangeNotifier {
     return 0;
   }
 
-  Future<int> predictSoil(BuildContext context) async {
+  Future<String> predictSoil(BuildContext context) async {
     if (pImage?.imagePath != null) {
-      int? response = await MLService.predictSoil(pImage?.imagePath ?? '').then(
+      String? response =
+          await MLService.predictSoil(pImage?.imagePath ?? '').then(
         (value) {
           if (value == null) {
             Utils.showSnackBar(context, ErrorModel.errorMessage);
           } else {
-            return value;
+            List<EntityModel> soilTypes = [
+              EntityModel(id: 0, description: "dry"),
+              EntityModel(id: 1, description: "intermediate"),
+              EntityModel(id: 2, description: "highWater"),
+            ];
+            soilType = soilTypes
+                .firstWhere((element) => element.id == value)
+                .description;
+            return soilType;
           }
           return null;
         },
       );
-      debugPrint(response.toString());
-      return response ?? 0;
+      return response ?? '';
     } else {
       ErrorModel.errorMessage = "Please choose an image";
-      Utils.showSnackBar(context, ErrorModel.errorMessage);
+      Utils.showSnackBar(context, "Please choose an image");
     }
-    return 0;
+    return '';
   }
 
-  Future<int> predictCrop(BuildContext context) async {
-    int? response = await predictSoil(context).then((soilId) async {
-      int? response = await MLService.predictCrop(soilId).then(
+  Future<String> predictCrop(BuildContext context) async {
+    String response = '';
+
+    CropRequestModel cropRequestModel = CropRequestModel();
+    cropRequestModel.soilType = soilType;
+    cropRequestModel.district = nearestDistrict;
+    cropRequestModel.ph = ph;
+    if (climateParameters.isNotEmpty) {
+      cropRequestModel.eveporation = climateParameters[0].y;
+      cropRequestModel.humidity = climateParameters[1].y;
+      cropRequestModel.rainfall = climateParameters[2].y;
+      cropRequestModel.temperature = climateParameters[3].y;
+      response = await MLService.predictCrop(cropRequestModel).then(
         (value) {
           if (value == null) {
             Utils.showSnackBar(context, ErrorModel.errorMessage);
           } else {
+            setBestCrop(value);
             return value;
           }
-          return null;
+          return '';
         },
       );
-      return response ?? -1;
-    });
-    return response ?? -1;
+      notifyListeners();
+    }
+    return response;
+  }
+
+  Future<List<ClimateParameter>> getForecast(BuildContext context) async {
+    List<ClimateParameter> response = [];
+    if (nearestDistrict.isNotEmpty) {
+      response = await MLService.getForecast(nearestDistrict).then((forecast) {
+        if (forecast != null) {
+          climateParameters = forecast;
+          return forecast;
+        } else {
+          // ignore: use_build_context_synchronously
+          Utils.showSnackBar(context, ErrorModel.errorMessage);
+        }
+        return [];
+      });
+    }
+    return response;
   }
 
   Future<int> predictInsect(BuildContext context) async {
@@ -135,6 +179,20 @@ class MLProvider extends ChangeNotifier {
 
   setMessgeText(String message) {
     messageText = message;
+    notifyListeners();
+  }
+
+  setNearestDistrict(String district) {
+    nearestDistrict = district;
+  }
+
+  setBestCrop(String bestCrop) {
+    this.bestCrop = bestCrop;
+    notifyListeners();
+  }
+
+  setPHValue(double ph) {
+    this.ph = ph;
     notifyListeners();
   }
 }

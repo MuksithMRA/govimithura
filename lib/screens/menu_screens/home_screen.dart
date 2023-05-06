@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
         routeIndex: 1,
       ),
       ComponentMenuTile(
-        title: "Insects",
+        title: "Pests",
         description: "Identify the plant leaves and plant diseases",
         image: "insects_home.png",
         routeIndex: 3,

@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
       ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.bug_report),
-        label: 'Insects',
+        label: 'Pests',
       ),
       const BottomNavigationBarItem(
         icon: Icon(Icons.chat),
@@ -66,7 +66,7 @@ class _HomeState extends State<Home> {
       HomeScreenItem(title: "Crops Detection", screen: const CropsScreen()),
       HomeScreenItem(
           title: "Diseases Detection", screen: const DiseasesScreen()),
-      HomeScreenItem(title: "Insects Detection", screen: const InsectsScreen()),
+      HomeScreenItem(title: "Pest Detection", screen: const InsectsScreen()),
       HomeScreenItem(title: "Chat Bot", screen: const ChatBotScreen()),
     ];
     AppBar appBar = AppBar(

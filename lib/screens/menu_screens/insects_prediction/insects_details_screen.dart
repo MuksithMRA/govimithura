@@ -37,7 +37,7 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
             },
             label: const Text("Cultural Pest Control Methods")),
         appBar: AppBar(
-          title: const Text("Insect Details"),
+          title: const Text("Pest Details"),
           centerTitle: true,
         ),
         body: Consumer<InsectProvider>(

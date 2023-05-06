@@ -31,7 +31,7 @@ class _InsectControlMethodPostState extends State<InsectControlMethodPost> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Insect Control Method'),
+        title: const Text('New Pest Control Method'),
       ),
       body: SingleChildScrollView(
         child: Form(

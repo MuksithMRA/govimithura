@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/crop_provider.dart';
-import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:charts_flutter_new/flutter.dart' as charts;
 import 'package:provider/provider.dart';
+
+import '../../../models/climate_parameter.dart';
 
 class CropDetailsScreen extends StatefulWidget {
   const CropDetailsScreen({super.key});
@@ -14,6 +15,7 @@ class CropDetailsScreen extends StatefulWidget {
 }
 
 class _CropDetailsScreenState extends State<CropDetailsScreen> {
+  bool _isCropLoading = false;
   @override
   void initState() {
     super.initState();
@@ -41,49 +43,53 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
             spacingWidget(ScreenSize.height * 0.05, SpaceDirection.vertical),
             Consumer<CropProvider>(
               builder: (context, cropProvider, child) {
-                return SizedBox(
-                  height: ScreenSize.height * 0.25,
-                  width: ScreenSize.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: NetworkImage(
-                                  cropProvider.cropEntity.image,
-                                ),
-                                fit: BoxFit.cover)),
+                return _isCropLoading
+                    ? const Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : SizedBox(
                         height: ScreenSize.height * 0.25,
-                        width: ScreenSize.width * 0.4,
-                      ),
-                      spacingWidget(10, SpaceDirection.horizontal),
-                      SizedBox(
-                        width: ScreenSize.width * 0.46,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        width: ScreenSize.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              cropProvider.cropEntity.name,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 20,
-                              ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: NetworkImage(
+                                        cropProvider.cropEntity.image,
+                                      ),
+                                      fit: BoxFit.cover)),
+                              height: ScreenSize.height * 0.25,
+                              width: ScreenSize.width * 0.4,
                             ),
-                            Expanded(
-                              child: Text(
-                                cropProvider.cropEntity.description,
-                                style: const TextStyle(
-                                  color: Colors.grey,
-                                ),
+                            spacingWidget(10, SpaceDirection.horizontal),
+                            SizedBox(
+                              width: ScreenSize.width * 0.46,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    cropProvider.cropEntity.name,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      cropProvider.cropEntity.description,
+                                      style: const TextStyle(
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
-                  ),
-                );
+                      );
               },
             ),
             Expanded(
@@ -98,17 +104,23 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
     );
   }
 
-  Future<void> initialize() async {
-    await LoadingOverlay.of(context).during(
-        Provider.of<CropProvider>(context, listen: false).getCropById(context));
+  loadCrop() async {
+    setState(() {
+      _isCropLoading = !_isCropLoading;
+    });
+
+    if (mounted) {
+      await Provider.of<CropProvider>(context, listen: false)
+          .getCropByName(context);
+    }
+    setState(() {
+      _isCropLoading = !_isCropLoading;
+    });
   }
-}
 
-class ClimateParameters {
-  final String x;
-  final int y;
-
-  ClimateParameters(this.x, this.y);
+  Future<void> initialize() async {
+    loadCrop();
+  }
 }
 
 class ClimateChart extends StatelessWidget {
@@ -133,23 +145,23 @@ class ClimateChart extends StatelessWidget {
     );
   }
 
-  static List<charts.Series<ClimateParameters, String>> _createSampleData(
+  static List<charts.Series<ClimateParameter, String>> _createSampleData(
       BuildContext context) {
     final data = [
-      ClimateParameters('Temperature', 10),
-      ClimateParameters('Rainfall', 20),
-      ClimateParameters('Humidity', 15),
-      ClimateParameters('Evoporation', 8),
+      ClimateParameter('Temperature', 10),
+      ClimateParameter('Rainfall', 20),
+      ClimateParameter('Humidity', 15),
+      ClimateParameter('Evoporation', 8),
     ];
 
     return [
-      charts.Series<ClimateParameters, String>(
+      charts.Series<ClimateParameter, String>(
         id: 'Sales',
         colorFn: (_, __) => charts.MaterialPalette.blue.shadeDefault,
-        domainFn: (ClimateParameters climate, _) => climate.x,
-        measureFn: (ClimateParameters climate, _) => climate.y,
+        domainFn: (ClimateParameter climate, _) => climate.x,
+        measureFn: (ClimateParameter climate, _) => climate.y,
         fillPatternFn: (_, __) => charts.FillPatternType.solid,
-        fillColorFn: (ClimateParameters climate, _) =>
+        fillColorFn: (ClimateParameter climate, _) =>
             charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor),
         data: data,
       )

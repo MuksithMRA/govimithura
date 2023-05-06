@@ -6,8 +6,8 @@ import 'package:govimithura/utils/utils.dart';
 
 class CropProvider extends ChangeNotifier {
   EntityModel cropEntity = EntityModel();
-  Future<void> getCropById(BuildContext context) async {
-    await CropService.getCropById(cropEntity.id).then((value) {
+  Future<void> getCropByName(BuildContext context) async {
+    await CropService.getCropById(cropEntity.description).then((value) {
       if (value != null) {
         cropEntity = EntityModel.fromMap(value.docs.first.data());
         notifyListeners();
@@ -17,8 +17,8 @@ class CropProvider extends ChangeNotifier {
     });
   }
 
-  setCropId(int id) async {
-    cropEntity.id = id;
+  setCrop(String cropName) async {
+    cropEntity.description = cropName;
     notifyListeners();
   }
 }
