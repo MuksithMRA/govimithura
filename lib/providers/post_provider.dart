@@ -96,6 +96,11 @@ class PostProvider extends ChangeNotifier {
     var response = await PostService.getPostById(id);
     if (response != null) {
       post = PostModel.fromMap(response.data()!);
+      var insectResponse = await InsectService.getInsectById(post.ref);
+      if (insectResponse != null) {
+        InsectModel insect = InsectModel.fromJson(insectResponse.data()!);
+        post.refModel = insect;
+      }
     }
     notifyListeners();
     return post;
@@ -185,6 +190,11 @@ class PostProvider extends ChangeNotifier {
     if (response != null) {
       for (var item in response.docs) {
         PostModel<InsectModel> post = PostModel.fromMap(item.data());
+        var insectResponse = await InsectService.getInsectById(post.ref);
+        if (insectResponse != null) {
+          InsectModel insect = InsectModel.fromJson(insectResponse.data()!);
+          post.refModel = insect;
+        }
         posts.add(post);
       }
     }

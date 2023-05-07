@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:govimithura/constants/post_types.dart';
-import 'package:govimithura/models/post_model.dart';
-import 'package:govimithura/providers/insect_provider.dart';
-import 'package:govimithura/providers/post_provider.dart';
-import 'package:govimithura/screens/menu_screens/insects_prediction/insect_control_method_post.dart';
-import 'package:govimithura/utils/loading_overlay.dart';
-import 'package:govimithura/widgets/expandable_post.dart';
-import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../../../constants/images.dart';
+import '../../../constants/post_types.dart';
+import '../../../models/post_model.dart';
 import '../../../providers/authentication_provider.dart';
+import '../../../providers/insect_provider.dart';
+import '../../../providers/post_provider.dart';
+import '../../../utils/loading_overlay.dart';
 import '../../../utils/utils.dart';
+import '../../../widgets/expandable_post.dart';
+import '../../../widgets/utils/common_widget.dart';
+import 'insect_control_method_post.dart';
 
 class InsectsControlMethodsScreen extends StatefulWidget {
   const InsectsControlMethodsScreen({super.key});

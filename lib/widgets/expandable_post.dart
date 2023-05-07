@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/insect_model.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
@@ -10,7 +11,7 @@ import 'utils/ratings/custom_rating_dialog.dart';
 
 class ExpandablePost extends StatefulWidget {
   final int index;
-  final PostModel post;
+  final PostModel<InsectModel> post;
   const ExpandablePost({
     super.key,
     required this.index,
@@ -35,7 +36,9 @@ class _ExpandablePostState extends State<ExpandablePost> {
     return ExpansionTile(
       initiallyExpanded: widget.index == 0,
       title: Text(
-        widget.post.title,
+        widget.post.refModel != null
+            ? "${widget.post.refModel!.name} - ${widget.post.title}"
+            : widget.post.title,
         style: const TextStyle(
           fontWeight: FontWeight.bold,
         ),
