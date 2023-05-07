@@ -215,6 +215,13 @@ class ClimateChart extends StatelessWidget {
           changedListener: _onSelectionChanged,
         ),
       ],
+      primaryMeasureAxis: const charts.NumericAxisSpec(
+        tickProviderSpec: charts.BasicNumericTickProviderSpec(
+          zeroBound: false,
+          dataIsInWholeNumbers: false,
+          desiredTickCount: 10,
+        ),
+      ),
     );
   }
 
