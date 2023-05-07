@@ -121,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               }
                             } else {
                               if (mounted) {
-                                Utils.showSnackBar(
+                                Utils.showDialogBox(
                                     context, ErrorModel.errorMessage);
                               }
                             }

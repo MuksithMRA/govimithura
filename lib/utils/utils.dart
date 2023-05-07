@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:govimithura/widgets/utils/buttons/custom_elevated_button.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,25 @@ class Utils {
         duration: const Duration(seconds: 5),
       ),
     );
+  }
+
+  static void showDialogBox(BuildContext context, String message) {
+    showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Alert !'),
+            content: Text(message),
+            actions: [
+              CustomElevatedButton(
+                  text: 'OK',
+                  onPressed: () {
+                    Navigator.pop(context);
+                  })
+            ],
+          );
+        });
   }
 
   static String toSnakeCase(String text) {

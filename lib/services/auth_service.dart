@@ -15,7 +15,13 @@ class AuthService {
 
       return userCred.user?.uid != null;
     } on FirebaseAuthException catch (e) {
-      ErrorModel.errorMessage = e.message ?? '';
+      if (e.code == 'user-not-found') {
+        ErrorModel.errorMessage = 'No user found for this email.';
+      } else if (e.code == 'wrong-password') {
+        ErrorModel.errorMessage = 'Wrong password provided for this user.';
+      } else {
+        ErrorModel.errorMessage = e.message ?? '';
+      }
     } on Exception catch (e) {
       ErrorModel.errorMessage = e.toString();
     }
@@ -33,11 +39,18 @@ class AuthService {
               });
       return authModel;
     } on FirebaseAuthException catch (e) {
-      ErrorModel.errorMessage = e.message ?? '';
+      if (e.code == 'email-already-in-use') {
+        ErrorModel.errorMessage = 'The account already exists for this email.';
+      } else if (e.code == 'invalid-email') {
+        ErrorModel.errorMessage = 'Invalid email address.';
+      } else {
+        ErrorModel.errorMessage = e.message ?? '';
+      }
+      return null;
     } on Exception catch (e) {
       ErrorModel.errorMessage = e.toString();
+      return null;
     }
-    return null;
   }
 
   bool isLoggedIn() {
