@@ -71,16 +71,17 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Container(
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                            cropProvider.cropEntity.image,
-                                          ),
-                                          fit: BoxFit.cover)),
-                                  height: ScreenSize.height * 0.25,
-                                  width: ScreenSize.width * 0.4,
-                                ),
+                                if (cropProvider.cropEntity.image.isNotEmpty)
+                                  Container(
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: NetworkImage(
+                                              cropProvider.cropEntity.image,
+                                            ),
+                                            fit: BoxFit.cover)),
+                                    height: ScreenSize.height * 0.25,
+                                    width: ScreenSize.width * 0.4,
+                                  ),
                                 spacingWidget(10, SpaceDirection.horizontal),
                                 SizedBox(
                                   width: ScreenSize.width * 0.46,

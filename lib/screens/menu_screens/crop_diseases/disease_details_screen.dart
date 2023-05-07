@@ -121,17 +121,18 @@ class _DiseaseDetailsScreenState extends State<DiseaseDetailsScreen>
                             ),
                           ),
                           spacingWidget(20, SpaceDirection.vertical),
-                          Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              image: DecorationImage(
-                                  image:
-                                      NetworkImage(disease.diseaseEntity.image),
-                                  fit: BoxFit.cover),
+                          if (disease.diseaseEntity.image.isNotEmpty)
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                image: DecorationImage(
+                                    image: NetworkImage(
+                                        disease.diseaseEntity.image),
+                                    fit: BoxFit.cover),
+                              ),
+                              height: ScreenSize.height * 0.3,
+                              width: ScreenSize.width,
                             ),
-                            height: ScreenSize.height * 0.3,
-                            width: ScreenSize.width,
-                          ),
                           spacingWidget(20, SpaceDirection.vertical),
                           Text(
                             disease.diseaseEntity.description,
