@@ -82,6 +82,7 @@ class PostProvider extends ChangeNotifier {
       }
       notifyListeners();
     }
+    posts.sort((a, b) => b.rating.compareTo(a.rating));
     return posts;
   }
 
