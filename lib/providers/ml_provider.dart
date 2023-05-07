@@ -194,6 +194,5 @@ class MLProvider extends ChangeNotifier {
 
   setPHValue(double ph) {
     this.ph = ph;
-    notifyListeners();
   }
 }

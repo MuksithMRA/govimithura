@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:govimithura/providers/crop_provider.dart';
 import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/utils/screen_size.dart';
+import 'package:govimithura/widgets/utils/buttons/custom_elevated_button.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:charts_flutter_new/flutter.dart' as charts;
+import 'package:govimithura/widgets/utils/text_fields/primary_textfield.dart';
 import 'package:provider/provider.dart';
 
 import '../../../models/climate_parameter.dart';
@@ -19,6 +21,7 @@ class CropDetailsScreen extends StatefulWidget {
 class _CropDetailsScreenState extends State<CropDetailsScreen> {
   bool _isCropLoading = false;
   ClimateParameter climateParameter = ClimateParameter('', 0);
+  double ph = 0;
   @override
   void initState() {
     super.initState();
@@ -27,95 +30,135 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Crop Details"),
-        centerTitle: true,
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            const Text(
-              "Best crop to cultivate in your home garden",
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 18,
+    return WillPopScope(
+      onWillPop: () async {
+        widget.pML.setPHValue(0);
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Crop Details"),
+          centerTitle: true,
+        ),
+        body: Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            children: [
+              const Text(
+                "Best crop to cultivate in your home garden",
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 18,
+                ),
               ),
-            ),
-            spacingWidget(ScreenSize.height * 0.05, SpaceDirection.vertical),
-            Consumer<CropProvider>(
-              builder: (context, cropProvider, child) {
-                return _isCropLoading
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : SizedBox(
-                        height: ScreenSize.height * 0.25,
-                        width: ScreenSize.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                      image: NetworkImage(
-                                        cropProvider.cropEntity.image,
-                                      ),
-                                      fit: BoxFit.cover)),
-                              height: ScreenSize.height * 0.25,
-                              width: ScreenSize.width * 0.4,
+              spacingWidget(ScreenSize.height * 0.05, SpaceDirection.vertical),
+              Consumer<CropProvider>(
+                builder: (context, cropProvider, child) {
+                  return Column(
+                    children: [
+                      if (widget.pML.ph > 0)
+                        if (_isCropLoading)
+                          SizedBox(
+                            height: ScreenSize.height * 0.3,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
                             ),
-                            spacingWidget(10, SpaceDirection.horizontal),
-                            SizedBox(
-                              width: ScreenSize.width * 0.46,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    cropProvider.cropEntity.name,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 20,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: SingleChildScrollView(
-                                      child: Text(
-                                        cropProvider.cropEntity.description,
+                          )
+                        else
+                          SizedBox(
+                            height: ScreenSize.height * 0.25,
+                            width: ScreenSize.width,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                          image: NetworkImage(
+                                            cropProvider.cropEntity.image,
+                                          ),
+                                          fit: BoxFit.cover)),
+                                  height: ScreenSize.height * 0.25,
+                                  width: ScreenSize.width * 0.4,
+                                ),
+                                spacingWidget(10, SpaceDirection.horizontal),
+                                SizedBox(
+                                  width: ScreenSize.width * 0.46,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        cropProvider.cropEntity.name,
                                         style: const TextStyle(
-                                          color: Colors.grey,
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 20,
                                         ),
                                       ),
-                                    ),
+                                      Expanded(
+                                        child: SingleChildScrollView(
+                                          child: Text(
+                                            cropProvider.cropEntity.description,
+                                            style: const TextStyle(
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                      );
-              },
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(20),
-                child: ClimateChart.withSampleData(
-                    context, widget.pML.climateParameters, (p0) {
-                  setState(() {
-                    climateParameter = p0;
-                  });
-                }),
+                          )
+                      else
+                        SizedBox(
+                          height: ScreenSize.height * 0.25,
+                          child: Column(
+                            children: [
+                              PrimaryTextField(
+                                label: 'Enter PH value of your area',
+                                onChanged: (value) {
+                                  double val = double.tryParse(value) ?? 0;
+                                  setState(() {
+                                    ph = val;
+                                  });
+                                },
+                              ),
+                              spacingWidget(10, SpaceDirection.vertical),
+                              CustomElevatedButton(
+                                  text: 'Predict Best Crop',
+                                  onPressed: () async {
+                                    widget.pML.setPHValue(ph);
+                                    await loadCrop();
+                                  })
+                            ],
+                          ),
+                        )
+                    ],
+                  );
+                },
               ),
-            ),
-            if (climateParameter.x.isNotEmpty && climateParameter.y > 0)
-              Text(
-                "${climateParameter.x[0].toUpperCase() + climateParameter.x.substring(1)}  :  ${climateParameter.y}",
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              )
-            else
-              const Text("Click on bar to see value")
-          ],
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: ClimateChart.withSampleData(
+                      context, widget.pML.climateParameters, (p0) {
+                    setState(() {
+                      climateParameter = p0;
+                    });
+                  }),
+                ),
+              ),
+              if (climateParameter.x.isNotEmpty && climateParameter.y > 0)
+                Text(
+                  "${climateParameter.x[0].toUpperCase() + climateParameter.x.substring(1)}  :  ${climateParameter.y}",
+                  style: const TextStyle(fontWeight: FontWeight.w600),
+                )
+              else
+                const Text("Click on bar to see value")
+            ],
+          ),
         ),
       ),
     );
@@ -137,9 +180,7 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
     });
   }
 
-  Future<void> initialize() async {
-    loadCrop();
-  }
+  Future<void> initialize() async {}
 }
 
 class ClimateChart extends StatelessWidget {
