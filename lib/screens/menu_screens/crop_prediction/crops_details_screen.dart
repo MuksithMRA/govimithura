@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/crop_provider.dart';
+import 'package:govimithura/providers/ml_provider.dart';
 import 'package:govimithura/utils/screen_size.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:charts_flutter_new/flutter.dart' as charts;
@@ -8,7 +9,8 @@ import 'package:provider/provider.dart';
 import '../../../models/climate_parameter.dart';
 
 class CropDetailsScreen extends StatefulWidget {
-  const CropDetailsScreen({super.key});
+  final MLProvider pML;
+  const CropDetailsScreen({super.key, required this.pML});
 
   @override
   State<CropDetailsScreen> createState() => _CropDetailsScreenState();
@@ -105,13 +107,14 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
   }
 
   loadCrop() async {
+    CropProvider pCrop = Provider.of<CropProvider>(context, listen: false);
+    pCrop.setCrop(widget.pML.bestCrop);
     setState(() {
       _isCropLoading = !_isCropLoading;
     });
 
     if (mounted) {
-      await Provider.of<CropProvider>(context, listen: false)
-          .getCropByName(context);
+      await pCrop.getCropByName(context);
     }
     setState(() {
       _isCropLoading = !_isCropLoading;
@@ -119,7 +122,7 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
   }
 
   Future<void> initialize() async {
-    loadCrop();
+    return loadCrop();
   }
 }
 

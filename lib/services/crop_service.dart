@@ -4,14 +4,15 @@ import '../models/error_model.dart';
 
 class CropService {
   static final _crops = FirebaseFirestore.instance.collection('crops');
-  static Future<QuerySnapshot<Map<String, dynamic>>?> getCropById(
+
+  static Future<QuerySnapshot<Map<String, dynamic>>?> getCropByName(
       String name) async {
     QuerySnapshot<Map<String, dynamic>>? documentSnapshot;
     try {
       documentSnapshot = await _crops
           .where(
-            'name'.toLowerCase(),
-            isEqualTo: name,
+            'name',
+            isEqualTo: name[0].toUpperCase() + name.substring(1),
           )
           .get();
     } on FirebaseException catch (e) {

@@ -82,38 +82,7 @@ class _CropsScreenState extends State<CropsScreen> {
                               return CustomElevatedButton(
                                 text: "Predict",
                                 onPressed: () async {
-                                  LoadingOverlay overlay =
-                                      LoadingOverlay.of(context);
-                                  pML.setNearestDistrict(
-                                      location.locationModel.district);
-                                  if (mounted) {
-                                    await overlay
-                                        .during(pML.getForecast(context));
-                                  }
-                                  if (mounted && pImage.imagePath != null) {
-                                    await overlay
-                                        .during(pML.predictSoil(context));
-
-                                    if (mounted &&
-                                        pML.climateParameters.isNotEmpty) {
-                                      String bestCrop = await overlay.during(
-                                          Provider.of<MLProvider>(context,
-                                                  listen: false)
-                                              .predictCrop(context));
-                                      if (mounted && bestCrop.isNotEmpty) {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (_) =>
-                                                const CropDetailsScreen(),
-                                          ),
-                                        );
-                                      }
-                                    }
-                                  } else {
-                                    Utils.showSnackBar(
-                                        context, "Please choose an image");
-                                  }
+                                  await onClickPredict(location, pImage);
                                 },
                               );
                             },
@@ -187,6 +156,34 @@ class _CropsScreenState extends State<CropsScreen> {
         ),
       ],
     );
+  }
+
+  onClickPredict(LocationProvider location, ImageUtilProvider pImage) async {
+    LoadingOverlay overlay = LoadingOverlay.of(context);
+    pML.setNearestDistrict(location.locationModel.district);
+    if (mounted) {
+      await overlay.during(pML.getForecast(context));
+    }
+    if (mounted && pImage.imagePath != null) {
+      await overlay.during(pML.predictSoil(context));
+
+      if (mounted && pML.climateParameters.isNotEmpty) {
+        String bestCrop = await overlay.during(pML.predictCrop(context));
+        await pML.setBestCrop(bestCrop);
+        if (mounted && bestCrop.isNotEmpty) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => CropDetailsScreen(
+                pML: pML,
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      Utils.showSnackBar(context, "Please choose an image");
+    }
   }
 
   Future<void> initialize() async {

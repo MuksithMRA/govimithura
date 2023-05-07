@@ -6,6 +6,7 @@ import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/services/ml_service.dart';
 import 'package:govimithura/utils/utils.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/entity_model.dart';
 
 class MLProvider extends ChangeNotifier {
@@ -63,6 +64,7 @@ class MLProvider extends ChangeNotifier {
         (value) {
           if (value == null) {
             Utils.showSnackBar(context, ErrorModel.errorMessage);
+            return null;
           } else {
             List<EntityModel> soilTypes = [
               EntityModel(id: 0, description: "dry"),
@@ -74,15 +76,15 @@ class MLProvider extends ChangeNotifier {
                 .description;
             return soilType;
           }
-          return null;
         },
       );
-      return response ?? '';
+      soilType = response ?? '';
+      return soilType;
     } else {
       ErrorModel.errorMessage = "Please choose an image";
       Utils.showSnackBar(context, "Please choose an image");
+      return '';
     }
-    return '';
   }
 
   Future<String> predictCrop(BuildContext context) async {
@@ -101,33 +103,34 @@ class MLProvider extends ChangeNotifier {
         (value) {
           if (value == null) {
             Utils.showSnackBar(context, ErrorModel.errorMessage);
+            return '';
           } else {
-            setBestCrop(value);
             return value;
           }
-          return '';
         },
       );
-      notifyListeners();
     }
+
+    setBestCrop(response);
     return response;
   }
 
   Future<List<ClimateParameter>> getForecast(BuildContext context) async {
     List<ClimateParameter> response = [];
     if (nearestDistrict.isNotEmpty) {
-      response = await MLService.getForecast(nearestDistrict).then((forecast) {
+      return await MLService.getForecast(nearestDistrict).then((forecast) {
         if (forecast != null) {
           climateParameters = forecast;
-          return forecast;
+          return climateParameters;
         } else {
           // ignore: use_build_context_synchronously
           Utils.showSnackBar(context, ErrorModel.errorMessage);
+          return [];
         }
-        return [];
       });
+    } else {
+      return response;
     }
-    return response;
   }
 
   Future<int> predictInsect(BuildContext context) async {
@@ -186,9 +189,10 @@ class MLProvider extends ChangeNotifier {
     nearestDistrict = district;
   }
 
-  setBestCrop(String bestCrop) {
+  setBestCrop(String bestCrop) async {
     this.bestCrop = bestCrop;
-    notifyListeners();
+    await SharedPreferences.getInstance()
+        .then((value) => {value.setString("best_crop", this.bestCrop)});
   }
 
   setPHValue(double ph) {
