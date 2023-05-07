@@ -174,7 +174,6 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
     if (mounted) {
       await pCrop.getCropByName(context);
     }
-
     setState(() {
       _isCropLoading = !_isCropLoading;
     });
