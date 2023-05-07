@@ -3,6 +3,7 @@ import 'package:govimithura/constants/post_status.dart';
 import 'package:govimithura/models/post_model.dart';
 import 'package:govimithura/providers/post_provider.dart';
 import 'package:govimithura/screens/admin_home.dart';
+import 'package:govimithura/screens/my_post_list.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/utils.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
@@ -52,7 +53,9 @@ class _MyPostState extends State<MyPost> {
                         Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const AdminHome(),
+                            builder: (_) => widget.isAdmin
+                                ? const AdminHome()
+                                : const MyPostList(),
                           ),
                         );
                       }

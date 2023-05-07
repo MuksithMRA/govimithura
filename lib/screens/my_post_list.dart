@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:govimithura/providers/post_provider.dart';
-import 'package:govimithura/screens/my_post.dart';
-import 'package:govimithura/utils/loading_overlay.dart';
-import 'package:govimithura/utils/utils.dart';
-import 'package:govimithura/widgets/utils/common_widget.dart';
 import 'package:provider/provider.dart';
+import '../providers/post_provider.dart';
+import '../utils/loading_overlay.dart';
+import '../utils/utils.dart';
 import '../widgets/drawer_widget.dart';
+import '../widgets/utils/common_widget.dart';
+import 'my_post.dart';
 
 class MyPostList extends StatefulWidget {
   const MyPostList({super.key});
@@ -58,7 +58,7 @@ class _MyPostListState extends State<MyPostList> {
                                           postId: post.posts[index].id)));
                             },
                             title: Text(
-                              '${post.posts[index].refModel!.name} - ${post.posts[index].title}',
+                              '${post.posts[index].refModel?.name ?? ''} - ${post.posts[index].title}',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
