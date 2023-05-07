@@ -6,7 +6,6 @@ import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/providers/img_util_provider.dart';
 import 'package:govimithura/services/ml_service.dart';
 import 'package:govimithura/utils/utils.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/entity_model.dart';
 
 class MLProvider extends ChangeNotifier {
@@ -186,13 +185,11 @@ class MLProvider extends ChangeNotifier {
   }
 
   setNearestDistrict(String district) {
-    nearestDistrict = district;
+    nearestDistrict = district[0].toUpperCase() + district.substring(1);
   }
 
   setBestCrop(String bestCrop) async {
     this.bestCrop = bestCrop;
-    await SharedPreferences.getInstance()
-        .then((value) => {value.setString("best_crop", this.bestCrop)});
   }
 
   setPHValue(double ph) {

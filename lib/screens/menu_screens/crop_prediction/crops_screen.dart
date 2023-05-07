@@ -168,9 +168,7 @@ class _CropsScreenState extends State<CropsScreen> {
       await overlay.during(pML.predictSoil(context));
 
       if (mounted && pML.climateParameters.isNotEmpty) {
-        String bestCrop = await overlay.during(pML.predictCrop(context));
-        await pML.setBestCrop(bestCrop);
-        if (mounted && bestCrop.isNotEmpty) {
+        if (mounted) {
           Navigator.push(
             context,
             MaterialPageRoute(

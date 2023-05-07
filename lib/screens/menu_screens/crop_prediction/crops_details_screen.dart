@@ -18,6 +18,7 @@ class CropDetailsScreen extends StatefulWidget {
 
 class _CropDetailsScreenState extends State<CropDetailsScreen> {
   bool _isCropLoading = false;
+  ClimateParameter climateParameter = ClimateParameter('', 0);
   @override
   void initState() {
     super.initState();
@@ -36,7 +37,7 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
         child: Column(
           children: [
             const Text(
-              "Best Crop to cultivate in your home garden",
+              "Best crop to cultivate in your home garden",
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 fontSize: 18,
@@ -79,10 +80,12 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
                                     ),
                                   ),
                                   Expanded(
-                                    child: Text(
-                                      cropProvider.cropEntity.description,
-                                      style: const TextStyle(
-                                        color: Colors.grey,
+                                    child: SingleChildScrollView(
+                                      child: Text(
+                                        cropProvider.cropEntity.description,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
                                       ),
                                     ),
                                   ),
@@ -97,9 +100,21 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(20),
-                child: ClimateChart.withSampleData(context),
+                child: ClimateChart.withSampleData(
+                    context, widget.pML.climateParameters, (p0) {
+                  setState(() {
+                    climateParameter = p0;
+                  });
+                }),
               ),
-            )
+            ),
+            if (climateParameter.x.isNotEmpty && climateParameter.y > 0)
+              Text(
+                "${climateParameter.x[0].toUpperCase() + climateParameter.x.substring(1)}  :  ${climateParameter.y}",
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              )
+            else
+              const Text("Click on bar to see value")
           ],
         ),
       ),
@@ -108,35 +123,44 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
 
   loadCrop() async {
     CropProvider pCrop = Provider.of<CropProvider>(context, listen: false);
-    pCrop.setCrop(widget.pML.bestCrop);
     setState(() {
       _isCropLoading = !_isCropLoading;
     });
-
+    await widget.pML.predictCrop(context);
+    pCrop.setCrop(widget.pML.bestCrop);
     if (mounted) {
       await pCrop.getCropByName(context);
     }
+
     setState(() {
       _isCropLoading = !_isCropLoading;
     });
   }
 
   Future<void> initialize() async {
-    return loadCrop();
+    loadCrop();
   }
 }
 
 class ClimateChart extends StatelessWidget {
   final List<charts.Series<dynamic, String>> seriesList;
   final bool animate;
+  final ClimateParametedCallBack onClimateParameterChange;
 
   const ClimateChart(
-      {super.key, required this.seriesList, this.animate = true});
+      {super.key,
+      required this.seriesList,
+      this.animate = true,
+      required this.onClimateParameterChange});
 
-  factory ClimateChart.withSampleData(BuildContext context) {
+  factory ClimateChart.withSampleData(
+      BuildContext context,
+      List<ClimateParameter> list,
+      ClimateParametedCallBack onClimateParameterChange) {
     return ClimateChart(
-      seriesList: _createSampleData(context),
+      seriesList: _createSampleData(context, list),
       animate: false,
+      onClimateParameterChange: onClimateParameterChange,
     );
   }
 
@@ -145,18 +169,24 @@ class ClimateChart extends StatelessWidget {
     return charts.BarChart(
       seriesList,
       animate: animate,
+      selectionModels: [
+        charts.SelectionModelConfig(
+          type: charts.SelectionModelType.info,
+          changedListener: _onSelectionChanged,
+        ),
+      ],
     );
   }
 
-  static List<charts.Series<ClimateParameter, String>> _createSampleData(
-      BuildContext context) {
-    final data = [
-      ClimateParameter('Temperature', 10),
-      ClimateParameter('Rainfall', 20),
-      ClimateParameter('Humidity', 15),
-      ClimateParameter('Evoporation', 8),
-    ];
+  void _onSelectionChanged(charts.SelectionModel model) {
+    if (model.hasDatumSelection) {
+      final selectedDatum = model.selectedDatum.first;
+      onClimateParameterChange(selectedDatum.datum);
+    }
+  }
 
+  static List<charts.Series<ClimateParameter, String>> _createSampleData(
+      BuildContext context, List<ClimateParameter> list) {
     return [
       charts.Series<ClimateParameter, String>(
         id: 'Sales',
@@ -166,8 +196,10 @@ class ClimateChart extends StatelessWidget {
         fillPatternFn: (_, __) => charts.FillPatternType.solid,
         fillColorFn: (ClimateParameter climate, _) =>
             charts.ColorUtil.fromDartColor(Theme.of(context).primaryColor),
-        data: data,
+        data: list,
       )
     ];
   }
 }
+
+typedef ClimateParametedCallBack = void Function(ClimateParameter);
