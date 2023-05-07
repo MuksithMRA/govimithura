@@ -21,7 +21,7 @@ class _CustomRatingDialogState extends State<CustomRatingDialog> {
     return Consumer<PostProvider>(
       builder: (context, pPost, child) {
         return AlertDialog(
-          title: const Text("Rate this post"),
+          title: const Text("Rate this Pest Control Method"),
           content: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,

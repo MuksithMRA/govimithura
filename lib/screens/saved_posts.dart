@@ -30,7 +30,7 @@ class _SavedPostsState extends State<SavedPosts> {
     return Scaffold(
       drawer: const DrawerWidget(),
       appBar: AppBar(
-        title: const Text('Saved Posts'),
+        title: const Text('Saved Pest Control Methods'),
       ),
       body: SingleChildScrollView(child: Consumer<PostProvider>(
         builder: (context, post, child) {

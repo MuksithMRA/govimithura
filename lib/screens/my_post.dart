@@ -36,7 +36,7 @@ class _MyPostState extends State<MyPost> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('My Post'),
+          title: const Text('My Pest Control Methods'),
           actions: [
             IconButton(
               onPressed: () async {
@@ -44,7 +44,7 @@ class _MyPostState extends State<MyPost> {
                   context: context,
                   builder: (_) => confirmationDialog(
                     context,
-                    title: "Delete Post",
+                    title: "Delete Pest Control Method",
                     yesFunction: () async {
                       bool isSuccess = await LoadingOverlay.of(context)
                           .during(pPost.deletePost(widget.postId));

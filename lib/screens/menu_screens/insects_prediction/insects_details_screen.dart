@@ -58,16 +58,18 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
                         ),
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
-                      Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            image: DecorationImage(
-                              image: NetworkImage(insect.selectedInsect.image),
-                              fit: BoxFit.cover,
-                            )),
-                        height: ScreenSize.height * 0.3,
-                        width: ScreenSize.width,
-                      ),
+                      if (insect.selectedInsect.image.isNotEmpty)
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              image: DecorationImage(
+                                image:
+                                    NetworkImage(insect.selectedInsect.image),
+                                fit: BoxFit.cover,
+                              )),
+                          height: ScreenSize.height * 0.3,
+                          width: ScreenSize.width,
+                        ),
                       spacingWidget(20, SpaceDirection.vertical),
                       Text(
                         insect.selectedInsect.description,
@@ -75,22 +77,6 @@ class _InsectsDetailsScreenState extends State<InsectsDetailsScreen> {
                           fontSize: 16,
                         ),
                       )
-                      // ListView.builder(
-                      //   shrinkWrap: true,
-                      //   physics: const NeverScrollableScrollPhysics(),
-                      //   itemCount: 2,
-                      //   itemBuilder: (BuildContext context, int index) {
-                      //     return const ListTile(
-                      //       minLeadingWidth: 10,
-                      //       leading: Text(
-                      //         '\u2022',
-                      //         style: TextStyle(fontSize: 30),
-                      //       ),
-                      //       title: Text(
-                      //           "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged."),
-                      //     );
-                      //   },
-                      // ),
                     ],
                   ),
                 ),
