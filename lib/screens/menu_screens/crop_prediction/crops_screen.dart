@@ -23,6 +23,7 @@ class CropsScreen extends StatefulWidget {
 class _CropsScreenState extends State<CropsScreen> {
   late LocationProvider pLocation;
   late MLProvider pML;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -64,41 +65,55 @@ class _CropsScreenState extends State<CropsScreen> {
                 builder: (context, location, child) {
                   return Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                              child: PrimaryTextField(
-                            prefixIcon: const Icon(Icons.location_city_rounded),
-                            onChanged: (value) {
-                              location.setDistrict(value);
-                            },
-                            label: "Nearest District",
-                            initialValue: location.locationModel.district,
-                          )),
-                          spacingWidget(10, SpaceDirection.horizontal),
-                          Consumer<ImageUtilProvider>(
-                            builder: (context, pImage, child) {
-                              return CustomElevatedButton(
-                                text: "Predict",
-                                onPressed: () async {
-                                  await onClickPredict(location, pImage);
-                                },
-                              );
-                            },
-                          )
-                        ],
+                      Form(
+                        key: _formKey,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Flexible(
+                                child: PrimaryTextField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Nears District Required !';
+                                } else {
+                                  return null;
+                                }
+                              },
+                              prefixIcon:
+                                  const Icon(Icons.location_city_rounded),
+                              onChanged: (value) {
+                                location.setDistrict(value);
+                              },
+                              label: "Nearest District",
+                              initialValue: location.locationModel.district,
+                            )),
+                            spacingWidget(10, SpaceDirection.horizontal),
+                            Consumer<ImageUtilProvider>(
+                              builder: (context, pImage, child) {
+                                return CustomElevatedButton(
+                                  text: "Predict",
+                                  onPressed: () async {
+                                    await onClickPredict(location, pImage);
+                                  },
+                                );
+                              },
+                            )
+                          ],
+                        ),
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
-                      Container(
-                        height: imageSize.height,
-                        width: imageSize.width,
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                            image:
-                                Provider.of<ImageUtilProvider>(context).image ??
-                                    const AssetImage("assets/images/soil.png"),
-                            fit: BoxFit.cover,
+                      Expanded(
+                        child: Container(
+                          //height: imageSize.height,
+                          width: imageSize.width,
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                              image: Provider.of<ImageUtilProvider>(context)
+                                      .image ??
+                                  const AssetImage("assets/images/soil.png"),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -160,24 +175,20 @@ class _CropsScreenState extends State<CropsScreen> {
 
   onClickPredict(LocationProvider location, ImageUtilProvider pImage) async {
     LoadingOverlay overlay = LoadingOverlay.of(context);
-    pML.setNearestDistrict(location.locationModel.district);
-    if (mounted) {
-      await overlay.during(pML.getForecast(context));
-    }
-    if (mounted && pImage.imagePath != null) {
-      await overlay.during(pML.predictSoil(context));
-
+    if (pImage.imagePath != null && _formKey.currentState!.validate()) {
+      pML.setNearestDistrict(location.locationModel.district);
+      if (mounted) {
+        await overlay.during(pML.getForecast(context));
+      }
       if (mounted && pML.climateParameters.isNotEmpty) {
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => CropDetailsScreen(
-                pML: pML,
-              ),
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => CropDetailsScreen(
+              pML: pML,
             ),
-          );
-        }
+          ),
+        );
       }
     } else {
       Utils.showSnackBar(context, "Please choose an image");

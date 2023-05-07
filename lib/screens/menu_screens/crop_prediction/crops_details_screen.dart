@@ -169,10 +169,13 @@ class _CropDetailsScreenState extends State<CropDetailsScreen> {
     setState(() {
       _isCropLoading = !_isCropLoading;
     });
-    await widget.pML.predictCrop(context);
-    pCrop.setCrop(widget.pML.bestCrop);
-    if (mounted) {
-      await pCrop.getCropByName(context);
+    await widget.pML.predictSoil(context);
+    if (mounted && widget.pML.soilType.isNotEmpty) {
+      await widget.pML.predictCrop(context);
+      pCrop.setCrop(widget.pML.bestCrop);
+      if (mounted && pCrop.cropEntity.description.isNotEmpty) {
+        await pCrop.getCropByName(context);
+      }
     }
     setState(() {
       _isCropLoading = !_isCropLoading;
@@ -215,13 +218,6 @@ class ClimateChart extends StatelessWidget {
           changedListener: _onSelectionChanged,
         ),
       ],
-      primaryMeasureAxis: const charts.NumericAxisSpec(
-        tickProviderSpec: charts.BasicNumericTickProviderSpec(
-          zeroBound: false,
-          dataIsInWholeNumbers: false,
-          desiredTickCount: 10,
-        ),
-      ),
     );
   }
 
