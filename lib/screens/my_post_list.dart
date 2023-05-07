@@ -31,7 +31,7 @@ class _MyPostListState extends State<MyPostList> {
     return Scaffold(
       drawer: const DrawerWidget(),
       appBar: AppBar(
-        title: const Text('My Posts'),
+        title: const Text('My Pest Control Methods'),
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -43,7 +43,7 @@ class _MyPostListState extends State<MyPostList> {
                   children: [
                     if (post.posts.isEmpty)
                       const Center(
-                        child: Text('No posts found'),
+                        child: Text('No Pest Control Methods found'),
                       ),
                     ...List.generate(
                       post.posts.length,
@@ -58,7 +58,7 @@ class _MyPostListState extends State<MyPostList> {
                                           postId: post.posts[index].id)));
                             },
                             title: Text(
-                              post.posts[index].title,
+                              '${post.posts[index].refModel!.name} - ${post.posts[index].title}',
                               style:
                                   const TextStyle(fontWeight: FontWeight.bold),
                             ),
