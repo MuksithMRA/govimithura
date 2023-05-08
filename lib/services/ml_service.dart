@@ -125,7 +125,7 @@ class MLService {
   static Future<String?> replyChat(String query) async {
     Dio dio = Dio();
     const String apiUrl =
-        "https://us-east1-ageless-aquifer-381515.cloudfunctions.net/chat-bot-1";
+        "https://us-east1-ageless-aquifer-381515.cloudfunctions.net/chat-bot-2";
     FormData formData = FormData.fromMap({'query': query.trim()});
     try {
       Response response = await dio.post(apiUrl, data: formData);
