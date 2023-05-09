@@ -4,7 +4,7 @@ import 'package:govimithura/models/auth_model.dart';
 import 'package:govimithura/models/error_model.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  static final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<bool> login(AuthModel authModel) async {
     try {
@@ -66,5 +66,17 @@ class AuthService {
 
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  static Future<void>? forgetPassword(String email) async {
+    try {
+      return await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (e) {
+      ErrorModel.errorMessage = e.message ?? '';
+      return;
+    } on Exception catch (e) {
+      ErrorModel.errorMessage = e.toString();
+      return;
+    }
   }
 }

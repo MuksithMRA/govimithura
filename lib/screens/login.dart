@@ -4,6 +4,7 @@ import 'package:govimithura/constants/user_types.dart';
 import 'package:govimithura/models/error_model.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
 import 'package:govimithura/screens/admin_home.dart';
+import 'package:govimithura/screens/forget_password.dart';
 import 'package:govimithura/screens/register.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/screen_size.dart';
@@ -87,17 +88,25 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                       ),
                       spacingWidget(10, SpaceDirection.vertical),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
-                          Text(
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const ForgetPasswordScreen(),
+                            ),
+                          );
+                        },
+                        child: const Align(
+                          alignment: Alignment.centerRight,
+                          child: Text(
                             'Forgot Password?',
                             style: TextStyle(
                               fontSize: 15,
                             ),
                             textAlign: TextAlign.end,
                           ),
-                        ],
+                        ),
                       ),
                       spacingWidget(20, SpaceDirection.vertical),
                       CustomElevatedButton(

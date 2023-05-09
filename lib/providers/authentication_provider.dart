@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:govimithura/models/error_model.dart';
+import 'package:govimithura/utils/utils.dart';
 
 import '../models/auth_model.dart';
 import '../models/user_model.dart';
@@ -83,6 +85,16 @@ class AuthenticationProvider extends ChangeNotifier {
         return false;
       }
     });
+  }
+
+  Future<bool> forgetPassword(BuildContext context) async {
+    var response = AuthService.forgetPassword(authModel.email);
+    if (response != null) {
+      return true;
+    } else {
+      Utils.showSnackBar(context, ErrorModel.errorMessage);
+      return false;
+    }
   }
 
   User? getCurrentUser() {
