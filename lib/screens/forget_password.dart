@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:govimithura/providers/authentication_provider.dart';
+import 'package:govimithura/screens/login.dart';
 import 'package:govimithura/utils/loading_overlay.dart';
 import 'package:govimithura/utils/utils.dart';
 import 'package:govimithura/widgets/utils/common_widget.dart';
@@ -69,7 +70,11 @@ class _ForgetPasswordScreenState extends State<ForgetPasswordScreen> {
                 text: "Send reset password link",
                 onPressed: () async {
                   if (_key.currentState!.validate()) {
-                    Navigator.pop(context);
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const LoginScreen()),
+                        (route) => false);
                     bool isSent = await LoadingOverlay.of(context)
                         .during(pAuthentication.forgetPassword(context));
                     if (mounted && isSent) {
